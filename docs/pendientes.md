@@ -17,6 +17,11 @@
 - [x] Compra real de Caty (27/11): alta registrada y rutina desbloqueada; reembolsada y cancelada, y la baja llegó al servidor.
 - [ ] Más adelante: captcha para el acceso anónimo si hay abuso.
 
+## Prueba con 10 amigas (27/11 a 4/12)
+- [x] Enlace de invitación: 7 días de Glow Esencial, 10 usos, canjeable hasta el 4/12.
+- [x] Formulario de opinión en la app (tabla `opiniones`).
+- [ ] Leer las opiniones y decidir mejoras con Caty.
+
 ## Fases siguientes (solo tras aprobar la anterior)
 - Fase 3: avisos push del asistente, chat con Caty (`CHAT_LISTO`) y panel `/admin` (incluido el botón para pasar el acceso a otro móvil).
 - No vender Glow con Caty hasta que la Fase 3 esté lista: el chat aún no funciona.

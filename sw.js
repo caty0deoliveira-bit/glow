@@ -1,6 +1,6 @@
 /* Glow by Caty: funciona sin conexión.
    Sube la versión cada vez que cambies la app para que todas reciban la nueva. */
-const VERSION = 'glow-v1.1.0';
+const VERSION = 'glow-v1.2.0';
 const SHELL = [
   './', 'index.html', 'manifest.json',
   'assets/icon-180.png', 'assets/icon-512.png',

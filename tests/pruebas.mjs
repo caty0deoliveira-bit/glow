@@ -63,6 +63,26 @@ filas=[{plan:'caty',estado:'canceled'}];
 res2.push(['Cancelada: vuelve a gratis',await pg.evaluate(async()=>{await syncPlan();return S.plan==='free'})]);
 for(const [n,o] of res2){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
 await pg.unrouteAll({behavior:'ignoreErrors'});
+
+// ---------- Invitaciones y opiniones ----------
+const venceF=new Date(Date.now()+7*864e5).toISOString();let opinion=null;
+await pg.route('**/rest/v1/rpc/canjear_invitacion',r=>r.fulfill({json:venceF}));
+await pg.route('**/rest/v1/opiniones',r=>{opinion=r.request().postDataJSON();r.fulfill({status:201,body:''})});
+await pg.route('**/auth/v1/signup',r=>r.fulfill({json:{access_token:'tok',refresh_token:'ref',expires_in:3600,user:{id:UID}}}));
+await pg.route('**/rest/v1/suscripciones**',r=>r.fulfill({json:filas}));
+await pg.evaluate(()=>localStorage.clear());
+filas=[{plan:'esencial',estado:'active',vence:venceF}];
+await pg.goto(URL+'?invitacion=AMIGAS-TEST');await pg.waitForFunction(()=>Q.length>0);
+const inv=await pg.waitForFunction(()=>S.inv&&S.plan==='esencial'&&!!S.vence,null,{timeout:8000}).then(()=>true).catch(()=>false);
+const res3=[['Invitación: activa Glow Esencial con fecha de fin',inv]];
+res3.push(['Invitación: rutina desbloqueada',await pg.evaluate(()=>{const k={inv:S.inv,v:S.vence,p:S.plan};loadSample();Object.assign(S,{inv:k.inv,vence:k.v,plan:k.p,screen:'app',tab:'rutina'});render(true);return document.querySelector('#app').innerText.includes('Comprar')})]);
+res3.push(['Mi piel muestra la tarjeta de opinión',await pg.evaluate(()=>{S.tab='piel';render(true);return document.querySelector('#app').innerText.includes('Dar mi opinión')})]);
+await pg.click('[data-act="opinion"]');await pg.click('[data-act="rate"][data-arg="general:5"]');await pg.click('[data-act="rate"][data-arg="asistente:4"]');
+await pg.fill('#opTxt','Me encantó el cuestionario');await pg.click('[data-act="sendop"]');await pg.waitForTimeout(800);
+res3.push(['Opinión enviada con puntuaciones y texto',!!opinion&&opinion.general===5&&opinion.asistente===4&&opinion.texto==='Me encantó el cuestionario']);
+res3.push(['Invitación caducada: vuelve a bloquear',await pg.evaluate(()=>{S.vence=new Date(Date.now()-1000).toISOString();return !paid()})]);
+for(const [n,o] of res3){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
+await pg.unrouteAll({behavior:'ignoreErrors'});
 // capturas de pantallas
 await pg.evaluate(()=>{localStorage.clear()});await pg.reload();await pg.waitForFunction(()=>Q.length>0);
 await pg.screenshot({path:'tests/capturas/s1-bienvenida.png'});

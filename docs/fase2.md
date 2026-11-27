@@ -22,3 +22,11 @@ update public.suscripciones set user_id = 'CÓDIGO-DEL-MÓVIL-NUEVO' where email
 ```
 
 Luego ella toca «Ya pagué: actualizar mi plan».
+
+## Invitaciones de prueba (amigas testers)
+- Enlace: `https://caty0deoliveira-bit.github.io/glow/?invitacion=CÓDIGO`. Cada persona recibe Glow Esencial gratis 7 días desde que lo abre. El código tiene usos máximos y fecha límite para canjearlo (tabla `invitaciones`).
+- Al caducar, la fila deja de verse por RLS y la rutina vuelve a bloquearse.
+- Las testers ven «Estás probando Glow» y un formulario de opinión. Las opiniones llegan a la tabla `opiniones` (Supabase → Table Editor → opiniones).
+- Crear otra invitación (SQL Editor):
+  `insert into public.invitaciones (codigo, dias, usos_max, caduca, nota) values ('NUEVO-CODIGO', 7, 10, now() + interval '7 days', 'nota');`
+- Ver cuántas personas la usaron: `select codigo, usos, usos_max, caduca from public.invitaciones;`
