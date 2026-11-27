@@ -355,7 +355,7 @@ async function syncPlan(){
   const cambio=np!==S.plan||nv!==(S.vence||null);S.plan=np;S.vence=nv;save();return cambio;
  }catch(e){return false}}
 const tester=()=>!!S.inv&&!!S.vence&&paid(); /* amiga con invitación activa: nunca ve botones de pago */
-const VER='1.5';
+const VER='1.6';
 /* ---------- Contador anónimo de uso ----------
    Solo pasos de la app (nunca respuestas, fotos ni datos de piel). Id aleatorio del móvil, sin cookies. */
 const DISP=(()=>{try{let d=localStorage.getItem('glow.disp');if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2));localStorage.setItem('glow.disp',d)}return d}catch(e){return 'sin-id'}})();
@@ -476,11 +476,11 @@ function link(p,m){
 }
 /* Marcas que nunca se recomiendan (decisión de Caty: marketing del miedo «clean») */
 let MARCAS_EXCLUIDAS=['Freshly Cosmetics','Cocunat']; /* se completa con datos/catalogo.json */
-const prodList=cat=>(CAT[cat]||[]).filter(([b])=>!MARCAS_EXCLUIDAS.some(m=>b.toLowerCase()===m.toLowerCase())).map(([b,n,t,c,ids,ret],i)=>({b,n,t,c,ids,ret,id:cat+i,st:ids.ys?'y':'a'}));
-function picks(cat,preg,sinPerfume){
+const prodList=cat=>(CAT[cat]||[]).filter(([b])=>!MARCAS_EXCLUIDAS.some(m=>b.toLowerCase()===m.toLowerCase())).map(([b,n,t,c,ids,ret,pq],i)=>({b,n,t,c,ids,ret,pq:pq||[],id:cat+i,st:ids.ys?'y':'a'}));
+function picks(cat,preg,sinPerfume,preoc){
  const m=mkt(),max=TIERMAX[S.a.pres??1],prefs=many('cos').map(c=>PREFTAG[c]);
  const all=prodList(cat).filter(p=>!(preg&&p.ret));
- all.forEach(p=>{p.lk=link(p,m);p.sc=(p.t>max?-10:0)+prefs.filter(x=>p.c.includes(x)).length*3-Math.abs(max-p.t)*.8-(p.lk.direct?0:4)-(sinPerfume&&p.c.includes('pf')?3:0)});
+ all.forEach(p=>{p.lk=link(p,m);p.sc=(p.t>max?-10:0)+prefs.filter(x=>p.c.includes(x)).length*3-Math.abs(max-p.t)*.8-(p.lk.direct?0:4)-(sinPerfume&&p.c.includes('pf')?3:0)+(preoc||[]).filter(x=>p.pq.includes(x)).length*2});
  all.sort((a,b)=>b.sc-a.sc);
  const f=all[0];if(!f)return[];
  const s=all.find(p=>p!==f&&p.st!==f.st&&p.sc>=f.sc-4)||all[1];
@@ -564,9 +564,9 @@ function plan(){
  pm.push(tr);
  if(!minimal&&useRet&&manchas) pm.push({id:'pm3',p:'Noches sin retinoide',noRet:1,cat:'despig',ev:'33849384',t:'Ácido tranexámico o azelaico para las manchas.',w:'Alternarlos evita acumular irritación.'});
  if(enquist&&!iso) pm.push({id:'pm3b',p:'Exfoliante para la barba',noRet:1,cat:'glicolico',ev:'8261811',t:'Ácido glicólico en la zona de la barba y el cuello, 2 o 3 noches por semana al principio.'+((useRet||rxret||tr.cat==='bha')?' Nunca la misma noche que tu retinoide o tu ácido salicílico.':'')+(sens?' Si te escuece, espacia las aplicaciones.':''),w:'Ayuda a liberar los pelos que se quedan atrapados bajo la piel y reduce los granitos del afeitado.'});
- if(S.a.pasos===2&&has('estado','Ojeras o bolsas')) pm.push({id:'pm4',p:'Contorno de ojos',cat:'contorno',t:'Con cafeína o péptidos.',w:'La zona es fina: mejor una fórmula específica.'});
+ if(S.a.pasos===2&&has('estado','Ojeras o bolsas')) pm.push({id:'pm4',p:'Contorno de ojos',cat:'contorno',pq:aging?['ojeras','bolsas','lineas']:['ojeras','bolsas'],t:'Con cafeína o péptidos.',w:'La zona es fina: mejor una fórmula específica.'});
  pm.push({id:'pm5',p:'Hidratante de noche',cat:oily?'hidraLigera':'hidraRica',ev:'37717558',t:oily?'Hidratante ligera que no obstruya los poros.':'Crema rica con ceramidas. Si notas mucha sequedad, unas gotas de escualano encima.',w:'Por la noche la piel pierde más agua: es el momento de reparar.'});
- [...am,...pm].forEach(s=>{s.pk=s.cat?picks(s.cat,preg||s.noRet,sinPerfume):[]});
+ [...am,...pm].forEach(s=>{s.pk=s.cat?picks(s.cat,preg||s.noRet,sinPerfume,s.pq):[]});
 
  const ret=useRet?[['Semanas 1 y 2','2 noches por semana'],['Semanas 3 y 4','3 noches por semana'],['Semanas 5 a 8','Noche sí, noche no'],['Desde la semana 9','Cada noche, si tu piel lo tolera']]:null;
 
@@ -1018,7 +1018,7 @@ async function boot(){
   const [cat,cue,evi]=await Promise.all([get('datos/catalogo.json'),get('datos/cuestionario.json'),get('datos/evidencia.json')]);
   const T={low_cost:'lc',coreana:'co',farmacia:'fa',alta_gama:'ag',natural:'na',lleva_perfume:'pf'};
   CATN={};CAT={};
-  cat.categorias.forEach(c=>{CATN[c.id]=c.nombre;CAT[c.id]=c.productos.map(p=>[p.marca,p.producto,p.nivel_precio,p.etiquetas.map(e=>T[e]).filter(Boolean),{es:p.amazon_es_asin||undefined,us:p.amazon_us_asin||undefined,q:p.amazon_us_busqueda||undefined,ys:p.yesstyle_pid||undefined},p.contiene_retinoide?1:0])});
+  cat.categorias.forEach(c=>{CATN[c.id]=c.nombre;CAT[c.id]=c.productos.map(p=>[p.marca,p.producto,p.nivel_precio,p.etiquetas.map(e=>T[e]).filter(Boolean),{es:p.amazon_es_asin||undefined,us:p.amazon_us_asin||undefined,q:p.amazon_us_busqueda||undefined,ys:p.yesstyle_pid||undefined},p.contiene_retinoide?1:0,p.preocupaciones||[]])});
   MARCAS_EXCLUIDAS=[...new Set([...MARCAS_EXCLUIDAS,...(cat.reglas.marcas_excluidas||[])])];
   SECS=cue.secciones;Q=cue.preguntas;AX=cue.baumann.ejes;WORD=cue.baumann.letras;DESC=cue.baumann.descripciones;
   REF={};evi.referencias.forEach(r=>{REF[r.pmid]=[r.titulo_es,r.cita]});

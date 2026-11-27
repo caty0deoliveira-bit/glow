@@ -1,5 +1,5 @@
 {
- "version": "2026-11-26",
+ "version": "2026-11-27",
  "aprobado_por_caty": true,
  "reglas": {
   "marcas_excluidas": [
@@ -24,7 +24,8 @@
    "Alta gama": "alta_gama",
    "Natural o clean": "natural"
   },
-  "precios": "No mostrar precios de Amazon (política de Amazon Afiliados)."
+  "precios": "No mostrar precios de Amazon (política de Amazon Afiliados).",
+  "preocupaciones_contorno": "En el contorno de ojos se priorizan los productos cuya lista «preocupaciones» coincide con las de la usuaria (ojeras, bolsas, líneas)."
  },
  "categorias": [
   {
@@ -62,6 +63,22 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
      "yesstyle_pid": "1052684732"
+    },
+    {
+     "marca": "Anua",
+     "producto": "Heartleaf Quercetinol Pore Deep Cleansing Foam",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1129006061"
     }
    ]
   },
@@ -100,6 +117,21 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
      "yesstyle_pid": "1074113181"
+    },
+    {
+     "marca": "La Roche-Posay",
+     "producto": "Toleriane Crema Limpiadora",
+     "nivel_precio": 2,
+     "nivel_precio_texto": "Precio medio",
+     "etiquetas": [
+      "farmacia"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": null,
+     "amazon_us_asin": "B01N7T7JKJ",
+     "amazon_us_busqueda": "La Roche-Posay Toleriane Hydrating Gentle Cleanser",
+     "yesstyle_pid": null
     }
    ]
   },
@@ -138,6 +170,39 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": "CeraVe Hydrating Foaming Oil Cleanser",
      "yesstyle_pid": null
+    },
+    {
+     "marca": "heimish",
+     "producto": "All Clean Balm",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost",
+      "lleva_perfume"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1053102258"
+    },
+    {
+     "marca": "Anua",
+     "producto": "Heartleaf Pore Control Cleansing Oil Mild (sin perfume)",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1128989172"
     }
    ]
   },
@@ -333,6 +398,36 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
      "yesstyle_pid": null
+    },
+    {
+     "marca": "The Ordinary",
+     "producto": "Soothing & Barrier Support Serum",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": "B0CJ3CXTW6",
+     "amazon_us_asin": "B0CJ3CXTW6",
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": null
+    },
+    {
+     "marca": "Elizabeth Arden",
+     "producto": "Advanced Ceramide Capsules Daily Youth Restoring Serum",
+     "nivel_precio": 3,
+     "nivel_precio_texto": "Premium",
+     "etiquetas": [
+      "alta_gama"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": "B06WLQWXY6",
+     "amazon_us_asin": "B06WLQWXY6",
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": null
     }
    ]
   },
@@ -370,6 +465,52 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
      "yesstyle_pid": "1074113215"
+    },
+    {
+     "marca": "AESTURA",
+     "producto": "Atobarrier 365 Cream",
+     "nivel_precio": 2,
+     "nivel_precio_texto": "Precio medio",
+     "etiquetas": [
+      "coreana"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1128134342"
+    },
+    {
+     "marca": "ILLIYOON",
+     "producto": "Ceramide Ato Concentrate Cream",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1135298702"
+    },
+    {
+     "marca": "Dr.Jart+",
+     "producto": "Ceramidin Skin Barrier Moisturizing Cream",
+     "nivel_precio": 2,
+     "nivel_precio_texto": "Precio medio",
+     "etiquetas": [
+      "coreana"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1123469827"
     }
    ]
   },
@@ -407,6 +548,21 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
      "yesstyle_pid": "1086574613"
+    },
+    {
+     "marca": "The Ordinary",
+     "producto": "Rice Lipids + Ectoin Microemulsion",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": "B0G85RRNY8",
+     "amazon_us_asin": "B0G85RRNY8",
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": null
     }
    ]
   },
@@ -444,6 +600,53 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
      "yesstyle_pid": null
+    },
+    {
+     "marca": "ISDIN",
+     "producto": "Fusion Water MAGIC SPF50",
+     "nivel_precio": 2,
+     "nivel_precio_texto": "Precio medio",
+     "etiquetas": [
+      "farmacia"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": "B00Z72U6JQ",
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": "ISDIN Fusion Water Magic SPF 50",
+     "yesstyle_pid": null
+    },
+    {
+     "marca": "SKIN1004",
+     "producto": "Madagascar Centella Hyalu-Cica Water-Fit Sun Serum SPF50+",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1113888108"
+    },
+    {
+     "marca": "Round Lab",
+     "producto": "Birch Juice Moisturizing Sunscreen SPF50+",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1122974582"
     }
    ]
   },
@@ -479,6 +682,21 @@
      "amazon_es_asin": "B09SLGZDXH",
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
+     "yesstyle_pid": null
+    },
+    {
+     "marca": "ISDIN",
+     "producto": "Fusion Water MAGIC Color Medium SPF50",
+     "nivel_precio": 2,
+     "nivel_precio_texto": "Precio medio",
+     "etiquetas": [
+      "farmacia"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": "B07B9KD2JF",
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": "ISDIN Fusion Water Color SPF 50 Medium",
      "yesstyle_pid": null
     }
    ]
@@ -568,6 +786,38 @@
      "amazon_us_asin": "B00V4PNAI4",
      "amazon_us_busqueda": null,
      "yesstyle_pid": null
+    },
+    {
+     "marca": "Anua",
+     "producto": "Azelaic Acid 10 Hyaluron Redness Soothing Serum",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1132449411"
+    },
+    {
+     "marca": "NINELESS",
+     "producto": "A-Control 10% Azelaic Acid Serum",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1137753389"
     }
    ]
   },
@@ -620,6 +870,53 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
      "yesstyle_pid": null
+    },
+    {
+     "marca": "Paula's Choice",
+     "producto": "CLINICAL Discoloration Repair Serum (ácido tranexámico 3 % + niacinamida 5 %)",
+     "nivel_precio": 3,
+     "nivel_precio_texto": "Premium",
+     "etiquetas": [
+      "alta_gama"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": "B09H7KRDFR",
+     "amazon_us_asin": "B092397B3V",
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": null
+    },
+    {
+     "marca": "Anua",
+     "producto": "Niacinamide 10 + TXA 4 Serum (ácido tranexámico)",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1132942898"
+    },
+    {
+     "marca": "Cos De BAHA",
+     "producto": "TT Tranexamic Acid 10 Serum (ácido tranexámico)",
+     "nivel_precio": 1,
+     "nivel_precio_texto": "Económico",
+     "etiquetas": [
+      "coreana",
+      "low_cost"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "yesstyle",
+     "amazon_es_asin": null,
+     "amazon_us_asin": null,
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": "1127672081"
     }
    ]
   },
@@ -677,7 +974,11 @@
      "amazon_es_asin": "B09N6Z61GL",
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
-     "yesstyle_pid": null
+     "yesstyle_pid": null,
+     "preocupaciones": [
+      "bolsas",
+      "ojeras"
+     ]
     },
     {
      "marca": "Beauty of Joseon",
@@ -692,7 +993,48 @@
      "amazon_es_asin": null,
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
-     "yesstyle_pid": "1114255822"
+     "yesstyle_pid": "1114255822",
+     "preocupaciones": [
+      "lineas"
+     ]
+    },
+    {
+     "marca": "ISDIN",
+     "producto": "Isdinceutics K-Ox Eyes",
+     "nivel_precio": 2,
+     "nivel_precio_texto": "Precio medio",
+     "etiquetas": [
+      "farmacia"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": "B01BMLQ4JQ",
+     "amazon_us_asin": "B01BMLQ4JQ",
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": null,
+     "preocupaciones": [
+      "ojeras",
+      "bolsas"
+     ]
+    },
+    {
+     "marca": "Elizabeth Arden",
+     "producto": "Advanced Ceramide Capsules Daily Youth Restoring Eye Serum",
+     "nivel_precio": 3,
+     "nivel_precio_texto": "Premium",
+     "etiquetas": [
+      "alta_gama"
+     ],
+     "contiene_retinoide": false,
+     "tienda": "amazon",
+     "amazon_es_asin": "B00A0JWAUE",
+     "amazon_us_asin": "B072C3KZ48",
+     "amazon_us_busqueda": null,
+     "yesstyle_pid": null,
+     "preocupaciones": [
+      "lineas",
+      "bolsas"
+     ]
     }
    ]
   },
@@ -710,8 +1052,8 @@
      ],
      "contiene_retinoide": false,
      "tienda": "amazon",
-     "amazon_es_asin": null,
-     "amazon_us_asin": null,
+     "amazon_es_asin": "B071914GGL",
+     "amazon_us_asin": "B071914GGL",
      "amazon_us_busqueda": "The Ordinary Glycolic Acid 7% Exfoliating Toner",
      "yesstyle_pid": null
     },
@@ -730,21 +1072,6 @@
      "amazon_us_asin": null,
      "amazon_us_busqueda": null,
      "yesstyle_pid": "1052684699"
-    },
-    {
-     "marca": "Pixi",
-     "producto": "Glow Tonic (ácido glicólico 5 %)",
-     "nivel_precio": 2,
-     "nivel_precio_texto": "Precio medio",
-     "etiquetas": [
-      "lleva_perfume"
-     ],
-     "contiene_retinoide": false,
-     "tienda": "amazon",
-     "amazon_es_asin": null,
-     "amazon_us_asin": null,
-     "amazon_us_busqueda": "Pixi Glow Tonic 5% Glycolic Acid",
-     "yesstyle_pid": null
     }
    ]
   }

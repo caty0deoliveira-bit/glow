@@ -119,3 +119,6 @@ La primera pregunta es `sexo` (Mujer, Hombre, Prefiero no decirlo). Las pregunta
 
 ## Cambio 27/11/2026: afeitado (solo hombres)
 Preguntas `afeitado` y `trasafeitado` con `solo_si_estricto` (solo se muestran si la condición está respondida y coincide). Motor: consejo de afeitado en `am1`, paso `am1b` «Después del afeitado» (categoría `barrera`) si hay ardor, rojez o tirantez, paso `pm3b` «Exfoliante para la barba» (categoría `glicolico`, nunca con isotretinoína ni la misma noche que el retinoide o el salicílico) si hay granitos o pelos enquistados, alerta de dermatólogo y láser, y alerta de melanoma para hombres de 40 o más. Aprobado por Caty con las referencias de `evidencia.json`.
+
+### Cambio 27/11/2026: catálogo ampliado
+A petición de Caty se añadieron limpiadores, sérums de ceramidas y ectoína, hidratantes con ceramidas, protectores, azelaicos coreanos, sérums con ácido tranexámico (dentro del paso despigmentante, cuyo texto ya los menciona) y contornos de ojos. Se quitó Pixi. Los contornos llevan el campo `preocupaciones` (ojeras, bolsas, líneas) y la selección prioriza los que coinciden con la usuaria; las líneas cuentan si su perfil es de envejecimiento. No cambia ningún texto de salud ni ninguna recomendación.

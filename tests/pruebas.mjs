@@ -85,7 +85,7 @@ const res7=await pg.evaluate(()=>{
  out.push(['Con retinoide: el glicólico va en otra noche',P.pm.some(x=>x.cat==='retinoide')&&g.t.includes('Nunca la misma noche')]);
  out.push(['Pelos enquistados: alerta de dermatólogo y láser',P.al.some(a=>a.t.includes('depilación láser'))]);
  P=hombre(['Granitos o pelos enquistados'],()=>{S.a.extra=[lab('extra','Sin perfume')]});
- out.push(['«Sin perfume»: nunca recomienda Pixi (lleva perfume)',!P.pm.find(x=>x.id==='pm3b').pk.some(p=>/Pixi/.test(p.b))]);
+ out.push(['Glicólico: Pixi ya no está y The Ordinary va con enlace directo de Amazon',!prodList('glicolico').some(p=>/Pixi/.test(p.b))&&P.pm.find(x=>x.id==='pm3b').pk.every(p=>p.lk.direct)]);
  P=hombre(['Granitos o pelos enquistados'],()=>{S.a.trat=[lab('trat','Isotretinoína oral')]});
  out.push(['Isotretinoína: sin glicólico y aviso',!P.pm.some(x=>x.cat==='glicolico')&&P.al.some(a=>a.t.includes('isotretinoína'))]);
  P=hombre([]);out.push(['Hombre de 47: alerta de revisión de lunares',P.al.some(a=>a.t.includes('melanoma'))]);
@@ -94,6 +94,31 @@ const res7=await pg.evaluate(()=>{
  out.push(['Respuestas de afeitado sin ser hombre: no cambian la rutina',!P.pm.some(x=>x.id==='pm3b')]);
  S=fresh();render();return out});
 for(const [n,o] of res7){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
+
+// ---------- Catálogo ampliado (27/11/2026) ----------
+const res8=await pg.evaluate(()=>{
+ const out=[];const lab=(id,l)=>qq(id).o.indexOf(l);
+ const todos=Object.keys(CAT).flatMap(c=>prodList(c));
+ out.push(['Catálogo: ningún producto de marcas excluidas',!Object.values(CAT).flat().some(([b])=>/freshly|cocunat/i.test(b))]);
+ out.push(['Catálogo: todos los enlaces llevan el código de afiliada',['es','us'].every(m=>todos.every(p=>{const l=link(p,m).url;return l.includes('rco=CATYSKIN1')||l.includes('tag=caterinedeoli-2')}))]);
+ const n=c=>prodList(c).length;
+ out.push(['Más limpiadores (gel, suave y primera limpieza)',n('limpGel')>=3&&n('limpCrema')>=3&&n('balsamo')>=4]);
+ out.push(['Barrera: The Ordinary y Elizabeth Arden Ceramide',prodList('barrera').some(p=>/Soothing & Barrier/.test(p.n))&&prodList('barrera').some(p=>p.b==='Elizabeth Arden')]);
+ out.push(['Hidratante rica: Aestura 365 y dos más con ceramidas',prodList('hidraRica').some(p=>/Atobarrier 365/.test(p.n))&&n('hidraRica')>=5]);
+ out.push(['Protectores: al menos 5 sin color y 3 con color',n('spf')>=5&&n('spfColor')>=3]);
+ out.push(['Azelaico: hay opciones coreanas',prodList('azelaico').filter(p=>p.c.includes('co')).length>=2]);
+ out.push(['Despigmentante: hay ácido tranexámico',prodList('despig').filter(p=>/tranex/i.test(p.n)).length>=3]);
+ const contorno=(estados,extra)=>{loadSample();S.a.pasos=2;S.a.estado=estados.map(e=>lab('estado',e));S.a.meta=[];if(extra)extra();return plan().pm.find(x=>x.id==='pm4')};
+ let c=contorno(['Ojeras o bolsas']);
+ out.push(['Contorno por ojeras/bolsas: la primera opción es para ojeras o bolsas',!!c&&c.pk.length===2&&c.pk[0].pq.some(x=>x==='ojeras'||x==='bolsas')]);
+ c=contorno(['Ojeras o bolsas','Líneas finas'],()=>{S.a.pres=3});
+ out.push(['Contorno con líneas finas: incluye uno para líneas',!!c&&c.pk.some(p=>p.pq.includes('lineas'))]);
+ c=contorno(['Ojeras o bolsas','Líneas finas'],()=>{S.a.fase=lab('fase','Embarazo')});
+ out.push(['Contorno en embarazo: nunca el de retinal',!!c&&c.pk.length>0&&!c.pk.some(p=>p.ret)]);
+ loadSample();S.a.fase=lab('fase','Lactancia');const P=plan();
+ out.push(['Lactancia: ningún producto con retinoide en toda la rutina',[...P.am,...P.pm].every(s=>s.pk.every(p=>!p.ret))]);
+ S=fresh();render();return out});
+for(const [n,o] of res8){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
 
 // ---------- Fase 2: pagos y bloqueo ----------
 const UID='11111111-2222-4333-8444-555555555555';
