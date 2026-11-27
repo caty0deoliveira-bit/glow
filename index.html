@@ -354,6 +354,7 @@ async function syncPlan(){
   const nv=act.some(x=>!x.vence)?null:(inv.length?inv[inv.length-1]:null);
   const cambio=np!==S.plan||nv!==(S.vence||null);S.plan=np;S.vence=nv;save();return cambio;
  }catch(e){return false}}
+const tester=()=>!!S.inv&&!!S.vence&&paid(); /* amiga con invitación activa: nunca ve botones de pago */
 const fecha=t=>new Date(t).toLocaleDateString('es-ES',{day:'numeric',month:'long'});
 async function canjear(cod){
  if(!navigator.onLine){toast('Conéctate a internet para activar tu invitación.');return}
@@ -708,6 +709,8 @@ function botReply(k){
  else if(k==='precio')B('Empieza por lo que más impacto tiene: protector solar y limpiador. En cada paso, la primera opción es la que mejor encaja con tu presupuesto.',[['Ver mi rutina','gorut']]);
  else if(k==='envio')B(`YesStyle envía a casi todos los países. Usa el código ${YS_CODE} al pagar.`,[['Ver mi rutina','gorut']]);
  else if(k==='elegir')B('Elige la primera opción de cada paso: es la que mejor encaja con tu perfil y tu presupuesto.',[['Ver mi rutina','gorut'],['Tengo una duda','duda']]);
+ else if(k==='duda'&&tester())B('Durante tu prueba, cuéntale tus dudas e ideas a Caty con «Dar mi opinión». Las lee todas.',[['Dar mi opinión','goop']]);
+ else if(k==='goop'){return opinionSheet()}
  else if(k==='duda'){if(S.plan==='caty')B('Escríbele tu duda a Caty y te responderá en menos de 48 h.',[['Escribir a Caty','gochat']]);else B('Tu plan no incluye chat con Caty. Si quieres escribirle, puedes pasarte a Glow con Caty.',[['Ver planes','goplans']])}
  else if(k==='gorut'){S.tab='rutina';return go()}
  else if(k==='gochat'){S.seg='caty';return go(true)}
@@ -733,7 +736,7 @@ ${last.o?`<div class="qr">${last.o.map(([l,k])=>`<button data-act="bot" data-arg
  }
  const sess='';
  if(S.plan!=='caty')return`<h1 class="page-title">Mensajes</h1>${seg}
-<section class="card glass lockhero">${I.lock}<h2>Escríbele a Caty</h2><p class="fine">Con Glow con Caty le escribes directamente y te responde en menos de 48 h. Hasta ${MSG_LIMIT} mensajes al mes.</p><button class="btn" data-act="buy" data-arg="caty">Pasarme a Glow con Caty</button></section>${sess}`;
+<section class="card glass lockhero">${I.lock}<h2>Escríbele a Caty</h2><p class="fine">Con Glow con Caty le escribes directamente y te responde en menos de 48 h. Hasta ${MSG_LIMIT} mensajes al mes.</p>${tester()?'<p class="fine">El chat con Caty no forma parte de esta prueba. Si tienes dudas o ideas, cuéntaselas en «Dar mi opinión».</p><button class="btn ghost" data-act="opinion">Dar mi opinión</button>':'<button class="btn" data-act="buy" data-arg="caty">Pasarme a Glow con Caty</button>'}</section>${sess}`;
  if(!CHAT_LISTO)return`<h1 class="page-title">Mensajes</h1>${seg}
 <section class="card glass empty">${I.msg}<h2>Tu chat con Caty se abre en unos días</h2><p class="fine">Estamos terminando de prepararlo. Te avisaremos aquí. Te responderá en menos de 48 h, hasta ${MSG_LIMIT} mensajes al mes.</p></section>`;
  const used=S.chat.filter(m=>m.f==='me').length,left=Math.max(0,MSG_LIMIT-used);
@@ -750,7 +753,7 @@ function vAj(){
  return`<h1 class="page-title">Ajustes</h1>
 ${TEST_MODE?`<section class="card glass"><h2>Versión de prueba</h2><p class="fine" style="margin-bottom:14px">Todo está desbloqueado para probar.</p><div class="stack"><button class="btn ghost" data-act="test2d">Probar el asistente: simular que pasaron 2 días</button></div></section>`:''}
 ${S.vence?`<section class="card glass"><h2>Tu plan</h2><dl class="kv" style="margin-bottom:14px"><dt>Plan actual</dt><dd>${paid()?'Glow Esencial (invitación)':'Gratis'}</dd><dt>${paid()?'Gratis hasta el':'Tu prueba terminó el'}</dt><dd>${fecha(S.vence)}</dd></dl>
- <div class="stack"><button class="btn${paid()?' ghost':''}" data-act="plans">${paid()?'Ver planes para seguir después':'Elegir un plan'}</button><button class="btn ghost" data-act="sync">Ya pagué: actualizar mi plan</button></div></section>`:`<section class="card glass"><h2>Tu plan</h2><dl class="kv" style="margin-bottom:14px"><dt>Plan actual</dt><dd>${pl?pl.n:'Gratis'}</dd>${pl?`<dt>Precio</dt><dd>${pl.p} € al mes</dd>`:''}</dl>
+ ${paid()?'<p class="fine">Durante tu prueba no tienes que pagar nada.</p>':'<div class="stack"><button class="btn" data-act="plans">Elegir un plan</button><button class="btn ghost" data-act="sync">Ya pagué: actualizar mi plan</button></div>'}</section>`:`<section class="card glass"><h2>Tu plan</h2><dl class="kv" style="margin-bottom:14px"><dt>Plan actual</dt><dd>${pl?pl.n:'Gratis'}</dd>${pl?`<dt>Precio</dt><dd>${pl.p} € al mes</dd>`:''}</dl>
  <div class="stack">${pl?'<button class="btn ghost" data-act="portal">Gestionar o cancelar mi suscripción</button>':'<button class="btn" data-act="plans">Ver planes</button>'}${S.plan==='esencial'?'<button class="btn ghost" data-act="buy" data-arg="caty">Pasarme a Glow con Caty</button>':''}<button class="btn ghost" data-act="sync">Ya pagué: actualizar mi plan</button></div>
  ${pl?'<p class="fine" style="margin-top:12px">Para gestionar tu suscripción, entra con el email con el que pagaste.</p>':''}</section>`}
 ${S.inv?`<section class="card glass"><h2>Tu opinión</h2><p class="fine" style="margin-bottom:14px">Cuéntale a Caty qué mejorarías de Glow.</p><button class="btn ghost" data-act="opinion">${S.opEnviada?'Enviar otra opinión':'Dar mi opinión'}</button></section>`:''}
@@ -807,7 +810,7 @@ function closeSheet(){$('#sheet').hidden=true;$('#sheet').innerHTML=''}
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet()});
 let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2800)}
 let nt;function notify(){const n=$('#notif');n.innerHTML=`<span class="ic">${I.bell}</span><span><b>Asistente de Caty</b><span>¿Pudiste conseguir tus productos?</span></span>`;n.hidden=false;clearTimeout(nt);nt=setTimeout(()=>n.hidden=true,5000)}
-function plansSheet(){sheet(`<h2>Elige tu plan</h2><p>Desbloquea tu rutina, tus productos y el seguimiento.</p>${plansHtml()}`)}
+function plansSheet(){if(tester()){toast('Durante tu prueba no tienes que pagar nada.');return}sheet(`<h2>Elige tu plan</h2><p>Desbloquea tu rutina, tus productos y el seguimiento.</p>${plansHtml()}`)}
 function paySheet(k){
  const name=PLANS[k].n,price=PLANS[k].p+' € al mes';
  sheet(`<h2>${name}</h2><p>Pago simulado en el prototipo. En la app real se abre el pago seguro de Stripe.</p>
@@ -858,6 +861,7 @@ const ACT={
  copycode(){const done=()=>toast(`Código ${YS_CODE} copiado. Pégalo al pagar en YesStyle.`);try{navigator.clipboard.writeText(YS_CODE).then(done,()=>toast(`Tu código: ${YS_CODE}`))}catch(e){toast(`Tu código: ${YS_CODE}`)}},
  plans(){plansSheet()},
  buy(k){
+  if(tester()){toast('Durante tu prueba no tienes que pagar nada.');return}
   if(!navigator.onLine){toast('Necesitas conexión a internet para pagar.');return}
   if(k==='caty'&&S.plan==='esencial'){sheet(`<h2>Pasarte a Glow con Caty</h2><p>Se abre el pago de Glow con Caty (15 € al mes). Después, cancela Glow Esencial en «Gestionar o cancelar mi suscripción» para no pagar los dos.</p><div class="stack"><button class="btn" data-act="gopay" data-arg="caty">Continuar al pago</button><button class="btn ghost" data-act="close">Volver</button></div>`);return}
   ACT.gopay(k)},

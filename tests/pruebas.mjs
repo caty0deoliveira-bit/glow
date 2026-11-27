@@ -80,6 +80,7 @@ res3.push(['Mi piel muestra la tarjeta de opinión',await pg.evaluate(()=>{S.tab
 await pg.click('[data-act="opinion"]');await pg.click('[data-act="rate"][data-arg="general:5"]');await pg.click('[data-act="rate"][data-arg="asistente:4"]');
 await pg.fill('#opTxt','Me encantó el cuestionario');await pg.click('[data-act="sendop"]');await pg.waitForTimeout(800);
 res3.push(['Opinión enviada con puntuaciones y texto',!!opinion&&opinion.general===5&&opinion.asistente===4&&opinion.texto==='Me encantó el cuestionario']);
+res3.push(['Amiga en prueba: sin botones de pago en ninguna pestaña',await pg.evaluate(()=>{for(const t of ['piel','sim','rutina','msgs','aj']){S.tab=t;S.seg='caty';render(true);if(document.querySelector('[data-act="buy"],[data-act="plans"],[data-act="portal"]'))return false}return true})]);
 res3.push(['Invitación caducada: vuelve a bloquear',await pg.evaluate(()=>{S.vence=new Date(Date.now()-1000).toISOString();return !paid()})]);
 for(const [n,o] of res3){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
 await pg.unrouteAll({behavior:'ignoreErrors'});
