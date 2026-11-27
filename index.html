@@ -355,6 +355,73 @@ async function syncPlan(){
   const cambio=np!==S.plan||nv!==(S.vence||null);S.plan=np;S.vence=nv;save();return cambio;
  }catch(e){return false}}
 const tester=()=>!!S.inv&&!!S.vence&&paid(); /* amiga con invitación activa: nunca ve botones de pago */
+const VER='1.3';
+/* ---------- Contador anónimo de uso ----------
+   Solo pasos de la app (nunca respuestas, fotos ni datos de piel). Id aleatorio del móvil, sin cookies. */
+const DISP=(()=>{try{let d=localStorage.getItem('glow.disp');if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2));localStorage.setItem('glow.disp',d)}return d}catch(e){return 'sin-id'}})();
+let colaEv=[];try{colaEv=JSON.parse(localStorage.getItem('glow.cola'))||[]}catch(e){}
+let trackT;
+function guardaCola(){try{localStorage.setItem('glow.cola',JSON.stringify(colaEv.slice(-300)))}catch(e){}}
+function track(ev,dato){
+ colaEv.push({disp:DISP,evento:ev,dato:dato==null?null:String(dato).slice(0,60),plan:['esencial','caty'].includes(S.plan)?S.plan:'free',prueba:!!S.inv,version:VER});
+ guardaCola();clearTimeout(trackT);trackT=setTimeout(enviaUso,3000)}
+async function enviaUso(fin){
+ if(!colaEv.length||!navigator.onLine)return;
+ const lote=colaEv.splice(0,100);guardaCola();
+ try{const r=await fetch(SB_URL+'/rest/v1/eventos_uso',{method:'POST',keepalive:!!fin,headers:{apikey:SB_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(lote)});
+  if(r.status>=500)throw 0}catch(e){colaEv=lote.concat(colaEv);guardaCola()}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)enviaUso(true)});
+
+/* ---------- Avisos push ---------- */
+const esIOS=/iP(hone|ad|od)/.test(navigator.userAgent);
+const instalada=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const pushPosible=()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+function b64aBytes(t){const r=(t+'='.repeat((4-t.length%4)%4)).replace(/-/g,'+').replace(/_/g,'/');return Uint8Array.from(atob(r),c=>c.charCodeAt(0))}
+async function rpc(nombre,args){const s=await sesion(true);const r=await fetch(SB_URL+'/rest/v1/rpc/'+nombre,{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+s.at,'Content-Type':'application/json'},body:JSON.stringify(args||{})});const j=await r.json().catch(()=>null);if(!r.ok)throw new Error((j&&j.message)||('rpc '+r.status));return j}
+async function guardarAviso(sub){const j=sub.toJSON();await rpc('guardar_aviso',{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_bot_en:S.rutinaAt&&!S.botOn?new Date(S.rutinaAt+DOS_DIAS).toISOString():null})}
+async function activarAvisos(){
+ if(!pushPosible()){toast(esIOS&&!instalada()?'En iPhone, primero añade Glow a tu pantalla de inicio y ábrela desde ahí.':'Este navegador no permite avisos.');return false}
+ if(!navigator.onLine){toast('Necesitas conexión a internet.');return false}
+ try{
+  const perm=await Notification.requestPermission();
+  if(perm!=='granted'){track('avisos_no');toast('Sin permiso no podemos avisarte. Puedes cambiarlo en los ajustes del móvil.');return false}
+  const reg=await navigator.serviceWorker.ready;
+  let sub=await reg.pushManager.getSubscription();
+  if(!sub){const {publicKey}=await (await fetch(SB_URL+'/functions/v1/avisos')).json();sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64aBytes(publicKey)})}
+  await guardarAviso(sub);S.avisos=true;save();track('avisos_si');toast('Listo: te avisaremos en este móvil.');return true;
+ }catch(e){toast('No pudimos activar los avisos. Inténtalo de nuevo.');return false}}
+async function actualizarAviso(){try{if(!S.avisos||!pushPosible()||!navigator.onLine)return;const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(sub)await guardarAviso(sub)}catch(e){}}
+
+/* ---------- Perfil compartido con Caty (solo con consentimiento) ---------- */
+function resumenPerfil(){
+ if(!Object.keys(S.a).length)return null;
+ try{const P=plan(),o=id=>{try{return one(id)}catch(e){return null}},m=id=>{try{return many(id)}catch(e){return[]}};
+  return{tipo_baumann:P.A.map(x=>x.L).join(''),edad:S.a.edad||null,pais:o('pais'),etapa:o('fase'),fototipo:S.a.foto!=null?['I','II','III','IV','V','VI'][S.a.foto]:null,
+   estado_piel:m('estado'),objetivos:m('meta'),plazo:o('plazo'),enfermedades_piel:m('enf'),tratamientos:m('trat'),medicamentos:m('med'),ultima_visita_dermatologo:o('derm'),
+   alergias:S.a.alerg||'',productos_actuales:m('prod'),otros_productos:S.a.prodtxt||'',habitos:{sol:o('sol'),sueno:o('sueno'),estres:o('estres'),tabaco:o('tabaco'),clima:o('clima')},
+   cosmetica:m('cos'),presupuesto:o('pres'),pasos:o('pasos'),preferencias:m('extra'),rutina:{manana:P.am.map(x=>x.p),noche:P.pm.map(x=>x.p)}}}catch(e){return null}}
+async function compartirPerfil(){
+ const s=await sesion(true);
+ await fetch(SB_URL+'/rest/v1/perfiles?on_conflict=user_id',{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+s.at,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},
+  body:JSON.stringify({user_id:s.uid,alias:(S.alias||'').slice(0,40)||null,resumen:resumenPerfil(),actualizado:new Date().toISOString()})})}
+async function dejarDeCompartir(){const s=await sesion(true);await fetch(SB_URL+'/rest/v1/perfiles?user_id=eq.'+s.uid,{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+s.at}})}
+
+/* ---------- Chat con Caty ---------- */
+async function cargarChat(){
+ if(!C||!navigator.onLine||S.plan!=='caty')return false;
+ try{const s=await sesion(false);if(!s)return false;
+  const r=await fetch(SB_URL+'/rest/v1/mensajes?select=id,de,texto,creado,leido&order=creado.asc',{headers:{apikey:SB_KEY,Authorization:'Bearer '+s.at}});
+  if(!r.ok)return false;const rows=await r.json();
+  const mes=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Madrid',year:'numeric',month:'2-digit'}).format(new Date());
+  const enMes=t=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Madrid',year:'numeric',month:'2-digit'}).format(new Date(t))===mes;
+  const antes=(S.chat||[]).length;
+  S.chat=rows.map(m=>({f:m.de==='caty'?'caty':'me',t:m.texto,c:m.creado}));S.chatUsados=rows.filter(m=>m.de==='usuaria'&&enMes(m.creado)).length;
+  const nuevas=rows.some(m=>m.de==='caty'&&!m.leido);
+  if(nuevas){if(S.screen==='app'&&S.tab==='msgs'&&S.seg==='caty'&&!document.hidden){rpc('marcar_leidos',{}).catch(()=>{})}else S.seen=false}
+  save();return S.chat.length!==antes||nuevas;
+ }catch(e){return false}}
+setInterval(()=>{if(!document.hidden&&S.plan==='caty'&&S.screen==='app'&&S.tab==='msgs'&&S.seg==='caty')cargarChat().then(c=>{if(c)render(true)})},20000);
+
 const fecha=t=>new Date(t).toLocaleDateString('es-ES',{day:'numeric',month:'long'});
 async function canjear(cod){
  if(!navigator.onLine){toast('Conéctate a internet para activar tu invitación.');return}
@@ -363,7 +430,7 @@ async function canjear(cod){
   const r=await fetch(SB_URL+'/rest/v1/rpc/canjear_invitacion',{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+s.at,'Content-Type':'application/json'},body:JSON.stringify({p_codigo:cod})});
   const j=await r.json().catch(()=>null);S.invPend=null;
   if(!r.ok){const m=(j&&j.message)||'';save();toast(m.includes('caducada')?'Esta invitación ya caducó.':m.includes('agotada')?'Esta invitación ya se usó todas las veces.':'Esta invitación no es válida.');return}
-  S.inv=true;await syncPlan();save();render(true);
+  S.inv=true;await syncPlan();save();render(true);track('invitacion');
   toast(S.vence?`¡Bienvenida! Tienes Glow Esencial gratis hasta el ${fecha(S.vence)}`:'¡Bienvenida a Glow!');
  }catch(e){toast('No pudimos activar tu invitación. Vuelve a abrir el enlace en un momento.')}}
 const OPS=[['general','Glow en general'],['cuestionario','El cuestionario'],['rutina','La rutina y los productos'],['asistente','El asistente']];
@@ -376,7 +443,7 @@ ${OPS.map(([k,l])=>`<div class="oprow"><span>${l}</span><div class="opstars" rol
 function invCard(){return S.inv?`<section class="card glass"><h2>Estás probando Glow</h2><p class="fine" style="margin-bottom:14px">${paid()&&S.vence?`Tienes Glow Esencial gratis hasta el ${fecha(S.vence)}. `:''}Caty quiere saber qué te parece: qué te gusta, qué cambiarías y cómo te funciona el asistente (te escribe 2 días después de ver tu rutina).</p><button class="btn" data-act="opinion">${S.opEnviada?'Enviar otra opinión':'Dar mi opinión'}</button></section>`:''}
 async function esperarPago(k){
  for(let i=0;i<25;i++){await new Promise(r=>setTimeout(r,i?3000:800));await syncPlan();
-  if(S.plan!=='free'){S.screen=Object.keys(S.a).length?'app':S.screen;if(S.screen==='app')S.tab='rutina';go();toast(`¡Gracias! Ya tienes ${PLANS[S.plan].n}`);return}}
+  if(S.plan!=='free'){S.screen=Object.keys(S.a).length?'app':S.screen;if(S.screen==='app')S.tab='rutina';go();toast(`¡Gracias! Ya tienes ${PLANS[S.plan].n}`);track('pago_ok',S.plan);return}}
  toast('Tu pago se está procesando. En unos minutos toca «Ya pagué: actualizar mi plan» en Ajustes.')}
 const AMZ={es:{host:'www.amazon.es',tag:'caterinedeoli-21',name:'Amazon España'},us:{host:'www.amazon.com',tag:'caterinedeoli-20',name:'Amazon EE. UU.'}}, YS_CODE='CATYSKIN1';
 const MSG_LIMIT=10;
@@ -541,6 +608,7 @@ function samplePhoto(){
 
 /* ---------- Datos de ejemplo ---------- */
 function loadSample(planName){
+ const keep={plan:S.plan,vence:S.vence,inv:S.inv,avisos:S.avisos,perfilOk:S.perfilOk,alias:S.alias};
  S=fresh();S.sample=true;
  const set=(id,lab)=>{S.a[id]=qq(id).o.indexOf(lab)};
  const setm=(id,labs)=>{S.a[id]=labs.map(l=>qq(id).o.indexOf(l))};
@@ -554,6 +622,7 @@ function loadSample(planName){
  setm('cos',['Farmacia y dermocosmética','Coreana']);S.a.pres=1;S.a.pasos=1;setm('extra',['Sin perfume']);
  S.ph.frontal=samplePhoto();
  S.plan=planName||'free';S.screen='app';S.tab='piel';
+ if(!planName){Object.assign(S,keep);S.plan=keep.plan||'free'}
 }
 
 /* ---------- Iconos ---------- */
@@ -667,20 +736,20 @@ function vSim(){
 <div class="stack"><label class="btn ghost" style="cursor:pointer">Cambiar foto<input type="file" accept="image/*" hidden data-slot="${S.slot}"></label>
 <button class="btn ghost" data-act="rmphoto">Borrar esta foto</button></div>`}
 
-function prodCard(p){
+function prodCard(p,i,sid){
  const lk=p.lk,pais=one('pais'),intl=lk.store==='Amazon EE. UU.'&&pais&&pais!=='Estados Unidos';
  return`<div class="prod"><span class="pb">${esc(p.b)}</span><span class="pn">${esc(p.n)}</span>
- <a class="buy" href="${lk.url}" target="_blank" rel="noopener sponsored">${lk.direct?'Comprar':'Buscar'}</a>
+ <a class="buy" href="${lk.url}" target="_blank" rel="noopener sponsored" data-ev="${sid||''}:${lk.store}:${(i||0)+1}">${lk.direct?'Comprar':'Buscar'}</a>
  <span class="pm"><span class="store">${lk.store}</span>${TIERN[p.t]}${p.st==='y'?` <button class="code-chip" data-act="copycode" aria-label="Copiar código ${YS_CODE}">Código ${YS_CODE}</button>`:''}${intl?' <span>Envío internacional</span>':''}${lk.direct?'':' <span>Enlace directo pendiente</span>'}</span></div>`}
 
 function vRut(P){
- if(paid()&&!S.rutinaAt){S.rutinaAt=Date.now();save()}
+ if(paid()&&!S.rutinaAt){S.rutinaAt=Date.now();save();actualizarAviso()}
  if(!paid())return`<h1 class="page-title">Tu rutina</h1>
 <section class="card glass lockhero">${I.lock}<h2>Tu rutina está lista</h2>
  <div class="stat"><div><b>${P.am.length}</b><small>pasos de mañana</small></div><div><b>${P.pm.length}</b><small>pasos de noche</small></div><div><b>${P.nProd}</b><small>productos</small></div></div>
  <p class="fine">Elige un plan para ver tu rutina completa, los productos que Caty recomienda para ti y el seguimiento.</p></section>${plansHtml()}`;
  const L=(a)=>`<ol class="steps">${a.map((s,i)=>`<li><span class="n ${S.have[s.id]?'done':''}">${i+1}</span><div><b class="st">${s.p}</b><p>${s.t}</p><span class="why">${s.w}${ev(s.ev)}</span>
- ${s.pk.length?`<div class="prods">${s.pk.map(prodCard).join('')}</div><button class="have" aria-pressed="${!!S.have[s.id]}" data-act="have" data-arg="${s.id}">${S.have[s.id]?'Ya lo tengo':'Marcar como conseguido'}</button>`:''}</div></li>`).join('')}</ol>`;
+ ${s.pk.length?`<div class="prods">${s.pk.map((p,i)=>prodCard(p,i,s.id)).join('')}</div><button class="have" aria-pressed="${!!S.have[s.id]}" data-act="have" data-arg="${s.id}">${S.have[s.id]?'Ya lo tengo':'Marcar como conseguido'}</button>`:''}</div></li>`).join('')}</ol>`;
  return`<h1 class="page-title">Tu rutina</h1>
 <div class="signoff">${avatar}<p>Rutina creada para tu piel ${P.A.map(x=>x.L).join('')} con el método de Caty De Oliveira, farmacéutica.</p></div>
 <section class="card glass"><div class="rhead"><h2>Mañana</h2><small>${P.am.length} pasos</small></div>${L(P.am)}</section>
@@ -692,6 +761,7 @@ ${P.ret?`<section class="card glass"><h2>Cómo introducir tu retinoide</h2><ol c
  ${S.a.alerg?`<p class="fine" style="margin-top:12px">Revisa que tus productos no lleven lo que no toleras: ${esc(S.a.alerg)}</p>`:''}</section>
 <section class="card glass"><h2>Para tener en cuenta</h2><div class="alerts">${P.al.map(a=>`<div class="alert ${a.w?'warn':''}"><span>${a.t}${ev(a.ev)}</span></div>`).join('')}</div></section>
 <p class="fine" style="margin-bottom:10px">Introduce un producto nuevo cada 2 semanas y pruébalo antes en una zona pequeña, como detrás de la oreja.</p>
+${!S.avisos&&!S.botOn?`<section class="card glass"><h2>¿Te avisamos?</h2><p class="fine" style="margin-bottom:14px">En 2 días el asistente de Caty te escribirá para ver cómo vas con tus productos.${esIOS&&!instalada()?' En iPhone, primero añade Glow a tu pantalla de inicio (Compartir, Añadir a pantalla de inicio) y ábrela desde ahí.':''}</p><button class="btn ghost" data-act="avisos">Activar avisos</button></section>`:''}
 <p class="fine">En calidad de Afiliada de Amazon, Caty obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. Los enlaces de YesStyle también son de afiliada.</p>`}
 
 /* ---------- Mensajes: asistente y chat con Caty ---------- */
@@ -718,9 +788,9 @@ function botReply(k){
  else if(k==='gosession'){return ACT.session()}
  go(true);
 }
-const CHAT_LISTO=false; /* Fase 3 */
+const CHAT_LISTO=true;
 const DOS_DIAS=2*24*60*60*1000;
-function checkBot(){if(paid()&&S.rutinaAt&&!S.botOn&&Date.now()-S.rutinaAt>=DOS_DIAS){botStart();save();return true}return false}
+function checkBot(){if(paid()&&S.rutinaAt&&!S.botOn&&Date.now()-S.rutinaAt>=DOS_DIAS){botStart();save();track('asistente_inicio');if(S.avisos&&C)rpc('bot_visto',{}).catch(()=>{});return true}return false}
 function vMsgs(){
  const seg=`<div class="seg glass" role="group" aria-label="Conversación"><button aria-pressed="${S.seg==='bot'}" data-act="seg" data-arg="bot">Asistente</button><button aria-pressed="${S.seg==='caty'}" data-act="seg" data-arg="caty">Caty</button></div>`;
  if(!paid())return`<h1 class="page-title">Mensajes</h1>
@@ -737,15 +807,16 @@ ${last.o?`<div class="qr">${last.o.map(([l,k])=>`<button data-act="bot" data-arg
  const sess='';
  if(S.plan!=='caty')return`<h1 class="page-title">Mensajes</h1>${seg}
 <section class="card glass lockhero">${I.lock}<h2>Escríbele a Caty</h2><p class="fine">Con Glow con Caty le escribes directamente y te responde en menos de 48 h. Hasta ${MSG_LIMIT} mensajes al mes.</p>${tester()?'<p class="fine">El chat con Caty no forma parte de esta prueba. Si tienes dudas o ideas, cuéntaselas en «Dar mi opinión».</p><button class="btn ghost" data-act="opinion">Dar mi opinión</button>':'<button class="btn" data-act="buy" data-arg="caty">Pasarme a Glow con Caty</button>'}</section>${sess}`;
- if(!CHAT_LISTO)return`<h1 class="page-title">Mensajes</h1>${seg}
-<section class="card glass empty">${I.msg}<h2>Tu chat con Caty se abre en unos días</h2><p class="fine">Estamos terminando de prepararlo. Te avisaremos aquí. Te responderá en menos de 48 h, hasta ${MSG_LIMIT} mensajes al mes.</p></section>`;
- const used=S.chat.filter(m=>m.f==='me').length,left=Math.max(0,MSG_LIMIT-used);
+ if(S.perfilOk==null)return`<h1 class="page-title">Mensajes</h1>${seg}
+<section class="card glass"><h2>¿Compartir tu perfil con Caty?</h2><p class="fine" style="margin-bottom:12px">Así Caty ve tu tipo de piel, tu edad, tu etapa hormonal, lo que marcaste de tu piel y de tu salud, tus objetivos y tu rutina, y te responde mejor. Tus fotos nunca se comparten. Puedes dejar de compartirlo en Ajustes cuando quieras.</p>
+<input id="alias" class="field glass" maxlength="40" placeholder="¿Cómo quieres que te llame? (opcional)" style="width:100%;box-sizing:border-box;margin-bottom:14px">
+<div class="stack"><button class="btn" data-act="perfilsi">Sí, compartir mi perfil</button><button class="btn ghost" data-act="perfilno">No, prefiero no compartirlo</button></div></section>`;
+ const used=S.chatUsados||0,left=Math.max(0,MSG_LIMIT-used);
  return`<h1 class="page-title">Mensajes</h1>${seg}
 <div class="chathead glass">${avatar}<div><b>Caty De Oliveira</b><small>Farmacéutica. Responde en menos de 48 h.</small></div></div>
-<div class="thread">${S.chat.length?S.chat.map(m=>`<div class="msg ${m.f} ${m.f==='me'?'':'glass'}">${m.f==='caty'?'<span class="who">Caty</span>':''}${esc(m.t)}</div>`).join(''):'<p class="fine">Cuéntale a Caty qué dudas tienes sobre tu piel o tu rutina. Ella ya ve tu perfil y tu rutina.</p>'}</div>
-<div class="compose"><textarea id="chatbox" class="field glass" placeholder="${left?'Escribe tu mensaje':'Has usado tus mensajes de este mes'}" ${left?'':'disabled'} aria-label="Mensaje para Caty"></textarea><button class="btn" data-act="send" ${left?'':'disabled'}>Enviar</button></div>
-<p class="fine" style="margin:8px 0 14px">Te quedan ${left} de ${MSG_LIMIT} mensajes este mes.</p>
-${sess}`;
+<div class="thread">${S.chat&&S.chat.length?S.chat.map(m=>`<div class="msg ${m.f} ${m.f==='me'?'':'glass'}">${m.f==='caty'?'<span class="who">Caty</span>':''}${esc(m.t)}</div>`).join(''):`<p class="fine">Cuéntale a Caty qué dudas tienes sobre tu piel o tu rutina.${S.perfilOk?' Ella verá el perfil que compartiste.':''}</p>`}</div>
+<div class="compose"><textarea id="chatbox" class="field glass" maxlength="2000" placeholder="${left?'Escribe tu mensaje':'Has usado tus mensajes de este mes'}" ${left?'':'disabled'} aria-label="Mensaje para Caty">${esc(S.borrador||'')}</textarea><button class="btn" data-act="send" ${left?'':'disabled'}>Enviar</button></div>
+<p class="fine" style="margin:8px 0 14px">Te quedan ${left} de ${MSG_LIMIT} mensajes este mes.${S.avisos?'':' <button class="linkbtn" data-act="avisos">Avísame cuando Caty responda</button>'}</p>`;
 }
 
 function vAj(){
@@ -757,12 +828,14 @@ ${S.vence?`<section class="card glass"><h2>Tu plan</h2><dl class="kv" style="mar
  <div class="stack">${pl?'<button class="btn ghost" data-act="portal">Gestionar o cancelar mi suscripción</button>':'<button class="btn" data-act="plans">Ver planes</button>'}${S.plan==='esencial'?'<button class="btn ghost" data-act="buy" data-arg="caty">Pasarme a Glow con Caty</button>':''}<button class="btn ghost" data-act="sync">Ya pagué: actualizar mi plan</button></div>
  ${pl?'<p class="fine" style="margin-top:12px">Para gestionar tu suscripción, entra con el email con el que pagaste.</p>':''}</section>`}
 ${S.inv?`<section class="card glass"><h2>Tu opinión</h2><p class="fine" style="margin-bottom:14px">Cuéntale a Caty qué mejorarías de Glow.</p><button class="btn ghost" data-act="opinion">${S.opEnviada?'Enviar otra opinión':'Dar mi opinión'}</button></section>`:''}
+${paid()?`<section class="card glass"><h2>Avisos</h2><p class="fine" style="margin-bottom:14px">${S.avisos?'Activados en este móvil.':'El asistente te escribe 2 días después de ver tu rutina'+(S.plan==='caty'?' y te avisamos cuando Caty te responde':'')+'.'}${!S.avisos&&esIOS&&!instalada()?' En iPhone, primero añade Glow a tu pantalla de inicio.':''}</p>${S.avisos?'':'<button class="btn ghost" data-act="avisos">Activar avisos</button>'}</section>`:''}
+${S.plan==='caty'&&S.perfilOk!=null?`<section class="card glass"><h2>Tu perfil y Caty</h2><p class="fine" style="margin-bottom:14px">${S.perfilOk?'Caty ve tu tipo de piel, tus respuestas y tu rutina para responderte mejor. Tus fotos nunca se comparten.':'No compartes tu perfil con Caty.'}</p><button class="btn ghost" data-act="${S.perfilOk?'perfilquitar':'perfilsi'}">${S.perfilOk?'Dejar de compartir mi perfil':'Compartir mi perfil con Caty'}</button></section>`:''}
 <section class="card glass"><h2>¿Cambias de móvil?</h2><p class="fine" style="margin-bottom:14px">Tu plan queda guardado en este teléfono. En el móvil nuevo abre Glow, toca «Ver mi código» y envíaselo a Caty por Instagram (@caty.skincare) con el email con el que pagaste. Ella te pasa el acceso.</p><button class="btn ghost" data-act="code">Ver mi código</button></section>
 <section class="card glass"><h2>Tus respuestas</h2><p class="fine" style="margin-bottom:14px">Revisa o cambia lo que contestaste. Tus fotos se mantienen.</p><button class="btn ghost" data-act="edit">Revisar respuestas</button></section>
 <section class="card glass"><h2>Tus fotos</h2><p class="fine" style="margin-bottom:14px">${n} de 3 guardadas en este teléfono.</p><button class="btn ghost" data-act="tab" data-arg="sim">Gestionar fotos</button></section>
 <section class="card glass"><h2>La ciencia detrás de tu rutina</h2><p class="fine" style="margin-bottom:10px">Cada recomendación está contrastada en PubMed.</p><div class="alerts">${Object.entries(REF).map(([id,[t,s]])=>`<div class="alert"><span>${t}. <small>${s}.</small>${ev(id)}</span></div>`).join('')}</div></section>
 <section class="card glass"><h2>Borrar todos mis datos</h2><p class="fine" style="margin-bottom:14px">Elimina tus respuestas y tus fotos de este teléfono. Tu plan se mantiene. No se puede deshacer.</p><button class="btn danger" data-act="askreset">Borrar todo</button></section>
-<section class="card glass"><h2>Instalar Glow</h2><dl class="kv"><dt>iPhone</dt><dd>Safari, Compartir, Añadir a pantalla de inicio</dd><dt>Android</dt><dd>Chrome, menú, Instalar app</dd></dl><p class="fine" style="margin-top:12px">Instálala para recibir los avisos del asistente.</p></section>
+<section class="card glass"><h2>Instalar Glow</h2><dl class="kv"><dt>iPhone</dt><dd>Safari, Compartir, Añadir a pantalla de inicio</dd><dt>Android</dt><dd>Chrome, menú, Instalar app</dd></dl><p class="fine" style="margin-top:12px">Instálala para recibir los avisos del asistente y de Caty.</p></section>
 <p class="fine" style="margin-bottom:10px">En calidad de Afiliada de Amazon, Caty obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. Los enlaces de YesStyle también son de afiliada.</p>
 <p class="fine">Glow es una guía cosmética orientativa y no sustituye la consulta con un dermatólogo.</p>`}
 
@@ -839,37 +912,37 @@ function mapSheet(){
 
 /* ---------- Acciones ---------- */
 const ACT={
- start(){if(S.sample){S=fresh()}S.screen='quiz';go()},
- sample(){if(Object.keys(S.a).length&&!S.sample){sheet(`<h2>¿Cargar el ejemplo?</h2><p>Se reemplazarán tus respuestas y fotos por un perfil de ejemplo.</p><div class="stack"><button class="btn" data-act="sampleyes">Cargar ejemplo</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)}else{loadSample();go();toast('Ejemplo: mujer de 47 años en perimenopausia')}},
- sampleyes(){closeSheet();loadSample();go();toast('Ejemplo: mujer de 47 años en perimenopausia')},
+ start(){if(S.sample){const k={plan:S.plan,vence:S.vence,inv:S.inv};S=fresh();Object.assign(S,k)}S.screen='quiz';go();track('cuestionario_inicio')},
+ sample(){if(Object.keys(S.a).length&&!S.sample){sheet(`<h2>¿Cargar el ejemplo?</h2><p>Se reemplazarán tus respuestas y fotos por un perfil de ejemplo.</p><div class="stack"><button class="btn" data-act="sampleyes">Cargar ejemplo</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)}else{loadSample();go();track('ejemplo');toast('Ejemplo: mujer de 47 años en perimenopausia')}},
+ sampleyes(){closeSheet();loadSample();go();track('ejemplo');toast('Ejemplo: mujer de 47 años en perimenopausia')},
  pick(i){const q=Q[S.qi];S.a[q.id]=+i;save();render(true);setTimeout(()=>{if(S.screen==='quiz'&&Q[S.qi]===q&&S.qi<Q.length-1){S.qi++;go()}},260)},
  tog(i){i=+i;const q=Q[S.qi];let a=(S.a[q.id]||[]).slice();
   if(a.includes(i))a=a.filter(x=>x!==i);
   else{if(q.none!=null)a=i===q.none?[]:a.filter(x=>x!==q.none);if(q.max&&a.length>=q.max){toast(`Elige hasta ${q.max}. Quita una para cambiarla.`);return}a.push(i)}
   S.a[q.id]=a;go(true)},
  grp(arg){const[id,i]=arg.split(':');S.a[id]=+i;go(true)},
- next(){if(S.qi<Q.length-1){S.qi++;go()}else{S.screen='app';S.tab='piel';go()}},
+ next(){if(S.qi<Q.length-1){const a=Q[S.qi].s;S.qi++;go();if(Q[S.qi].s!==a)track('seccion',Q[S.qi].s+1)}else{S.screen='app';S.tab='piel';go();track('cuestionario_fin')}},
  back(){if(S.qi>0){S.qi--;go()}else{S.screen='welcome';go()}},
- tab(t){S.tab=t;S.screen='app';go()},
- seg(s){S.seg=s;go(true)},
+ tab(t){S.tab=t;S.screen='app';go();track('pestana',t);if(t==='rutina')track(paid()?'rutina_vista':'rutina_bloqueada');if(t==='sim'&&!simVista){simVista=1;track('simulacion')}},
+ seg(s){S.seg=s;go(true);track('mensajes',s);if(s==='caty'&&S.plan==='caty'){cargarChat().then(c=>{if(c)render(true)});if(C)rpc('marcar_leidos',{}).catch(()=>{})}},
  slot(k){S.slot=k;go(true)},
  k(v){S.k=+v;go(true)},
- samplephoto(){S.ph[S.slot]=samplePhoto();go(true)},
+ samplephoto(){S.ph[S.slot]=samplePhoto();go(true);track('foto','ejemplo')},
  rmphoto(){delete S.ph[S.slot];go(true);toast('Foto borrada')},
- edit(){S.screen='quiz';S.qi=0;go()},
- have(id){S.have[id]=!S.have[id];go(true)},
- copycode(){const done=()=>toast(`Código ${YS_CODE} copiado. Pégalo al pagar en YesStyle.`);try{navigator.clipboard.writeText(YS_CODE).then(done,()=>toast(`Tu código: ${YS_CODE}`))}catch(e){toast(`Tu código: ${YS_CODE}`)}},
- plans(){plansSheet()},
+ edit(){S.screen='quiz';S.qi=0;go();track('editar_respuestas')},
+ have(id){S.have[id]=!S.have[id];go(true);if(S.have[id])track('conseguido',id)},
+ copycode(){track('codigo_ys');const done=()=>toast(`Código ${YS_CODE} copiado. Pégalo al pagar en YesStyle.`);try{navigator.clipboard.writeText(YS_CODE).then(done,()=>toast(`Tu código: ${YS_CODE}`))}catch(e){toast(`Tu código: ${YS_CODE}`)}},
+ plans(){plansSheet();track('planes')},
  buy(k){
   if(tester()){toast('Durante tu prueba no tienes que pagar nada.');return}
   if(!navigator.onLine){toast('Necesitas conexión a internet para pagar.');return}
   if(k==='caty'&&S.plan==='esencial'){sheet(`<h2>Pasarte a Glow con Caty</h2><p>Se abre el pago de Glow con Caty (15 € al mes). Después, cancela Glow Esencial en «Gestionar o cancelar mi suscripción» para no pagar los dos.</p><div class="stack"><button class="btn" data-act="gopay" data-arg="caty">Continuar al pago</button><button class="btn ghost" data-act="close">Volver</button></div>`);return}
   ACT.gopay(k)},
- async gopay(k){closeSheet();toast('Abriendo el pago seguro…');
+ async gopay(k){closeSheet();toast('Abriendo el pago seguro…');track('pago_inicio',k);await enviaUso();
   try{const s=await sesion(true);location.href=`${PAY[k]}?client_reference_id=${s.uid}&locale=es`}
   catch(e){toast('No pudimos abrir el pago. Inténtalo de nuevo en un momento.')}},
- portal(){window.open(PORTAL,'_blank','noopener')},
- opinion(){opinionSheet()},
+ portal(){window.open(PORTAL,'_blank','noopener');track('portal')},
+ opinion(){opinionSheet();track('opinion_abierta')},
  rate(a){const[k,n]=a.split(':');const t=$('#opTxt');S.op=S.op||{};if(t)S.op.texto=t.value;S.op[k]=+n;save();opinionSheet()},
  async sendop(){const t=$('#opTxt');const o=S.op||{};o.texto=(t?t.value:'').trim();
   if(!o.texto&&!OPS.some(([k])=>o[k])){toast('Puntúa algo o escribe tu opinión.');return}
@@ -877,7 +950,7 @@ const ACT={
   try{const s=await sesion(true);
    const r=await fetch(SB_URL+'/rest/v1/opiniones',{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+s.at,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({general:o.general||null,cuestionario:o.cuestionario||null,rutina:o.rutina||null,asistente:o.asistente||null,texto:o.texto||null,plan:S.plan,version:'1.2'})});
    if(!r.ok)throw new Error(r.status);
-   S.op={};S.opEnviada=true;save();closeSheet();render(true);toast('¡Gracias! Caty leerá tu opinión.');
+   S.op={};S.opEnviada=true;save();closeSheet();render(true);toast('¡Gracias! Caty leerá tu opinión.');track('opinion_enviada');
   }catch(e){toast('No pudimos enviarla. Inténtalo de nuevo en un momento.')}},
  async sync(){if(!navigator.onLine){toast('Necesitas conexión a internet.');return}
   if(!C){toast('En este móvil todavía no hay ningún pago.');return}
@@ -891,9 +964,20 @@ const ACT={
  sessionpay(i){closeSheet();S.session=SLOTS_DEMO[+i];go(true);toast('Sesión reservada. El enlace de Google Meet llega a tu email.')},
  cancel(){sheet(`<h2>¿Cancelar tu suscripción?</h2><p>Mantendrás el acceso hasta el final del periodo pagado. Tu tipo de piel y tus fotos seguirán aquí.</p><div class="stack"><button class="btn danger" data-act="cancelyes">Cancelar suscripción</button><button class="btn ghost" data-act="close">Volver</button></div>`)},
  test2d(){if(!S.rutinaAt){toast('Primero abre tu rutina en la pestaña Rutina.');return}S.rutinaAt=Date.now()-DOS_DIAS-1000;S.botOn=false;S.bot=[];checkBot();go(true);notify()},
- bot(k){botReply(k)},
+ bot(k){track('asistente_resp',k);botReply(k)},
  opennotif(){$('#notif').hidden=true;S.tab='msgs';S.seg='bot';S.screen='app';go()},
- send(){const t=$('#chatbox').value.trim();if(!t){toast('Escribe tu mensaje antes de enviarlo.');return}S.chat.push({f:'me',t});go(true);toast('Enviado. Caty te responderá en menos de 48 h.')},
+ async send(){const t=($('#chatbox')||{}).value?.trim();if(!t){toast('Escribe tu mensaje antes de enviarlo.');return}
+  if(!navigator.onLine){toast('Necesitas conexión a internet para enviarlo.');return}
+  const b=$('[data-act="send"]');if(b)b.disabled=true;
+  try{if(S.perfilOk)await compartirPerfil().catch(()=>{});
+   await rpc('enviar_mensaje',{p_texto:t});S.borrador='';track('chat_enviado');await cargarChat();render(true);
+   toast('Enviado. Caty te responderá en menos de 48 h.');
+  }catch(e){const m=String(e.message||'');toast(m.includes('limite')?'Ya usaste tus 10 mensajes de este mes.':m.includes('sin_plan')?'Tu plan no incluye el chat con Caty.':'No pudimos enviarlo. Inténtalo de nuevo.');if(b)b.disabled=false}},
+ async avisos(){await activarAvisos();render(true)},
+ async perfilsi(){const a=$('#alias');if(a)S.alias=a.value.trim();S.perfilOk=true;save();render(true);track('perfil_compartido','si');
+  try{await compartirPerfil();toast('Caty ya puede ver tu perfil.')}catch(e){toast('Lo compartiremos al enviar tu primer mensaje.')}},
+ perfilno(){S.perfilOk=false;save();render(true);track('perfil_compartido','no')},
+ async perfilquitar(){S.perfilOk=false;save();render(true);try{await dejarDeCompartir();toast('Caty ya no ve tu perfil.')}catch(e){toast('No pudimos quitarlo ahora. Inténtalo con conexión.')}},
  map(){mapSheet()},
  close(){closeSheet()},
  jump(a){closeSheet();
@@ -903,11 +987,12 @@ const ACT={
   if(!Object.keys(S.a).length)loadSample(S.plan);
   S.screen='app';S.tab=a;go()},
  askreset(){sheet(`<h2>¿Borrar todos tus datos?</h2><p>Se eliminarán tus respuestas y tus fotos de este teléfono. Tu plan se mantiene. No se puede deshacer.</p><div class="stack"><button class="btn danger" data-act="resetyes">Sí, borrar todo</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)},
- resetyes(){closeSheet();const pl=S.plan,v=S.vence,inv=S.inv;try{localStorage.removeItem(KEY)}catch(e){}S=fresh();S.plan=pl;S.vence=v;S.inv=inv;save();render();toast('Datos borrados')}
+ resetyes(){closeSheet();const pl=S.plan,v=S.vence,inv=S.inv;try{localStorage.removeItem(KEY)}catch(e){}S=fresh();S.plan=pl;S.vence=v;S.inv=inv;save();render();toast('Datos borrados');track('borrado')}
 };
-document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b.dataset.arg,b)}});
-document.addEventListener('input',e=>{const f=e.target.dataset.field;if(!f)return;S.a[f]=e.target.value;save();const q=Q[S.qi];const n=$('#next');if(n&&q)n.disabled=!canNext(q)});
-document.addEventListener('change',e=>{const k=e.target.dataset.slot;if(!k||!e.target.files[0])return;fileToPhoto(e.target.files[0],p=>{S.ph[k]=p;S.slot=k;go(true);toast('Foto guardada en tu teléfono')})});
+let simVista=0;
+document.addEventListener('click',e=>{const a=e.target.closest('a.buy[data-ev]');if(a){track('comprar',a.dataset.ev);enviaUso(true)}const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b.dataset.arg,b)}});
+document.addEventListener('input',e=>{if(e.target.id==='chatbox'){S.borrador=e.target.value;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(x){}return}const f=e.target.dataset.field;if(!f)return;S.a[f]=e.target.value;save();const q=Q[S.qi];const n=$('#next');if(n&&q)n.disabled=!canNext(q)});
+document.addEventListener('change',e=>{const k=e.target.dataset.slot;if(!k||!e.target.files[0])return;fileToPhoto(e.target.files[0],p=>{S.ph[k]=p;S.slot=k;go(true);toast('Foto guardada en tu teléfono');track('foto',k)})});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 async function boot(){
  try{
@@ -924,15 +1009,18 @@ async function boot(){
   return;
  }
  if(S.screen==='catalog')S.screen='app';
- const qs=new URLSearchParams(location.search),vuelta=qs.get('pago'),invit=qs.get('invitacion');
- if(vuelta||invit)history.replaceState(null,'',location.pathname);
+ const qs=new URLSearchParams(location.search),vuelta=qs.get('pago'),invit=qs.get('invitacion'),abrir=qs.get('abrir');
+ if(vuelta||invit||abrir)history.replaceState(null,'',location.pathname);
+ if(abrir&&Object.keys(S.a).length){S.screen='app';S.tab='msgs';S.seg=abrir==='caty'?'caty':'bot';track('aviso_abierto',abrir)}
  if(invit){S.invPend=invit;save()}
  checkBot();
  render();
  if(vuelta){if(C){toast('¡Gracias! Estamos activando tu plan…');esperarPago(vuelta)}else toast('¡Gracias por tu pago! Abre Glow desde donde pagaste para ver tu plan.')}
  else if(S.invPend)canjear(S.invPend);
- else syncPlan().then(c=>{if(c){checkBot();render(true)}});
- document.addEventListener('visibilitychange',()=>{if(document.hidden)return;syncPlan().then(c=>{if(checkBot()||c)render(true)})});
+ else syncPlan().then(async c=>{const ch=await cargarChat();if(c||ch){checkBot();render(true)}});
+ track('abrir',instalada()?'instalada':'navegador');
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)return;syncPlan().then(async c=>{const ch=await cargarChat();if(checkBot()||c||ch)render(true)})});
+ addEventListener('appinstalled',()=>track('instalada'));
 }
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 boot();

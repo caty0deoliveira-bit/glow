@@ -4,6 +4,9 @@ const b=await chromium.launch();
 const ctx=await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2});
 const pg=await ctx.newPage();
 const errs=[];pg.on('pageerror',e=>errs.push(e.message));pg.on('console',m=>{if(m.type()==='error'&&!m.text().includes('INTERNET_DISCONNECTED'))errs.push(m.text())});
+const eventos=[];
+const rutaUso=r=>{try{eventos.push(...r.request().postDataJSON())}catch(e){}r.fulfill({status:201,body:''})};
+await ctx.route('**/rest/v1/eventos_uso',rutaUso);
 await pg.goto(URL);await pg.waitForFunction(()=>Q.length>0);
 const res=await pg.evaluate(()=>{
  const out=[];const ok=(n,c,d='')=>out.push([n,!!c,d]);
@@ -84,6 +87,75 @@ res3.push(['Amiga en prueba: sin botones de pago en ninguna pestaña',await pg.e
 res3.push(['Invitación caducada: vuelve a bloquear',await pg.evaluate(()=>{S.vence=new Date(Date.now()-1000).toISOString();return !paid()})]);
 for(const [n,o] of res3){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
 await pg.unrouteAll({behavior:'ignoreErrors'});
+
+// ---------- Fase 3: chat, perfil compartido y contador ----------
+await ctx.route('**/rest/v1/eventos_uso',rutaUso);
+let perfilEnviado=null,mensajeEnviado=null,msgs=[];
+await pg.route('**/auth/v1/signup',r=>r.fulfill({json:{access_token:'tok',refresh_token:'ref',expires_in:3600,user:{id:UID}}}));
+await pg.route('**/rest/v1/suscripciones**',r=>r.fulfill({json:[{plan:'caty',estado:'active',vence:null}]}));
+await pg.route('**/rest/v1/perfiles**',r=>{perfilEnviado=r.request().postDataJSON();r.fulfill({status:201,body:''})});
+await pg.route('**/rest/v1/rpc/enviar_mensaje',r=>{mensajeEnviado=r.request().postDataJSON();msgs.push({id:1,de:'usuaria',texto:mensajeEnviado.p_texto,creado:new Date().toISOString(),leido:false});r.fulfill({json:1})});
+await pg.route('**/rest/v1/rpc/marcar_leidos',r=>r.fulfill({json:null}));
+await pg.route('**/rest/v1/mensajes**',r=>r.fulfill({json:msgs}));
+await pg.evaluate(()=>localStorage.clear());await pg.reload();await pg.waitForFunction(()=>Q.length>0);
+await pg.evaluate(()=>{loadSample();S.plan='caty';S.tab='msgs';S.seg='caty';save();render(true)});
+const res4=[['Chat: primero pide permiso para compartir el perfil',await pg.evaluate(()=>!!document.querySelector('[data-act="perfilsi"]')&&!document.querySelector('#chatbox'))]];
+await pg.fill('#alias','Ana');await pg.click('[data-act="perfilsi"]');await pg.waitForTimeout(800);
+res4.push(['Perfil compartido con consentimiento (tipo Baumann, alias y rutina)',!!perfilEnviado&&perfilEnviado.alias==='Ana'&&perfilEnviado.resumen?.tipo_baumann==='DSPW'&&perfilEnviado.resumen?.rutina?.manana?.length>0]);
+await pg.fill('#chatbox','Hola Caty, ¿puedo usar el retinol con la vitamina C?');await pg.click('[data-act="send"]');await pg.waitForTimeout(1200);
+res4.push(['Chat: el mensaje llega al servidor',mensajeEnviado?.p_texto==='Hola Caty, ¿puedo usar el retinol con la vitamina C?']);
+res4.push(['Chat: aparece en la conversación y cuenta 1 de 10',await pg.evaluate(()=>document.querySelector('.thread').innerText.includes('retinol')&&document.body.innerText.includes('Te quedan 9 de 10'))]);
+msgs.push({id:2,de:'caty',texto:'¡Hola! Mejor en momentos distintos del día.',creado:new Date().toISOString(),leido:false});
+res4.push(['Chat: carga la respuesta de Caty',await pg.evaluate(async()=>{await cargarChat();render(true);return document.querySelector('.thread').innerText.includes('momentos distintos')})]);
+res4.push(['Plan Esencial: el chat sigue bloqueado',await pg.evaluate(()=>{S.plan='esencial';S.inv=false;S.vence=null;render(true);return !document.querySelector('#chatbox')&&!!document.querySelector('[data-act="buy"][data-arg="caty"]')})]);
+// contador: recorrido básico y comprobación de privacidad
+await pg.evaluate(()=>{S.plan='esencial';save();ACT.tab('rutina');ACT.tab('piel');botStart();ACT.bot('no');ACT.bot('precio');});
+await pg.evaluate(()=>{const a=document.createElement('div');S.tab='rutina';render(true)});
+await pg.evaluate(()=>{const a=document.querySelector('a.buy[data-ev]');a.removeAttribute('href');a.click()});
+await pg.evaluate(()=>enviaUso());await pg.waitForTimeout(800);
+const nombresEv=new Set(eventos.map(e=>e.evento));
+res4.push(['Contador: registra rutina, asistente y clic en «Comprar»',['rutina_vista','asistente_resp','comprar','pestana'].every(e=>nombresEv.has(e))]);
+const texto=JSON.stringify(eventos.map(e=>[e.evento,e.dato]));
+res4.push(['Contador: solo campos permitidos',eventos.every(e=>Object.keys(e).sort().join()==='dato,disp,evento,plan,prueba,version')]);
+res4.push(['Contador: sin respuestas ni datos de salud',!/Perimenopausia|Manchas|Rojeces|DSPW|Ana|retinol|47/.test(texto)]);
+res4.push(['Contador: «Comprar» guarda paso, tienda y opción',eventos.some(e=>e.evento==='comprar'&&/^am1:(Amazon España|YesStyle):1$/.test(e.dato))]);
+for(const [n,o] of res4){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
+await pg.unrouteAll({behavior:'ignoreErrors'});
+
+// ---------- Panel de Caty ----------
+const adm=await ctx.newPage();adm.on('pageerror',e=>errs.push('admin: '+e.message));
+let respuesta=null;
+await adm.route('**/rest/v1/rpc/reclamar_admin',r=>r.fulfill({json:true}));
+await adm.route('**/rest/v1/rpc/conversaciones',r=>r.fulfill({json:[{user_id:UID,alias:'Ana',email:'ana@ejemplo.com',plan:'caty',ultimo:new Date().toISOString(),ultimo_texto:'¿Puedo usar retinol?',ultimo_de:'usuaria',sin_leer:1,este_mes:1,comparte_perfil:true}]}));
+await adm.route('**/rest/v1/mensajes**',r=>r.fulfill({json:[{de:'usuaria',texto:'¿Puedo usar retinol?',creado:new Date().toISOString()}]}));
+await adm.route('**/rest/v1/perfiles**',r=>r.fulfill({json:[{alias:'Ana',resumen:{tipo_baumann:'DSPW',edad:'47',objetivos:['Más firmeza'],rutina:{manana:['Limpieza'],noche:['Retinoide']}},actualizado:new Date().toISOString()}]}));
+await adm.route('**/rest/v1/rpc/marcar_leidos',r=>r.fulfill({json:null}));
+await adm.route('**/rest/v1/rpc/responder_mensaje',r=>{respuesta=r.request().postDataJSON();r.fulfill({json:2})});
+await adm.route('**/rest/v1/rpc/resumen_uso',r=>r.fulfill({json:[{evento:'abrir',dato:'navegador',personas:8,veces:20},{evento:'abrir',dato:'instalada',personas:2,veces:5},{evento:'cuestionario_inicio',dato:null,personas:9,veces:9},{evento:'seccion',dato:'2',personas:8,veces:8},{evento:'seccion',dato:'5',personas:6,veces:6},{evento:'cuestionario_fin',dato:null,personas:5,veces:5},{evento:'comprar',dato:'am4:Amazon España:1',personas:3,veces:4},{evento:'asistente_resp',dato:'precio',personas:2,veces:2},{evento:'opinion_enviada',dato:null,personas:4,veces:4}]}));
+await adm.route('**/rest/v1/rpc/uso_diario',r=>r.fulfill({json:[{dia:'2026-11-27',personas:6},{dia:'2026-11-28',personas:4}]}));
+await adm.route('**/rest/v1/opiniones**',r=>r.fulfill({json:[{creado:new Date().toISOString(),general:5,cuestionario:4,rutina:5,asistente:3,texto:'Muy clara',plan:'esencial'}]}));
+await adm.route('**/rest/v1/rpc/lista_invitaciones',r=>r.fulfill({json:[{codigo:'AMIGAS-TEST',plan:'esencial',dias:7,usos:3,usos_max:10,caduca:new Date(Date.now()+5*864e5).toISOString(),nota:'Prueba'}]}));
+await adm.route('**/rest/v1/rpc/lista_suscripciones',r=>r.fulfill({json:[{email:'ana@ejemplo.com',plan:'caty',estado:'active',origen:'stripe',vence:null,creado:new Date().toISOString(),con_movil:true}]}));
+await adm.goto(URL+'admin.html');
+const res5=[['Panel: sin sesión pide el email',await adm.evaluate(()=>!!document.querySelector('#em')&&!document.querySelector('#em').value)]];
+await adm.evaluate(()=>{localStorage.setItem('glow.admin',JSON.stringify({at:'t',rt:'r',exp:Date.now()/1000+3600}));localStorage.setItem('glow.admin.tab','uso')});
+await adm.goto(URL+'admin.html');await adm.waitForSelector('.kpi');
+res5.push(['Panel · Uso: personas, recorrido y abandono del cuestionario',await adm.evaluate(()=>{const t=document.body.innerText;return t.includes('personas abrieron Glow')&&t.includes('Dónde abandonan el cuestionario')&&t.includes('Le frenó el precio')&&t.includes('Protector solar')})]);
+await adm.screenshot({path:'tests/capturas/admin-uso.png',fullPage:true});
+await adm.click('[data-tab="msgs"]');await adm.waitForSelector('#resp');
+await adm.click('#verp');
+res5.push(['Panel · Mensajes: hilo y perfil compartido',await adm.evaluate(()=>document.querySelector('#th').innerText.includes('retinol')&&document.querySelector('#perfil').innerText.includes('DSPW'))]);
+await adm.fill('#resp','Sí, pero en noches distintas.');await adm.click('#responder');await adm.waitForTimeout(600);
+res5.push(['Panel · Mensajes: la respuesta se envía a esa usuaria',respuesta?.p_user===UID&&respuesta?.p_texto==='Sí, pero en noches distintas.']);
+await adm.screenshot({path:'tests/capturas/admin-mensajes.png',fullPage:true});
+await adm.click('[data-tab="ops"]');await adm.waitForSelector('.kpi');
+res5.push(['Panel · Opiniones: media y comentarios',await adm.evaluate(()=>document.body.innerText.includes('Muy clara')&&document.body.innerText.includes('5,0'))]);
+await adm.click('[data-tab="inv"]');await adm.waitForSelector('#crear');
+res5.push(['Panel · Invitaciones: usos y crear nueva',await adm.evaluate(()=>document.body.innerText.includes('3 de 10'))]);
+await adm.click('[data-tab="subs"]');await adm.waitForSelector('#pasar');
+res5.push(['Panel · Suscripciones: lista y pasar acceso',await adm.evaluate(()=>document.body.innerText.includes('ana@ejemplo.com'))]);
+for(const [n,o] of res5){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
+await adm.close();
 // capturas de pantallas
 await pg.evaluate(()=>{localStorage.clear()});await pg.reload();await pg.waitForFunction(()=>Q.length>0);
 await pg.screenshot({path:'tests/capturas/s1-bienvenida.png'});

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#F4EFE6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1D1915" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Panel Glow">
+<link rel="icon" type="image/png" href="assets/icon-180.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<title>Panel de Caty · Glow</title>
+<style>
+:root{
+  --bg:#F4EFE6; --glass:rgba(255,252,246,.66); --glass-strong:rgba(255,252,246,.92);
+  --line:rgba(92,72,52,.14); --ink:#33291F; --muted:#6E6255;
+  --taupe:#7B7F6B; --brown:#6B4E3A; --sand:#B79F87; --bar:#7B7F6B; --track:rgba(92,72,52,.10);
+  --btn-bg:#6B4E3A; --btn-fg:#FBF8F2; --me:#5E6350; --me-fg:#FBF8F2; --danger:#8E3B2E;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#1D1915; --glass:rgba(52,46,38,.62); --glass-strong:rgba(44,39,32,.94);
+  --line:rgba(241,234,220,.12); --ink:#F1EADC; --muted:#BFB2A1;
+  --taupe:#A3A992; --brown:#D9BC9E; --sand:#8C755F; --bar:#A3A992; --track:rgba(241,234,220,.10);
+  --btn-bg:#D9BC9E; --btn-fg:#1D1915; --me:#AEB49C; --me-fg:#1D1915; --danger:#E58B79; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--font);-webkit-font-smoothing:antialiased;min-height:100vh}
+.bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5}
+.bg i:nth-child(1){width:60vmax;height:60vmax;right:-25vmax;top:-25vmax;background:var(--taupe)}
+.bg i:nth-child(2){width:50vmax;height:50vmax;left:-20vmax;bottom:-20vmax;background:var(--sand)}
+main{max-width:980px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.brand{font-weight:650;font-size:17px}.brand span{color:var(--muted);font-weight:400}
+h1{font-size:28px;font-weight:300;letter-spacing:-.02em;margin:6px 0 14px}
+h2{font-size:17px;margin:0 0 4px;font-weight:650}
+h3{font-size:13px;margin:16px 0 8px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.card{background:var(--glass);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+.fine{color:var(--muted);font-size:13px;margin:0}
+.btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;font:600 15px var(--font);background:var(--btn-bg);color:var(--btn-fg);cursor:pointer}
+.btn.ghost{background:var(--glass-strong);color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:8px 12px;font-size:13px;border-radius:11px}
+.btn:disabled{opacity:.5;cursor:default}
+input,textarea,select{width:100%;font:15px var(--font);color:var(--ink);background:var(--glass-strong);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+textarea{resize:vertical;min-height:90px}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px;background:var(--glass);border:1px solid var(--line);border-radius:16px;margin-bottom:16px;position:sticky;top:8px;z-index:5;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.tabs button{flex:1 0 auto;border:0;background:none;color:var(--muted);font:600 14px var(--font);padding:10px 12px;border-radius:12px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-current=page]{background:var(--glass-strong);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--track);color:var(--ink)}
+.pill.on{background:var(--btn-bg);color:var(--btn-fg)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.kpis{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin-bottom:14px}
+.kpi{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.kpi b{display:block;font-size:28px;font-weight:300;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.kpi small{color:var(--muted);font-size:12px}
+/* Barras horizontales: una sola serie y un solo tono; el número va en texto al final de cada barra */
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(110px,40%) 1fr auto;gap:10px;align-items:center;font-size:13px;padding:2px 0}
+.bar .l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .t{height:12px;background:var(--track);border-radius:4px;overflow:hidden}
+.bar .f{display:block;height:100%;background:var(--bar);border-radius:0 4px 4px 0;min-width:2px}
+.bar .v{font-variant-numeric:tabular-nums;min-width:64px;text-align:right}
+.bar:hover .f{filter:brightness(1.12)}
+@media (max-width:520px){.bar{grid-template-columns:1fr auto;row-gap:3px}.bar .l{grid-column:1/-1;white-space:normal}}
+.days{display:flex;align-items:flex-end;gap:2px;height:120px;border-bottom:1px solid var(--line);padding-top:6px}
+.days div{flex:1;background:var(--bar);border-radius:4px 4px 0 0;min-height:2px}
+.days div:hover{filter:brightness(1.15)}
+.daysx{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+.conv{display:grid;grid-template-columns:minmax(220px,34%) 1fr;gap:14px;align-items:start}
+@media (max-width:720px){.conv{grid-template-columns:1fr}}
+.list{display:grid;gap:8px}
+.item{display:block;width:100%;text-align:left;background:var(--glass-strong);border:1px solid var(--line);border-radius:14px;padding:11px 12px;cursor:pointer;color:var(--ink);font:inherit}
+.item[aria-current=true]{outline:2px solid var(--taupe)}
+.item .top{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.item .sub{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thread{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow:auto;padding:4px 2px 10px;margin-top:10px}
+.msg{max-width:82%;padding:10px 12px;border-radius:16px;white-space:pre-wrap;word-wrap:break-word;font-size:14px}
+.msg.usuaria{align-self:flex-start;background:var(--glass-strong);border:1px solid var(--line)}
+.msg.caty{align-self:flex-end;background:var(--me);color:var(--me-fg)}
+.msg time{display:block;font-size:11px;opacity:.7;margin-top:4px}
+.perfil{font-size:13px;line-height:1.55;margin:0}.perfil dt{color:var(--muted);font-size:12px;margin-top:8px}.perfil dd{margin:0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.tablewrap{overflow-x:auto}
+.stars{letter-spacing:1px;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--glass-strong);border:1px solid var(--line);padding:11px 16px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.12);font-size:14px;z-index:20;max-width:90vw}
+[hidden]{display:none!important}
+.empty{text-align:center;color:var(--muted);padding:26px 10px}
+.link{background:none;border:0;padding:0;color:var(--brown);text-decoration:underline;cursor:pointer;font:inherit}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i></div>
+<main id="app"></main>
+<div id="toast" class="toast" role="status" hidden></div>
+<script>
+/* Panel de Caty · Glow
+   Acceso con un enlace al correo. La primera cuenta con email verificado que entra queda como administradora
+   (función reclamar_admin); todo lo demás lo comprueba la base de datos con es_admin(). */
+const SB_URL='https://pzucpyzggotcedvpghli.supabase.co';
+const SB_KEY='sb_publishable_VXSxe5-1cIxyEqzvcFJQvw_3azjWfRE';
+const APP_URL=new URL('./',location.href).href;
+const KEY='glow.admin';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,3400)}
+const fFecha=t=>t?new Date(t).toLocaleString('es-ES',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+const fDia=t=>t?new Date(t).toLocaleDateString('es-ES',{day:'numeric',month:'short'}):'—';
+
+/* ---------- Sesión ---------- */
+let C=null;try{C=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+function saveC(){try{C?localStorage.setItem(KEY,JSON.stringify(C)):localStorage.removeItem(KEY)}catch(e){}}
+function leerHash(){
+  if(!/access_token|error/.test(location.hash))return null;
+  const h=new URLSearchParams(location.hash.slice(1));history.replaceState(null,'',location.pathname);
+  if(h.get('error'))return{error:h.get('error_description')||h.get('error')};
+  C={at:h.get('access_token'),rt:h.get('refresh_token'),exp:Number(h.get('expires_at'))||Math.floor(Date.now()/1000)+Number(h.get('expires_in')||3600)};saveC();return{ok:1};
+}
+async function token(){
+  if(!C)return null;
+  if(C.exp-60>Date.now()/1000)return C.at;
+  const r=await fetch(SB_URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:C.rt})});
+  const j=await r.json().catch(()=>({}));if(!r.ok||!j.access_token){C=null;saveC();return null}
+  C={at:j.access_token,rt:j.refresh_token,exp:j.expires_at||Math.floor(Date.now()/1000)+(j.expires_in||3600)};saveC();return C.at;
+}
+async function api(ruta,{method='GET',body}={}){
+  const t=await token();if(!t){pintaLogin();throw new Error('Tu sesión terminó. Vuelve a entrar.')}
+  const r=await fetch(SB_URL+'/rest/v1/'+ruta,{method,headers:{apikey:SB_KEY,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+  const j=await r.json().catch(()=>null);if(!r.ok)throw new Error((j&&j.message)||('error '+r.status));return j;
+}
+const rpc=(n,a)=>api('rpc/'+n,{method:'POST',body:a||{}});
+
+/* ---------- Acceso ---------- */
+function pintaLogin(msg){
+  $('#app').innerHTML=`<header><div class="brand">Glow <span>· Panel de Caty</span></div></header>
+  <h1>Tu panel</h1>
+  <section class="card" style="max-width:480px"><h2>Entrar</h2><p class="fine" style="margin-bottom:12px">Escribe tu email y te mandamos un enlace. Ábrelo en este mismo navegador.</p>
+  ${msg?`<p class="fine" style="color:var(--danger);margin-bottom:10px">${esc(msg)}</p>`:''}
+  <label for="em">Tu email</label><input id="em" type="email" autocomplete="email" placeholder="tu email">
+  <div style="margin-top:14px"><button class="btn" id="enviar">Enviarme el enlace</button></div></section>`;
+  $('#enviar').onclick=async()=>{
+    const em=$('#em').value.trim();if(!em){toast('Escribe tu email.');return}$('#enviar').disabled=true;
+    try{const r=await fetch(SB_URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(location.origin+location.pathname),{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:em,create_user:true})});
+      if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.msg||j.error_description||String(r.status))}
+      $('#app').querySelector('.card').innerHTML=`<h2>Revisa tu correo</h2><p class="fine">Te enviamos un enlace. Ábrelo en este navegador para entrar. Si no llega en un par de minutos, mira en spam.</p>`;
+    }catch(e){toast('No se pudo enviar: '+e.message);$('#enviar').disabled=false}
+  };
+}
+
+/* ---------- Estructura ---------- */
+const TABS=[['msgs','Mensajes'],['uso','Uso'],['ops','Opiniones'],['inv','Invitaciones'],['subs','Suscripciones']];
+let tab=localStorage.getItem('glow.admin.tab')||'uso';
+let SECS=[];
+function pintaMarco(){
+  $('#app').innerHTML=`<header><div class="brand">Glow <span>· Panel de Caty</span></div>
+   <div class="row"><button class="btn ghost sm" id="push">Avisos en este dispositivo</button><button class="btn ghost sm" id="salir">Salir</button></div></header>
+  <nav class="tabs" aria-label="Secciones">${TABS.map(([k,l])=>`<button data-tab="${k}" ${k===tab?'aria-current="page"':''}>${l}<span id="badge-${k}"></span></button>`).join('')}</nav>
+  <div id="vista"></div>`;
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;localStorage.setItem('glow.admin.tab',tab);pintaMarco()});
+  $('#salir').onclick=()=>{C=null;saveC();pintaLogin()};
+  $('#push').onclick=activarPush;
+  ({msgs:vMsgs,uso:vUso,ops:vOps,inv:vInv,subs:vSubs})[tab]();
+  if(tab!=='msgs')contarSinLeer();
+}
+async function contarSinLeer(){try{const cs=await rpc('conversaciones');const n=cs.reduce((s,c)=>s+Number(c.sin_leer||0),0);const b=$('#badge-msgs');if(b)b.innerHTML=n?` <span class="pill on">${n}</span>`:''}catch(e){}}
+
+/* ---------- Avisos para Caty ---------- */
+function b64aBytes(t){const r=(t+'='.repeat((4-t.length%4)%4)).replace(/-/g,'+').replace(/_/g,'/');return Uint8Array.from(atob(r),c=>c.charCodeAt(0))}
+async function activarPush(){
+  if(!('serviceWorker' in navigator&&'PushManager' in window)){toast(/iP(hone|ad)/.test(navigator.userAgent)?'En iPhone: Compartir, Añadir a pantalla de inicio, y abre el panel desde ahí.':'Este navegador no permite avisos.');return}
+  try{const perm=await Notification.requestPermission();if(perm!=='granted'){toast('Sin permiso no podemos avisarte.');return}
+    const reg=await navigator.serviceWorker.register('sw.js');await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub){const {publicKey}=await (await fetch(SB_URL+'/functions/v1/avisos')).json();sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64aBytes(publicKey)})}
+    const j=sub.toJSON();await rpc('guardar_aviso',{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_bot_en:null});
+    toast('Listo: te avisaremos en este dispositivo cuando te escriban.');
+  }catch(e){toast('No se pudieron activar los avisos: '+e.message)}
+}
+
+/* ---------- Mensajes ---------- */
+let convSel=null,convs=[];
+async function vMsgs(){
+  const v=$('#vista');if(!v)return;if(!convs.length)v.innerHTML='<p class="fine">Cargando…</p>';
+  try{convs=await rpc('conversaciones')}catch(e){v.innerHTML=`<p class="fine">${esc(e.message)}</p>`;return}
+  const n=convs.reduce((s,c)=>s+Number(c.sin_leer||0),0);$('#badge-msgs').innerHTML=n?` <span class="pill on">${n}</span>`:'';
+  if(!convs.length){v.innerHTML='<section class="card empty">Todavía no te ha escrito nadie. Cuando alguien con Glow con Caty te escriba, aparecerá aquí.</section>';return}
+  if(!convSel||!convs.some(c=>c.user_id===convSel))convSel=convs[0].user_id;
+  v.innerHTML=`<div class="conv"><div class="list">${convs.map(c=>`<button class="item" data-u="${c.user_id}" aria-current="${c.user_id===convSel}">
+    <div class="top"><span>${esc(c.alias||c.email||'Usuaria')}</span>${Number(c.sin_leer)?`<span class="pill on">${c.sin_leer}</span>`:''}</div>
+    <div class="sub">${c.ultimo_de==='caty'?'Tú: ':''}${esc(c.ultimo_texto)}</div><div class="sub">${fFecha(c.ultimo)} · ${c.plan==='caty'?'Glow con Caty':'sin plan activo'}</div></button>`).join('')}</div>
+    <section class="card" id="hilo"></section></div>`;
+  v.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{convSel=b.dataset.u;vMsgs()});
+  pintaHilo();
+}
+async function pintaHilo(){
+  const c=convs.find(x=>x.user_id===convSel);const box=$('#hilo');if(!c||!box)return;
+  const [ms,pf]=await Promise.all([api(`mensajes?user_id=eq.${c.user_id}&select=de,texto,creado&order=creado.asc`),c.comparte_perfil?api(`perfiles?user_id=eq.${c.user_id}&select=alias,resumen,actualizado`):Promise.resolve([])]);
+  const p=pf[0];
+  box.innerHTML=`<div class="row" style="justify-content:space-between"><div><h2>${esc(c.alias||c.email||'Usuaria')}</h2><p class="fine">${esc(c.email||'sin email')} · ${c.este_mes} de 10 mensajes este mes</p></div>
+    ${p?'<button class="btn ghost sm" id="verp">Ver su perfil</button>':'<span class="fine">No comparte su perfil</span>'}</div>
+    <div id="perfil" hidden></div>
+    <div class="thread" id="th">${ms.map(m=>`<div class="msg ${m.de}">${esc(m.texto)}<time>${fFecha(m.creado)}</time></div>`).join('')}</div>
+    <label for="resp">Tu respuesta</label><textarea id="resp" maxlength="2000" placeholder="Escribe tu respuesta…"></textarea>
+    <div class="row" style="margin-top:10px;justify-content:space-between"><span class="fine">Le llega un aviso si los tiene activados.</span><button class="btn" id="responder">Enviar respuesta</button></div>`;
+  const th=$('#th');th.scrollTop=th.scrollHeight;
+  if(p)$('#verp').onclick=()=>{const d=$('#perfil');d.hidden=!d.hidden;if(!d.hidden)d.innerHTML=perfilHtml(p)};
+  $('#responder').onclick=async()=>{const t=$('#resp').value.trim();if(!t)return;$('#responder').disabled=true;
+    try{await rpc('responder_mensaje',{p_user:c.user_id,p_texto:t});toast('Respuesta enviada');vMsgs()}catch(e){toast('No se pudo enviar: '+e.message);$('#responder').disabled=false}};
+  if(Number(c.sin_leer))rpc('marcar_leidos',{p_user:c.user_id}).catch(()=>{});
+}
+function perfilHtml(p){
+  const r=p.resumen||{};
+  const L=(t,v)=>{if(v==null||v===''||(Array.isArray(v)&&!v.length))return'';const x=Array.isArray(v)?v.join(', '):typeof v==='object'?Object.entries(v).filter(([,y])=>y).map(([k,y])=>k+': '+y).join(' · '):v;return x?`<dt>${t}</dt><dd>${esc(x)}</dd>`:''};
+  return`<div class="card" style="background:var(--glass-strong);margin:10px 0"><dl class="perfil">
+   ${L('Tipo Baumann',r.tipo_baumann)}${L('Edad',r.edad)}${L('País',r.pais)}${L('Etapa',r.etapa)}${L('Fototipo',r.fototipo)}
+   ${L('Cómo ve su piel',r.estado_piel)}${L('Objetivos',r.objetivos)}${L('Plazo',r.plazo)}${L('Enfermedades de la piel',r.enfermedades_piel)}
+   ${L('Tratamientos',r.tratamientos)}${L('Medicamentos',r.medicamentos)}${L('Última visita al dermatólogo',r.ultima_visita_dermatologo)}${L('Alergias o lo que no tolera',r.alergias)}
+   ${L('Productos que usa',r.productos_actuales)}${L('Otros productos',r.otros_productos)}${L('Hábitos',r.habitos)}${L('Cosmética que prefiere',r.cosmetica)}
+   ${L('Presupuesto',r.presupuesto)}${L('Pasos',r.pasos)}${L('Preferencias',r.preferencias)}
+   ${r.rutina?`<dt>Su rutina en Glow</dt><dd>Mañana: ${esc((r.rutina.manana||[]).join(' → '))}<br>Noche: ${esc((r.rutina.noche||[]).join(' → '))}</dd>`:''}
+  </dl><p class="fine" style="margin-top:8px">Actualizado ${fFecha(p.actualizado)}. Lo comparte con su consentimiento y puede retirarlo cuando quiera.</p></div>`;
+}
+
+/* ---------- Uso ---------- */
+let usoDias=Number(localStorage.getItem('glow.admin.dias')||30),usoPrueba=localStorage.getItem('glow.admin.prueba')==='1';
+const PASOS={am1:'Limpieza (mañana)',am2:'Sérum (mañana)',am3:'Hidratante (mañana)',am4:'Protector solar',pm1:'Limpieza (noche)',pm2:'Tratamiento (noche)',pm3:'Noches sin retinoide',pm4:'Contorno de ojos',pm5:'Hidratante (noche)'};
+const RESP={todos:'Sí, los consiguió todos',algunos:'Algunos',no:'Todavía no',duda:'Tengo una duda',precio:'Le frenó el precio',envio:'No llega a su país',elegir:'No sabía cuál elegir',gorut:'Volvió a su rutina',gochat:'Fue a escribirte',goplans:'Fue a ver planes',goop:'Fue a dar su opinión'};
+const PEST={piel:'Mi piel',sim:'Simular',rutina:'Rutina',msgs:'Mensajes',aj:'Ajustes'};
+function barras(items,total){
+  if(!items.length||items.every(i=>!i[1]))return'<p class="fine">Sin datos todavía.</p>';
+  const max=Math.max(1,...items.map(i=>i[1]));
+  return`<div class="bars">${items.map(([l,v])=>{const pc=total?` · ${Math.round(v/total*100)} %`:'';return`<div class="bar" title="${esc(l)}: ${v}${pc}"><span class="l">${esc(l)}</span><span class="t"><span class="f" style="width:${v/max*100}%"></span></span><span class="v">${v}${pc}</span></div>`}).join('')}</div>`;
+}
+async function vUso(){
+  const v=$('#vista');v.innerHTML='<p class="fine">Cargando…</p>';
+  if(!SECS.length)try{SECS=(await (await fetch('datos/cuestionario.json')).json()).secciones||[]}catch(e){}
+  let rows,dias;
+  try{[rows,dias]=await Promise.all([rpc('resumen_uso',{p_dias:usoDias,p_solo_prueba:usoPrueba}),rpc('uso_diario',{p_dias:usoDias,p_solo_prueba:usoPrueba})])}catch(e){v.innerHTML=`<p class="fine">${esc(e.message)}</p>`;return}
+  const P=(ev,dato)=>rows.filter(r=>r.evento===ev&&(dato===undefined||r.dato===dato)).reduce((s,r)=>s+Number(r.personas),0);
+  const V=ev=>rows.filter(r=>r.evento===ev).reduce((s,r)=>s+Number(r.veces),0);
+  const por=(ev,map,fn)=>{const m={};rows.filter(r=>r.evento===ev).forEach(r=>{const k=fn?fn(r.dato):r.dato;const l=(map&&map[k])||k||'—';m[l]=(m[l]||0)+Number(fn?r.veces:r.personas)});return Object.entries(m).sort((a,b)=>b[1]-a[1])};
+  const base=Math.max(P('abrir'),1);
+  const embudo=[['Abrieron Glow',P('abrir')],['Empezaron el cuestionario',P('cuestionario_inicio')],['Lo terminaron',P('cuestionario_fin')],['Vieron su rutina (con plan)',P('rutina_vista')],['Vieron la rutina bloqueada',P('rutina_bloqueada')],['Pulsaron «Comprar»',P('comprar')],['Les escribió el asistente',P('asistente_inicio')],['Respondieron al asistente',P('asistente_resp')],['Enviaron su opinión',P('opinion_enviada')]];
+  const nS=Math.max(SECS.length,9),secc=[[`1. ${SECS[0]||'Inicio'}`,P('cuestionario_inicio')]];
+  for(let n=2;n<=nS;n++)secc.push([`${n}. ${SECS[n-1]||'Sección '+n}`,P('seccion',String(n))]);
+  secc.push(['Terminaron',P('cuestionario_fin')]);
+  const maxD=Math.max(1,...dias.map(d=>Number(d.personas)));
+  v.innerHTML=`<div class="row" style="margin-bottom:12px">
+     <select id="dias" style="width:auto" aria-label="Periodo">${[7,14,30,90].map(d=>`<option value="${d}" ${d===usoDias?'selected':''}>Últimos ${d} días</option>`).join('')}</select>
+     <label class="row" style="margin:0;color:var(--ink);font-size:14px;gap:6px"><input type="checkbox" id="prueba" style="width:auto" ${usoPrueba?'checked':''}> Solo amigas de prueba</label>
+     <button class="btn ghost sm" id="recargar">Actualizar</button></div>
+   <div class="kpis">
+     <div class="kpi"><b>${P('abrir')}</b><small>personas abrieron Glow</small></div>
+     <div class="kpi"><b>${P('cuestionario_fin')}</b><small>terminaron el cuestionario</small></div>
+     <div class="kpi"><b>${V('comprar')}</b><small>clics en «Comprar»</small></div>
+     <div class="kpi"><b>${P('opinion_enviada')}</b><small>enviaron su opinión</small></div>
+     <div class="kpi"><b>${P('abrir','instalada')}</b><small>la usan instalada</small></div>
+     <div class="kpi"><b>${P('avisos_si')}</b><small>activaron avisos</small></div>
+   </div>
+   <section class="card"><h2>Personas cada día</h2><p class="fine" style="margin-bottom:8px">Personas distintas que usaron Glow cada día. Pasa el dedo o el ratón por una barra para ver el número.</p>
+     ${dias.length?`<div class="days" role="img" aria-label="Personas por día">${dias.map(d=>`<div style="height:${Number(d.personas)/maxD*100}%" title="${fDia(d.dia)}: ${d.personas} personas"></div>`).join('')}</div><div class="daysx"><span>${fDia(dias[0].dia)}</span><span>máximo ${maxD}</span><span>${fDia(dias[dias.length-1].dia)}</span></div>`:'<p class="fine">Sin datos todavía.</p>'}</section>
+   <div class="grid">
+   <section class="card"><h2>Recorrido</h2><p class="fine" style="margin-bottom:10px">Cuántas personas llegan a cada paso (% sobre las que abrieron Glow).</p>${barras(embudo,base)}</section>
+   <section class="card"><h2>Dónde abandonan el cuestionario</h2><p class="fine" style="margin-bottom:10px">Personas que llegaron a cada sección. Donde la barra baja de golpe, se van.</p>${barras(secc,Math.max(1,P('cuestionario_inicio')))}</section>
+   <section class="card"><h2>Respuestas al asistente</h2><p class="fine" style="margin-bottom:10px">Qué contestan cuando pregunta si consiguieron los productos.</p>${barras(por('asistente_resp',RESP))}</section>
+   <section class="card"><h2>Clics en «Comprar» por tienda</h2>${barras(por('comprar',null,d=>(d||'').split(':')[1]))}<h3>Por paso de la rutina</h3>${barras(por('comprar',PASOS,d=>(d||'').split(':')[0]))}<h3>Primera o segunda opción</h3>${barras(por('comprar',{1:'Primera opción',2:'Segunda opción'},d=>(d||'').split(':')[2]))}</section>
+   <section class="card"><h2>Pestañas que más abren</h2>${barras(por('pestana',PEST))}</section>
+   <section class="card"><h2>Pagos</h2>${barras([['Vieron los planes',P('planes')],['Fueron a pagar',P('pago_inicio')],['Pagaron',P('pago_ok')]])}<h3>Otros</h3>${barras([['Probaron el ejemplo',P('ejemplo')],['Subieron fotos',P('foto')],['Usaron la simulación',P('simulacion')],['Marcaron productos como conseguidos',P('conseguido')],['Copiaron el código de YesStyle',P('codigo_ys')],['Compartieron su perfil contigo',P('perfil_compartido','si')],['Abrieron Glow desde un aviso',P('aviso_abierto')],['Rechazaron los avisos',P('avisos_no')],['Borraron sus datos',P('borrado')]])}</section>
+   </div>
+   <p class="fine">Datos anónimos: solo qué pasos usan. Nunca respuestas del cuestionario, fotos ni datos de salud.</p>`;
+  $('#dias').onchange=e=>{usoDias=Number(e.target.value);localStorage.setItem('glow.admin.dias',usoDias);vUso()};
+  $('#prueba').onchange=e=>{usoPrueba=e.target.checked;localStorage.setItem('glow.admin.prueba',usoPrueba?'1':'0');vUso()};
+  $('#recargar').onclick=vUso;
+}
+
+/* ---------- Opiniones ---------- */
+async function vOps(){
+  const v=$('#vista');v.innerHTML='<p class="fine">Cargando…</p>';
+  let ops;try{ops=await api('opiniones?select=creado,general,cuestionario,rutina,asistente,texto,plan&order=creado.desc&limit=500')}catch(e){v.innerHTML=`<p class="fine">${esc(e.message)}</p>`;return}
+  const avg=k=>{const x=ops.map(o=>o[k]).filter(Boolean);return x.length?(x.reduce((a,b)=>a+b,0)/x.length).toFixed(1).replace('.',','):'—'};
+  const st=n=>n?'★'.repeat(n)+'☆'.repeat(5-n):'—';
+  v.innerHTML=`<div class="kpis">${[['general','Glow en general'],['cuestionario','Cuestionario'],['rutina','Rutina y productos'],['asistente','Asistente']].map(([k,l])=>`<div class="kpi"><b>${avg(k)}</b><small>${l} (media de 5)</small></div>`).join('')}<div class="kpi"><b>${ops.length}</b><small>opiniones</small></div></div>
+   <section class="card">${ops.length?`<div class="tablewrap"><table><thead><tr><th>Fecha</th><th>General</th><th>Asistente</th><th>Comentario</th></tr></thead><tbody>${ops.map(o=>`<tr><td>${fFecha(o.creado)}</td><td class="stars" aria-label="${o.general||0} de 5">${st(o.general)}</td><td class="stars" aria-label="${o.asistente||0} de 5">${st(o.asistente)}</td><td>${esc(o.texto||'')}<div class="fine">Cuestionario ${o.cuestionario||'—'} · Rutina ${o.rutina||'—'}</div></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">Todavía no hay opiniones.</p>'}</section>`;
+}
+
+/* ---------- Invitaciones ---------- */
+async function vInv(){
+  const v=$('#vista');v.innerHTML='<p class="fine">Cargando…</p>';
+  let inv;try{inv=await rpc('lista_invitaciones')}catch(e){v.innerHTML=`<p class="fine">${esc(e.message)}</p>`;return}
+  const en7=new Date(Date.now()+7*864e5).toISOString().slice(0,10);
+  v.innerHTML=`<section class="card"><h2>Tus invitaciones</h2>${inv.length?`<div class="tablewrap"><table><thead><tr><th>Código</th><th>Usos</th><th>Días gratis</th><th>Se puede abrir hasta</th><th></th></tr></thead><tbody>${inv.map(i=>`<tr><td><b>${esc(i.codigo)}</b><div class="fine">${esc(i.nota||'')}</div></td><td>${i.usos} de ${i.usos_max}</td><td>${i.dias}</td><td>${fDia(i.caduca)}</td><td><button class="link" data-copy="${esc(i.codigo)}">Copiar enlace</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="fine">No hay invitaciones.</p>'}</section>
+   <section class="card" style="max-width:520px"><h2>Crear una invitación</h2><p class="fine">Da Glow Esencial gratis, sin tarjeta, los días que elijas.</p>
+    <label for="ic">Código (letras, números y guiones)</label><input id="ic" value="GLOW-${Math.random().toString(36).slice(2,7).toUpperCase()}">
+    <div class="row"><div style="flex:1"><label for="idi">Días gratis</label><input id="idi" type="number" min="1" max="60" value="7"></div><div style="flex:1"><label for="iu">Personas</label><input id="iu" type="number" min="1" max="500" value="10"></div></div>
+    <label for="ica">Se puede abrir hasta</label><input id="ica" type="date" value="${en7}">
+    <label for="ino">Nota (solo para ti)</label><input id="ino" placeholder="Por ejemplo: sorteo de Instagram">
+    <div style="margin-top:14px"><button class="btn" id="crear">Crear invitación</button></div></section>`;
+  v.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{const u=APP_URL+'?invitacion='+b.dataset.copy;navigator.clipboard.writeText(u).then(()=>toast('Enlace copiado'),()=>prompt('Copia el enlace:',u))});
+  $('#crear').onclick=async()=>{const c=$('#ic').value.trim().toUpperCase();if(!/^[A-Z0-9-]{4,30}$/.test(c)){toast('Usa solo letras, números y guiones (de 4 a 30).');return}
+    try{await rpc('crear_invitacion',{p_codigo:c,p_dias:Number($('#idi').value),p_usos:Number($('#iu').value),p_caduca:new Date($('#ica').value+'T23:59:59').toISOString(),p_nota:$('#ino').value.trim()||null});toast('Invitación creada');vInv()}
+    catch(e){toast(/duplicate|unique/.test(e.message)?'Ese código ya existe.':'No se pudo crear: '+e.message)}};
+}
+
+/* ---------- Suscripciones y accesos ---------- */
+async function vSubs(){
+  const v=$('#vista');v.innerHTML='<p class="fine">Cargando…</p>';
+  let ss;try{ss=await rpc('lista_suscripciones')}catch(e){v.innerHTML=`<p class="fine">${esc(e.message)}</p>`;return}
+  const act=s=>['active','trialing','past_due'].includes(s.estado)&&(!s.vence||new Date(s.vence)>new Date());
+  const est={active:'Activa',trialing:'De prueba',past_due:'Pago pendiente',canceled:'Cancelada',incomplete:'Incompleta',unpaid:'Sin pagar'};
+  const n=k=>ss.filter(s=>act(s)&&s.plan===k&&s.origen==='stripe').length;
+  v.innerHTML=`<div class="kpis"><div class="kpi"><b>${n('esencial')}</b><small>Glow Esencial (pagando)</small></div><div class="kpi"><b>${n('caty')}</b><small>Glow con Caty (pagando)</small></div><div class="kpi"><b>${ss.filter(s=>act(s)&&s.origen!=='stripe').length}</b><small>con invitación activa</small></div></div>
+   <section class="card"><h2>Suscripciones</h2>${ss.length?`<div class="tablewrap"><table><thead><tr><th>Quién</th><th>Plan</th><th>Estado</th><th>Desde</th></tr></thead><tbody>${ss.map(s=>`<tr><td>${esc(s.email||(String(s.origen).startsWith('invitacion')?'Invitación '+String(s.origen).split(':')[1]:'—'))}</td><td>${s.plan==='caty'?'Glow con Caty':'Glow Esencial'}</td><td>${act(s)?'<span class="pill on">'+(s.vence?'Hasta el '+fDia(s.vence):est[s.estado]||s.estado)+'</span>':'<span class="pill">'+(s.vence&&new Date(s.vence)<new Date()?'Prueba terminada':est[s.estado]||s.estado)+'</span>'}</td><td>${fDia(s.creado)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="fine">Todavía no hay suscripciones.</p>'}</section>
+   <section class="card" style="max-width:520px"><h2>Pasar el acceso a otro móvil</h2><p class="fine">Cuando alguien cambia de móvil, te manda su código (en el móvil nuevo: Ajustes, «Ver mi código») y el email con el que pagó.</p>
+    <label for="pe">Email con el que pagó</label><input id="pe" type="email">
+    <label for="pc">Código del móvil nuevo</label><input id="pc" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+    <div style="margin-top:14px"><button class="btn" id="pasar">Pasar el acceso</button></div></section>`;
+  $('#pasar').onclick=async()=>{const em=$('#pe').value.trim(),co=$('#pc').value.trim().toLowerCase();
+    if(!em||!/^[0-9a-f-]{36}$/.test(co)){toast('Revisa el email y el código (36 caracteres).');return}
+    try{const k=await rpc('pasar_acceso',{p_email:em,p_codigo:co});toast(k?'Listo. Dile que toque «Ya pagué: actualizar mi plan».':'No encontré ninguna suscripción con ese email.')}
+    catch(e){toast(e.message.includes('codigo_no_existe')?'Ese código no existe. Que lo copie otra vez desde su móvil.':'No se pudo: '+e.message)}};
+}
+
+/* ---------- Arranque ---------- */
+(async()=>{
+  const h=leerHash();
+  if(h&&h.error){pintaLogin('El enlace no es válido o caducó. Pide uno nuevo.');return}
+  if(!(await token().catch(()=>null))){pintaLogin();return}
+  let ok=false;try{ok=await rpc('reclamar_admin')}catch(e){}
+  if(!ok){C=null;saveC();pintaLogin('Esta cuenta no tiene acceso al panel.');return}
+  pintaMarco();
+  setInterval(()=>{if(document.hidden)return;if(tab==='msgs'&&!($('#resp')&&$('#resp').value))vMsgs();else if(tab!=='msgs')contarSinLeer()},30000);
+})();
+</script>
+</body>
+</html>

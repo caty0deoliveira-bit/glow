@@ -22,9 +22,15 @@
 - [x] Formulario de opinión en la app (tabla `opiniones`).
 - [ ] Leer las opiniones y decidir mejoras con Caty.
 
+## Fase 3 (publicada, pendiente de prueba con Caty)
+- [x] Chat con Caty con límite de 10 al mes y perfil compartido con consentimiento.
+- [x] Avisos push: asistente a los 2 días, respuesta de Caty y mensaje nuevo para Caty.
+- [x] Panel `admin.html`: mensajes, uso, opiniones, invitaciones, suscripciones y pasar acceso.
+- [x] Contador anónimo de uso (`eventos_uso`).
+- [ ] Caty entra en su panel por primera vez (queda como administradora).
+- [ ] Caty activa los avisos en su móvil y prueba una conversación.
+
 ## Fases siguientes (solo tras aprobar la anterior)
-- Fase 3: avisos push del asistente, chat con Caty (`CHAT_LISTO`) y panel `/admin` (incluido el botón para pasar el acceso a otro móvil).
-- No vender Glow con Caty hasta que la Fase 3 esté lista: el chat aún no funciona.
 - Fase 4: textos legales (borrador para revisar con abogada).
 
 ## Lo que tiene que hacer Caty

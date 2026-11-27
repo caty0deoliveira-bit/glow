@@ -37,7 +37,7 @@ Si algo en la especificación contradice al prototipo en un texto o una recomend
 - **Retinoides:** nunca mostrar productos con `contiene_retinoide: true` a quien marque embarazo o lactancia, ni en el paso de noches sin retinoide.
 - **Precios:** no mostrar precios de Amazon (política de Amazon Afiliados). Sí mostrar el aviso de afiliada en la rutina y en Ajustes.
 - **Stripe:** Glow Esencial usa Managed Payments. **Glow con Caty nunca usa Managed Payments**, porque incluye atención humana y Stripe no lo admite. No crees ni cambies productos, precios ni enlaces de pago sin decírselo antes a Caty.
-- **Privacidad (RGPD, datos de salud):** las fotos, el cuestionario y la rutina se guardan **solo en el dispositivo**. En el servidor solo: email, plan, estado de la suscripción, datos mínimos del seguimiento y, si la usuaria lo acepta expresamente, el resumen de su perfil y los mensajes del chat con Caty. Nada de analítica ni cookies de terceros.
+- **Privacidad (RGPD, datos de salud):** las fotos, el cuestionario y la rutina se guardan **solo en el dispositivo**. En el servidor solo: email, plan, estado de la suscripción, datos mínimos del seguimiento y, si la usuaria lo acepta expresamente, el resumen de su perfil y los mensajes del chat con Caty. Nada de analítica ni cookies de terceros. Excepción aprobada por Caty (27/11/2026): un contador anónimo propio (`eventos_uso` en Supabase) que solo registra pasos de la app con un id aleatorio del móvil; nunca respuestas, fotos ni datos de salud.
 - **Secretos:** ninguna clave secreta en el repositorio ni en el código del navegador. Usa los secretos de Supabase y de GitHub. Revisa antes de cada commit.
 - **Avisos que no se quitan:** «Glow es una guía cosmética orientativa y no sustituye la consulta con un dermatólogo», el aviso de que la simulación es ilustrativa y el aviso de que el perfil Baumann es orientativo y no es el test oficial.
 - **Idioma:** español latinoamericano neutro, cálido y directo. A la usuaria se le habla de tú; en plural, «ustedes» (nunca «vosotros»). Frases cortas, sin tono corporativo.
@@ -48,7 +48,7 @@ Si algo en la especificación contradice al prototipo en un texto o una recomend
 - **Servidor:** Supabase (plan gratuito, región de la UE). Login por enlace mágico al email, base de datos con seguridad por filas (RLS) y Edge Functions para el webhook de Stripe, el portal de cliente, el aviso de seguimiento y el borrado de cuenta.
 - **Pagos:** los enlaces de pago de Stripe ya creados (ver `config.json`), abiertos con `client_reference_id` (id de la usuaria en Supabase) y `prefilled_email`. Un webhook de Stripe actualiza el plan. Cancelación desde el portal de cliente de Stripe.
 - **Avisos del asistente:** Web Push (claves VAPID) lanzado por una tarea programada de Supabase. En iPhone solo funciona con la app instalada en la pantalla de inicio: explícalo en la app.
-- **Panel de Caty:** página `/admin` protegida (solo su email, rol admin con RLS) para leer y responder el chat.
+- **Panel de Caty:** `admin.html`, acceso por enlace al correo. La administradora es la primera cuenta con email verificado (`reclamar_admin`), guardada por id en `config_privada`: ningún email en el código, porque el repo es público.
 
 Puedes elegir la herramienta de construcción (por ejemplo Vite con JavaScript o TypeScript sin framework pesado), siempre que el resultado sea ligero, funcione sin conexión y se publique en GitHub Pages.
 
