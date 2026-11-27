@@ -305,6 +305,50 @@
    ]
   },
   {
+   "id": "afeitado",
+   "s": 5,
+   "k": "one",
+   "t": "¿Cómo te afeitas?",
+   "h": "El afeitado cambia mucho cómo se siente tu piel.",
+   "o": [
+    "A diario con cuchilla",
+    "Varias veces por semana con cuchilla",
+    "Con máquina eléctrica",
+    "Llevo barba y solo la perfilo",
+    "No me afeito"
+   ],
+   "solo_si_estricto": {
+    "sexo": [
+     "Hombre"
+    ]
+   }
+  },
+  {
+   "id": "trasafeitado",
+   "s": 5,
+   "k": "multi",
+   "t": "Después de afeitarte, ¿qué te pasa?",
+   "h": "Elige todo lo que aplique.",
+   "o": [
+    "Nada",
+    "Ardor o rojez",
+    "Granitos o pelos enquistados",
+    "Cortes",
+    "Tirantez o sequedad"
+   ],
+   "solo_si_estricto": {
+    "sexo": [
+     "Hombre"
+    ],
+    "afeitado": [
+     "A diario con cuchilla",
+     "Varias veces por semana con cuchilla",
+     "Con máquina eléctrica",
+     "Llevo barba y solo la perfilo"
+    ]
+   }
+  },
+  {
    "id": "prod",
    "s": 5,
    "k": "multi",

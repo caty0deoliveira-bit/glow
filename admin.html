@@ -218,7 +218,7 @@ function perfilHtml(p){
    ${L('Tipo Baumann',r.tipo_baumann)}${L('Sexo',r.sexo)}${L('Edad',r.edad)}${L('País',r.pais)}${L('Etapa',r.etapa)}${L('Fototipo',r.fototipo)}
    ${L('Cómo ve su piel',r.estado_piel)}${L('Objetivos',r.objetivos)}${L('Plazo',r.plazo)}${L('Enfermedades de la piel',r.enfermedades_piel)}
    ${L('Tratamientos',r.tratamientos)}${L('Medicamentos',r.medicamentos)}${L('Última visita al dermatólogo',r.ultima_visita_dermatologo)}${L('Alergias o lo que no tolera',r.alergias)}
-   ${L('Productos que usa',r.productos_actuales)}${L('Otros productos',r.otros_productos)}${L('Hábitos',r.habitos)}${L('Cosmética que prefiere',r.cosmetica)}
+   ${L('Afeitado',r.afeitado)}${L('Después de afeitarse',r.tras_afeitado)}${L('Productos que usa',r.productos_actuales)}${L('Otros productos',r.otros_productos)}${L('Hábitos',r.habitos)}${L('Cosmética que prefiere',r.cosmetica)}
    ${L('Presupuesto',r.presupuesto)}${L('Pasos',r.pasos)}${L('Preferencias',r.preferencias)}
    ${r.rutina?`<dt>Su rutina en Glow</dt><dd>Mañana: ${esc((r.rutina.manana||[]).join(' → '))}<br>Noche: ${esc((r.rutina.noche||[]).join(' → '))}</dd>`:''}
   </dl><p class="fine" style="margin-top:8px">Actualizado ${fFecha(p.actualizado)}. Lo comparte con su consentimiento y puede retirarlo cuando quiera.</p></div>`;

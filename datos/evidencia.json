@@ -1,131 +1,173 @@
 {
-  "nota": "Referencias revisadas en PubMed y aprobadas por Caty. No añadir afirmaciones de salud sin una referencia nueva aprobada por ella.",
-  "referencias": [
-    {
-      "pmid": "14979745",
-      "titulo_es": "Ácido azelaico al 15 % en la rosácea papulopustular",
-      "cita": "Am J Clin Dermatol 2004",
-      "doi": "10.2165/00128071-200405010-00009",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/14979745/"
-    },
-    {
-      "pmid": "16029679",
-      "titulo_es": "Niacinamida: mejora el aspecto de la piel envejecida, incluidas las manchas",
-      "cita": "Bissett y cols., Dermatol Surg 2005",
-      "doi": "10.1111/j.1524-4725.2005.31732",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/16029679/"
-    },
-    {
-      "pmid": "17515510",
-      "titulo_es": "El retinol mejora la piel con envejecimiento natural (24 semanas)",
-      "cita": "Kafi y cols., Arch Dermatol 2007",
-      "doi": "10.1001/archderm.143.5.606",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/17515510/"
-    },
-    {
-      "pmid": "18046911",
-      "titulo_es": "Retinoides en el envejecimiento cutáneo: eficacia y seguridad",
-      "cita": "Mukherjee y cols., Clin Interv Aging 2006",
-      "doi": "10.2147/ciia.2006.1.4.327",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/18046911/"
-    },
-    {
-      "pmid": "19337100",
-      "titulo_es": "Factores del envejecimiento facial en gemelos idénticos (tabaco, sol)",
-      "cita": "Plast Reconstr Surg 2009",
-      "doi": "10.1097/PRS.0b013e31819c4d42",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/19337100/"
-    },
-    {
-      "pmid": "20725554",
-      "titulo_es": "Hiperpigmentación postinflamatoria en pieles oscuras",
-      "cita": "J Clin Aesthet Dermatol 2010",
-      "doi": null,
-      "url": "https://pubmed.ncbi.nlm.nih.gov/20725554/"
-    },
-    {
-      "pmid": "24528911",
-      "titulo_es": "Seguridad de los medicamentos dermatológicos en el embarazo",
-      "cita": "J Am Acad Dermatol 2014",
-      "doi": "10.1016/j.jaad.2013.09.010",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/24528911/"
-    },
-    {
-      "pmid": "25266053",
-      "titulo_es": "¿La mala calidad del sueño envejece la piel?",
-      "cita": "Clin Exp Dermatol 2015",
-      "doi": "10.1111/ced.12455",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/25266053/"
-    },
-    {
-      "pmid": "26347269",
-      "titulo_es": "Ácido salicílico: revisión completa",
-      "cita": "Clin Cosmet Investig Dermatol 2015",
-      "doi": "10.2147/CCID.S84765",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/26347269/"
-    },
-    {
-      "pmid": "28658462",
-      "titulo_es": "Isotretinoína y momento de los procedimientos: consenso",
-      "cita": "JAMA Dermatol 2017",
-      "doi": "10.1001/jamadermatol.2017.2077",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/28658462/"
-    },
-    {
-      "pmid": "32335182",
-      "titulo_es": "Fotoprotección más allá del UV: protectores con color",
-      "cita": "J Am Acad Dermatol 2020",
-      "doi": "10.1016/j.jaad.2020.04.079",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/32335182/"
-    },
-    {
-      "pmid": "33242128",
-      "titulo_es": "Menopausia y piel: cosmecéuticos para la piel con déficit de estrógenos",
-      "cita": "Dermatol Ther 2021",
-      "doi": "10.1007/s13555-020-00468-7",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/33242128/"
-    },
-    {
-      "pmid": "33849384",
-      "titulo_es": "Tratamiento del melasma: revisión sistemática",
-      "cita": "J Dermatolog Treat 2022",
-      "doi": "10.1080/09546634.2021.1914313",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/33849384/"
-    },
-    {
-      "pmid": "35038127",
-      "titulo_es": "Ectoína tópica en pieles con la barrera alterada: revisión sistemática",
-      "cita": "Kauth y Trusova, Dermatol Ther 2022",
-      "doi": "10.1007/s13555-021-00676-9",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/35038127/"
-    },
-    {
-      "pmid": "36447117",
-      "titulo_es": "Tratamiento del acné en el embarazo y la lactancia",
-      "cita": "Dermatol Ther 2023",
-      "doi": "10.1007/s13555-022-00854-3",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/36447117/"
-    },
-    {
-      "pmid": "37128827",
-      "titulo_es": "Vitamina C tópica en melasma y fotoenvejecimiento: revisión sistemática",
-      "cita": "J Cosmet Dermatol 2023",
-      "doi": "10.1111/jocd.15748",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/37128827/"
-    },
-    {
-      "pmid": "37717558",
-      "titulo_es": "Barrera cutánea e hidratación: función y reparación",
-      "cita": "Skin Pharmacol Physiol 2023",
-      "doi": "10.1159/000534136",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/37717558/"
-    },
-    {
-      "pmid": "38772426",
-      "titulo_es": "Protectores solares: mecanismos y eficacia",
-      "cita": "J Am Acad Dermatol 2024",
-      "doi": "10.1016/j.jaad.2024.02.065",
-      "url": "https://pubmed.ncbi.nlm.nih.gov/38772426/"
-    }
-  ]
+ "nota": "Referencias revisadas en PubMed y aprobadas por Caty. No añadir afirmaciones de salud sin una referencia nueva aprobada por ella.",
+ "referencias": [
+  {
+   "pmid": "14979745",
+   "titulo_es": "Ácido azelaico al 15 % en la rosácea papulopustular",
+   "cita": "Am J Clin Dermatol 2004",
+   "doi": "10.2165/00128071-200405010-00009",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/14979745/"
+  },
+  {
+   "pmid": "16029679",
+   "titulo_es": "Niacinamida: mejora el aspecto de la piel envejecida, incluidas las manchas",
+   "cita": "Bissett y cols., Dermatol Surg 2005",
+   "doi": "10.1111/j.1524-4725.2005.31732",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/16029679/"
+  },
+  {
+   "pmid": "17515510",
+   "titulo_es": "El retinol mejora la piel con envejecimiento natural (24 semanas)",
+   "cita": "Kafi y cols., Arch Dermatol 2007",
+   "doi": "10.1001/archderm.143.5.606",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/17515510/"
+  },
+  {
+   "pmid": "18046911",
+   "titulo_es": "Retinoides en el envejecimiento cutáneo: eficacia y seguridad",
+   "cita": "Mukherjee y cols., Clin Interv Aging 2006",
+   "doi": "10.2147/ciia.2006.1.4.327",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/18046911/"
+  },
+  {
+   "pmid": "19337100",
+   "titulo_es": "Factores del envejecimiento facial en gemelos idénticos (tabaco, sol)",
+   "cita": "Plast Reconstr Surg 2009",
+   "doi": "10.1097/PRS.0b013e31819c4d42",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/19337100/"
+  },
+  {
+   "pmid": "20725554",
+   "titulo_es": "Hiperpigmentación postinflamatoria en pieles oscuras",
+   "cita": "J Clin Aesthet Dermatol 2010",
+   "doi": null,
+   "url": "https://pubmed.ncbi.nlm.nih.gov/20725554/"
+  },
+  {
+   "pmid": "24528911",
+   "titulo_es": "Seguridad de los medicamentos dermatológicos en el embarazo",
+   "cita": "J Am Acad Dermatol 2014",
+   "doi": "10.1016/j.jaad.2013.09.010",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/24528911/"
+  },
+  {
+   "pmid": "25266053",
+   "titulo_es": "¿La mala calidad del sueño envejece la piel?",
+   "cita": "Clin Exp Dermatol 2015",
+   "doi": "10.1111/ced.12455",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/25266053/"
+  },
+  {
+   "pmid": "26347269",
+   "titulo_es": "Ácido salicílico: revisión completa",
+   "cita": "Clin Cosmet Investig Dermatol 2015",
+   "doi": "10.2147/CCID.S84765",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/26347269/"
+  },
+  {
+   "pmid": "28658462",
+   "titulo_es": "Isotretinoína y momento de los procedimientos: consenso",
+   "cita": "JAMA Dermatol 2017",
+   "doi": "10.1001/jamadermatol.2017.2077",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/28658462/"
+  },
+  {
+   "pmid": "32335182",
+   "titulo_es": "Fotoprotección más allá del UV: protectores con color",
+   "cita": "J Am Acad Dermatol 2020",
+   "doi": "10.1016/j.jaad.2020.04.079",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/32335182/"
+  },
+  {
+   "pmid": "33242128",
+   "titulo_es": "Menopausia y piel: cosmecéuticos para la piel con déficit de estrógenos",
+   "cita": "Dermatol Ther 2021",
+   "doi": "10.1007/s13555-020-00468-7",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33242128/"
+  },
+  {
+   "pmid": "33849384",
+   "titulo_es": "Tratamiento del melasma: revisión sistemática",
+   "cita": "J Dermatolog Treat 2022",
+   "doi": "10.1080/09546634.2021.1914313",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33849384/"
+  },
+  {
+   "pmid": "35038127",
+   "titulo_es": "Ectoína tópica en pieles con la barrera alterada: revisión sistemática",
+   "cita": "Kauth y Trusova, Dermatol Ther 2022",
+   "doi": "10.1007/s13555-021-00676-9",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/35038127/"
+  },
+  {
+   "pmid": "36447117",
+   "titulo_es": "Tratamiento del acné en el embarazo y la lactancia",
+   "cita": "Dermatol Ther 2023",
+   "doi": "10.1007/s13555-022-00854-3",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/36447117/"
+  },
+  {
+   "pmid": "37128827",
+   "titulo_es": "Vitamina C tópica en melasma y fotoenvejecimiento: revisión sistemática",
+   "cita": "J Cosmet Dermatol 2023",
+   "doi": "10.1111/jocd.15748",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/37128827/"
+  },
+  {
+   "pmid": "37717558",
+   "titulo_es": "Barrera cutánea e hidratación: función y reparación",
+   "cita": "Skin Pharmacol Physiol 2023",
+   "doi": "10.1159/000534136",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/37717558/"
+  },
+  {
+   "pmid": "38772426",
+   "titulo_es": "Protectores solares: mecanismos y eficacia",
+   "cita": "J Am Acad Dermatol 2024",
+   "doi": "10.1016/j.jaad.2024.02.065",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/38772426/"
+  },
+  {
+   "pmid": "34254359",
+   "titulo_es": "Hábitos de afeitado y problemas de la piel afeitada en hombres",
+   "cita": "J Dermatol 2021",
+   "doi": "10.1111/1346-8138.16034",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/34254359/"
+  },
+  {
+   "pmid": "8261811",
+   "titulo_es": "Ácido glicólico tópico en la pseudofoliculitis de la barba: dos estudios",
+   "cita": "Cutis 1993",
+   "doi": null,
+   "url": "https://pubmed.ncbi.nlm.nih.gov/8261811/"
+  },
+  {
+   "pmid": "36840647",
+   "titulo_es": "Revisión de tratamientos para la pseudofoliculitis de la barba",
+   "cita": "Clin Exp Dermatol 2023",
+   "doi": "10.1093/ced/llad075",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/36840647/"
+  },
+  {
+   "pmid": "21034705",
+   "titulo_es": "Pseudofoliculitis de la barba (revisión)",
+   "cita": "Actas Dermosifiliogr 2010",
+   "doi": null,
+   "url": "https://pubmed.ncbi.nlm.nih.gov/21034705/"
+  },
+  {
+   "pmid": "31354326",
+   "titulo_es": "Pseudofoliculitis de la barba: opciones de tratamiento",
+   "cita": "Clin Cosmet Investig Dermatol 2019",
+   "doi": "10.2147/CCID.S149250",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/31354326/"
+  },
+  {
+   "pmid": "32346751",
+   "titulo_es": "Epidemiología del melanoma y exposición solar",
+   "cita": "Acta Derm Venereol 2020",
+   "doi": "10.2340/00015555-3491",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/32346751/"
+  }
+ ]
 }

@@ -116,3 +116,6 @@ Copia los tokens y estilos del prototipo: marfil, verde topo y marrones, vidrio 
 
 ## Cambio 27/11/2026: hombres y mujeres
 La primera pregunta es `sexo` (Mujer, Hombre, Prefiero no decirlo). Las preguntas pueden llevar `solo_si` (se muestran solo si otra respuesta coincide) y `ocultar_opciones_si` (oculta opciones por índice). A los hombres no se les pregunta la etapa hormonal ni se les muestran terapia hormonal o anticonceptivos, y el motor no usa la etapa hormonal para ellos. No cambia ninguna recomendación de salud.
+
+## Cambio 27/11/2026: afeitado (solo hombres)
+Preguntas `afeitado` y `trasafeitado` con `solo_si_estricto` (solo se muestran si la condición está respondida y coincide). Motor: consejo de afeitado en `am1`, paso `am1b` «Después del afeitado» (categoría `barrera`) si hay ardor, rojez o tirantez, paso `pm3b` «Exfoliante para la barba» (categoría `glicolico`, nunca con isotretinoína ni la misma noche que el retinoide o el salicílico) si hay granitos o pelos enquistados, alerta de dermatólogo y láser, y alerta de melanoma para hombres de 40 o más. Aprobado por Caty con las referencias de `evidencia.json`.

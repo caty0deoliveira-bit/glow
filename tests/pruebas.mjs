@@ -66,6 +66,35 @@ const res6=await pg.evaluate(()=>{
  S=fresh();render();return out});
 for(const [n,o] of res6){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
 
+// ---------- Hombres: afeitado y glicólico ----------
+const res7=await pg.evaluate(()=>{
+ const out=[];const idx=id=>Q.findIndex(q=>q.id===id);const lab=(id,l)=>qq(id).o.indexOf(l);
+ const prev=idx('afeitado')-1;
+ S=fresh();S.screen='quiz';S.a.sexo=lab('sexo','Hombre');S.qi=prev;ACT.next();
+ out.push(['Hombre: pregunta cómo se afeita',Q[S.qi].id==='afeitado']);
+ S.a.afeitado=lab('afeitado','A diario con cuchilla');ACT.next();out.push(['Hombre que se afeita: pregunta qué le pasa después',Q[S.qi].id==='trasafeitado']);
+ S.qi=prev;S.a.afeitado=lab('afeitado','No me afeito');S.qi=idx('afeitado');ACT.next();out.push(['Hombre que no se afeita: no pregunta por el afeitado',Q[S.qi].id==='prod']);
+ S=fresh();S.screen='quiz';S.a.sexo=lab('sexo','Mujer');S.qi=prev;ACT.next();out.push(['Mujer: no ve las preguntas de afeitado',Q[S.qi].id==='prod']);
+ S=fresh();S.screen='quiz';S.qi=prev;ACT.next();out.push(['Sin responder sexo: no ve las preguntas de afeitado',Q[S.qi].id==='prod']);
+ const hombre=(tras,extra)=>{loadSample();S.a.sexo=lab('sexo','Hombre');S.a.afeitado=lab('afeitado','A diario con cuchilla');S.a.trasafeitado=tras.map(t=>lab('trasafeitado',t));if(extra)extra();return plan()};
+ let P=hombre(['Ardor o rojez']);const b=P.am.find(x=>x.id==='am1b');
+ out.push(['Ardor: paso «Después del afeitado» con sérum de barrera',!!b&&b.cat==='barrera'&&b.pk.length>0]);
+ out.push(['Se afeita: consejo de afeitado en la limpieza',P.am[0].t.includes('a favor del pelo')&&P.am[0].ev==='34254359']);
+ P=hombre(['Granitos o pelos enquistados']);const g=P.pm.find(x=>x.id==='pm3b');
+ out.push(['Pelos enquistados: exfoliante glicólico con productos',!!g&&g.cat==='glicolico'&&g.pk.length===2&&g.ev==='8261811']);
+ out.push(['Con retinoide: el glicólico va en otra noche',P.pm.some(x=>x.cat==='retinoide')&&g.t.includes('Nunca la misma noche')]);
+ out.push(['Pelos enquistados: alerta de dermatólogo y láser',P.al.some(a=>a.t.includes('depilación láser'))]);
+ P=hombre(['Granitos o pelos enquistados'],()=>{S.a.extra=[lab('extra','Sin perfume')]});
+ out.push(['«Sin perfume»: nunca recomienda Pixi (lleva perfume)',!P.pm.find(x=>x.id==='pm3b').pk.some(p=>/Pixi/.test(p.b))]);
+ P=hombre(['Granitos o pelos enquistados'],()=>{S.a.trat=[lab('trat','Isotretinoína oral')]});
+ out.push(['Isotretinoína: sin glicólico y aviso',!P.pm.some(x=>x.cat==='glicolico')&&P.al.some(a=>a.t.includes('isotretinoína'))]);
+ P=hombre([]);out.push(['Hombre de 47: alerta de revisión de lunares',P.al.some(a=>a.t.includes('melanoma'))]);
+ loadSample();P=plan();out.push(['Mujer de 47: sin alerta de melanoma para hombres ni pasos de afeitado',!P.al.some(a=>a.t.includes('melanoma'))&&!P.am.some(x=>x.id==='am1b')&&!P.pm.some(x=>x.id==='pm3b')]);
+ loadSample();S.a.afeitado=lab('afeitado','A diario con cuchilla');S.a.trasafeitado=[lab('trasafeitado','Granitos o pelos enquistados')];P=plan();
+ out.push(['Respuestas de afeitado sin ser hombre: no cambian la rutina',!P.pm.some(x=>x.id==='pm3b')]);
+ S=fresh();render();return out});
+for(const [n,o] of res7){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
+
 // ---------- Fase 2: pagos y bloqueo ----------
 const UID='11111111-2222-4333-8444-555555555555';
 let filas=[];let pagoURL=null;

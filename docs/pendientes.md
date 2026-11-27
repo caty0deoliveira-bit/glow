@@ -34,8 +34,11 @@
 - [x] Primera pregunta «¿eres mujer u hombre?» (con «Prefiero no decirlo»).
 - [x] Hombres: sin etapa hormonal ni terapia hormonal o anticonceptivos; el motor ignora la etapa hormonal.
 - [x] Textos neutros («¿Cuántos pasos quieres hacer cada día?», «Te damos la bienvenida»).
-- [ ] Decidir con Caty si se añaden preguntas o pasos propios de hombres (afeitado, barba): contenido de salud nuevo, necesita su aprobación y referencias de PubMed.
-- [ ] Decidir con Caty si la portada sigue mencionando su libro «para mujeres 40+».
+- [x] Preguntas de afeitado para hombres, aprobadas por Caty (27/11): «¿Cómo te afeitas?» y «Después de afeitarte, ¿qué te pasa?».
+- [x] Rutina: consejo de afeitado (PMID 34254359), paso «Después del afeitado» con sérum de barrera, exfoliante glicólico para pelos enquistados (PMID 8261811; Caty eligió glicólico) y alertas de dermatólogo (PMID 36840647) y de melanoma en hombres de 40+ (PMID 32346751).
+- [x] Catálogo: categoría «Ácido glicólico» con The Ordinary Glycolic 7 %, COSRX AHA 7 y Pixi Glow Tonic (lleva perfume), elegidos por Caty.
+- [ ] ASIN de Amazon España para The Ordinary Glycolic 7 % y Pixi Glow Tonic (ahora van por búsqueda).
+- [x] La portada mantiene el libro de Caty: es su autoridad (decisión de Caty).
 
 ## Fases siguientes (solo tras aprobar la anterior)
 - Fase 4: textos legales (borrador para revisar con abogada).

@@ -355,7 +355,7 @@ async function syncPlan(){
   const cambio=np!==S.plan||nv!==(S.vence||null);S.plan=np;S.vence=nv;save();return cambio;
  }catch(e){return false}}
 const tester=()=>!!S.inv&&!!S.vence&&paid(); /* amiga con invitación activa: nunca ve botones de pago */
-const VER='1.4';
+const VER='1.5';
 /* ---------- Contador anónimo de uso ----------
    Solo pasos de la app (nunca respuestas, fotos ni datos de piel). Id aleatorio del móvil, sin cookies. */
 const DISP=(()=>{try{let d=localStorage.getItem('glow.disp');if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2));localStorage.setItem('glow.disp',d)}return d}catch(e){return 'sin-id'}})();
@@ -398,7 +398,7 @@ function resumenPerfil(){
  try{const P=plan(),o=id=>{try{return one(id)}catch(e){return null}},m=id=>{try{return many(id)}catch(e){return[]}};
   return{tipo_baumann:P.A.map(x=>x.L).join(''),sexo:o('sexo'),edad:S.a.edad||null,pais:o('pais'),etapa:esHombre()?null:o('fase'),fototipo:S.a.foto!=null?['I','II','III','IV','V','VI'][S.a.foto]:null,
    estado_piel:m('estado'),objetivos:m('meta'),plazo:o('plazo'),enfermedades_piel:m('enf'),tratamientos:m('trat'),medicamentos:m('med'),ultima_visita_dermatologo:o('derm'),
-   alergias:S.a.alerg||'',productos_actuales:m('prod'),otros_productos:S.a.prodtxt||'',habitos:{sol:o('sol'),sueno:o('sueno'),estres:o('estres'),tabaco:o('tabaco'),clima:o('clima')},
+   alergias:S.a.alerg||'',productos_actuales:m('prod'),otros_productos:S.a.prodtxt||'',afeitado:esHombre()?o('afeitado'):null,tras_afeitado:esHombre()?m('trasafeitado'):[],habitos:{sol:o('sol'),sueno:o('sueno'),estres:o('estres'),tabaco:o('tabaco'),clima:o('clima')},
    cosmetica:m('cos'),presupuesto:o('pres'),pasos:o('pasos'),preferencias:m('extra'),rutina:{manana:P.am.map(x=>x.p),noche:P.pm.map(x=>x.p)}}}catch(e){return null}}
 async function compartirPerfil(){
  const s=await sesion(true);
@@ -496,7 +496,7 @@ const many=id=>(S.a[id]||[]).map(i=>qq(id).o[i]);
 const has=(id,lab)=>many(id).includes(lab);
 /* Preguntas y opciones que dependen de otra respuesta (p. ej. hombre o mujer) */
 const esHombre=()=>{const q=qq('sexo');return !!q&&S.a.sexo!=null&&q.o[S.a.sexo]==='Hombre'};
-function visible(q){if(!q.solo_si)return true;return Object.entries(q.solo_si).every(([id,labs])=>{const v=S.a[id];return v==null||labs.includes(qq(id).o[v])})}
+function visible(q){const ok=(c,estricto)=>Object.entries(c).every(([id,labs])=>{const v=S.a[id];if(v==null)return !estricto;return visible(qq(id))&&labs.includes(qq(id).o[v])});return(!q.solo_si||ok(q.solo_si,false))&&(!q.solo_si_estricto||ok(q.solo_si_estricto,true))}
 function opcionesOcultas(q){const out=new Set();Object.entries(q.ocultar_opciones_si||{}).forEach(([cond,idx])=>{const [id,lab]=cond.split('=');const v=S.a[id];if(v!=null&&qq(id)&&qq(id).o[v]===lab)idx.forEach(i=>out.add(i))});return out}
 function limpiarOcultas(){Q.forEach(q=>{if(!visible(q))delete S.a[q.id];const h=opcionesOcultas(q);if(h.size&&Array.isArray(S.a[q.id]))S.a[q.id]=S.a[q.id].filter(i=>!h.has(i));if(h.size&&typeof S.a[q.id]==='number'&&h.has(S.a[q.id]))delete S.a[q.id]})}
 const sigVisible=i=>{for(let j=i+1;j<Q.length;j++)if(visible(Q[j]))return j;return -1};
@@ -527,6 +527,11 @@ function plan(){
  const oily=od==='O';
  const minimal=S.a.pasos===0;
  const fotosens=has('med','Medicamentos que dan sensibilidad al sol');
+ /* Hombres: afeitado (aprobado por Caty el 27/11/2026, con referencias de PubMed) */
+ const afe=esHombre()?one('afeitado'):null,seAfeita=!!afe&&afe!=='No me afeito';
+ const trasAf=seAfeita?many('trasafeitado'):[];
+ const irritAf=trasAf.includes('Ardor o rojez')||trasAf.includes('Tirantez o sequedad');
+ const enquist=trasAf.includes('Granitos o pelos enquistados');
  const sinPerfume=has('extra','Sin perfume')||sens;
  const dark=fotoI>=3;
  const useRet=!preg&&!iso&&!rxret&&!rosacea&&aging;
@@ -534,13 +539,15 @@ function plan(){
  const sp=sinPerfume?' Sin perfume.':'';
 
  const am=[],pm=[];
- am.push({id:'am1',p:'Limpieza suave',cat:oily?'limpGel':'limpCrema',t:oily?'Gel limpiador suave, sin sulfatos fuertes.':'Agua tibia o un limpiador cremoso suave.'+sp,w:oily?'Retira el sebo de la noche sin resecar.':'Por la mañana tu piel no necesita una limpieza intensa.'});
+ am.push({id:'am1',p:'Limpieza suave',cat:oily?'limpGel':'limpCrema',ev:seAfeita?'34254359':undefined,t:(oily?'Gel limpiador suave, sin sulfatos fuertes.':'Agua tibia o un limpiador cremoso suave.'+sp)+(seAfeita?' Si te afeitas: lávate con agua tibia antes, usa gel o espuma y afeita a favor del pelo, sin repasar.':''),w:oily?'Retira el sebo de la noche sin resecar.':'Por la mañana tu piel no necesita una limpieza intensa.'});
+ if(irritAf) am.push({id:'am1b',p:'Después del afeitado',cat:'barrera',ev:'34254359',t:'Sérum de barrera sin alcohol, con ceramidas o ectoína, justo después de afeitarte.'+sp,w:'Calma el ardor y la tirantez y ayuda a reparar la barrera que el afeitado altera.'});
  if(!minimal){
   if(manchas&&!sens) am.push({id:'am2',p:'Antioxidante',cat:'vitc',ev:'37128827',t:'Sérum de vitamina C (ácido ascórbico o un derivado estable).',w:'Ayuda a unificar el tono y a mejorar el fotoenvejecimiento.'});
   else if(manchas&&sens) am.push({id:'am2',p:'Antioxidante',cat:'vitcSuave',ev:'16029679',t:'Un derivado suave de vitamina C o niacinamida.',w:'Unifica el tono con menos riesgo de irritar.'});
   else if(oily) am.push({id:'am2',p:'Sérum',cat:'niacin',ev:'16029679',t:'Niacinamida.',w:'Mejora la textura, las rojeces y el aspecto de las manchas.'});
   else am.push({id:'am2',p:'Sérum de barrera',cat:'barrera',ev:'35038127',t:'Sérum con ceramidas o ectoína.',w:'Refuerzan la barrera y reducen la pérdida de agua, con muy buena tolerancia.'});
  }
+ if(irritAf){const i2=am.findIndex(x=>x.id==='am2'&&x.cat==='barrera');if(i2>=0)am.splice(i2,1)}
  am.push({id:'am3',p:'Hidratante',cat:oily?'hidraLigera':'hidraRica',ev:meno?'33242128':'37717558',t:oily?'Gel-crema ligera.':(meno||od==='D'?'Crema con ceramidas, colesterol y ácidos grasos.':'Crema ligera con ceramidas.')+sp,w:meno?'Con la bajada de estrógenos la piel pierde hidratación y grosor: hay que cuidar la barrera.':'Sella la hidratación y cuida la barrera.'});
  am.push({id:'am4',p:'Protector solar',cat:tinted?'spfColor':'spf',ev:tinted?'32335182':'38772426',t:tinted?'FPS 50 de amplio espectro, mejor con color (óxidos de hierro).':'FPS 50 de amplio espectro.',w:tinted?'El color protege también de la luz visible, que empeora el melasma y las manchas.':'Es el paso que más previene manchas y envejecimiento. Reaplica cada 2 horas al aire libre.'});
 
@@ -556,6 +563,7 @@ function plan(){
  else tr={id:'pm2',p:'Sérum',cat:'niacin',ev:'16029679',t:'Niacinamida.',w:'Mantiene la piel equilibrada. Más adelante puedes sumar un retinol suave.'};
  pm.push(tr);
  if(!minimal&&useRet&&manchas) pm.push({id:'pm3',p:'Noches sin retinoide',noRet:1,cat:'despig',ev:'33849384',t:'Ácido tranexámico o azelaico para las manchas.',w:'Alternarlos evita acumular irritación.'});
+ if(enquist&&!iso) pm.push({id:'pm3b',p:'Exfoliante para la barba',noRet:1,cat:'glicolico',ev:'8261811',t:'Ácido glicólico en la zona de la barba y el cuello, 2 o 3 noches por semana al principio.'+((useRet||rxret||tr.cat==='bha')?' Nunca la misma noche que tu retinoide o tu ácido salicílico.':'')+(sens?' Si te escuece, espacia las aplicaciones.':''),w:'Ayuda a liberar los pelos que se quedan atrapados bajo la piel y reduce los granitos del afeitado.'});
  if(S.a.pasos===2&&has('estado','Ojeras o bolsas')) pm.push({id:'pm4',p:'Contorno de ojos',cat:'contorno',t:'Con cafeína o péptidos.',w:'La zona es fina: mejor una fórmula específica.'});
  pm.push({id:'pm5',p:'Hidratante de noche',cat:oily?'hidraLigera':'hidraRica',ev:'37717558',t:oily?'Hidratante ligera que no obstruya los poros.':'Crema rica con ceramidas. Si notas mucha sequedad, unas gotas de escualano encima.',w:'Por la noche la piel pierde más agua: es el momento de reparar.'});
  [...am,...pm].forEach(s=>{s.pk=s.cat?picks(s.cat,preg||s.noRet,sinPerfume):[]});
@@ -563,6 +571,8 @@ function plan(){
  const ret=useRet?[['Semanas 1 y 2','2 noches por semana'],['Semanas 3 y 4','3 noches por semana'],['Semanas 5 a 8','Noche sí, noche no'],['Desde la semana 9','Cada noche, si tu piel lo tolera']]:null;
 
  const al=[];
+ if(enquist) al.push({w:1,ev:'36840647',t:'Si los granitos tras el afeitado son frecuentes, sobre todo con pelo rizado o piel oscura, pueden dejar manchas o cicatrices. Coméntalo con tu dermatólogo: la depilación láser es la solución a largo plazo.'+(iso?' Mientras tomes isotretinoína, nada de exfoliantes: consúltalo con tu médico.':'')});
+ if(esHombre()&&(+S.a.edad||0)>=40) al.push({w:0,ev:'32346751',t:'A partir de los 40, el melanoma es más frecuente en hombres que en mujeres, en parte porque se revisan menos la piel. Usa protector a diario y revisa tus lunares con el dermatólogo.'});
  if(S.a.derm>=2) al.push({w:1,t:S.a.derm===3?'Nunca has ido al dermatólogo. Te recomendamos una primera revisión, también de lunares.':'Hace más de 3 años de tu última revisión. Te recomendamos volver al dermatólogo.'});
  if(has('enf','Acné moderado o severo')) al.push({w:1,t:'El acné moderado o severo necesita tratamiento médico. Esta rutina lo acompaña, no lo sustituye.'});
  if(preg) al.push({w:1,t:'Durante el embarazo y la lactancia, consulta cada activo con tu médico.',ev:'24528911'});
