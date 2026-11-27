@@ -6,15 +6,15 @@
 - [x] Las 7 pruebas del motor pasan.
 - [x] Caty probó y aprobó (27/11/2026).
 
-## Fase 2 (publicada, pendiente de prueba real)
+## Fase 2 (terminada y probada)
 - [x] Supabase «glow» (organización «Glow by Caty», plan gratuito, Frankfurt), acceso anónimo activado.
 - [x] Decisión de Caty: sin login por email en el piloto. El acceso queda en el móvil; si cambia de móvil, Caty lo pasa (ver `docs/fase2.md`).
 - [x] Tablas `suscripciones` y `eventos_stripe` con RLS (`supabase/migrations/001_suscripciones.sql`).
 - [x] Función `stripe-webhook` desplegada, sin JWT, con verificación de firma (pruebas en `tests/webhook.test.mjs`).
 - [x] Stripe: destino de webhook «Glow app (Supabase)» con 3 eventos, redirección tras el pago en los dos enlaces, portal de clientes activado.
 - [x] App: pagos reales, bloqueo de rutina y mensajes, portal, «Ya pagué», código para cambiar de móvil.
-- [ ] Caty pega el secreto de firma del webhook en Supabase (`STRIPE_WEBHOOK_SECRET`).
-- [ ] Compra real de Caty y reembolso.
+- [x] Caty pegó el secreto de firma del webhook en Supabase (`STRIPE_WEBHOOK_SECRET`).
+- [x] Compra real de Caty (27/11): alta registrada y rutina desbloqueada; reembolsada y cancelada, y la baja llegó al servidor.
 - [ ] Más adelante: captcha para el acceso anónimo si hay abuso.
 
 ## Fases siguientes (solo tras aprobar la anterior)
