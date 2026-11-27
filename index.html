@@ -355,7 +355,7 @@ async function syncPlan(){
   const cambio=np!==S.plan||nv!==(S.vence||null);S.plan=np;S.vence=nv;save();return cambio;
  }catch(e){return false}}
 const tester=()=>!!S.inv&&!!S.vence&&paid(); /* amiga con invitación activa: nunca ve botones de pago */
-const VER='1.3';
+const VER='1.4';
 /* ---------- Contador anónimo de uso ----------
    Solo pasos de la app (nunca respuestas, fotos ni datos de piel). Id aleatorio del móvil, sin cookies. */
 const DISP=(()=>{try{let d=localStorage.getItem('glow.disp');if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2));localStorage.setItem('glow.disp',d)}return d}catch(e){return 'sin-id'}})();
@@ -396,7 +396,7 @@ async function actualizarAviso(){try{if(!S.avisos||!pushPosible()||!navigator.on
 function resumenPerfil(){
  if(!Object.keys(S.a).length)return null;
  try{const P=plan(),o=id=>{try{return one(id)}catch(e){return null}},m=id=>{try{return many(id)}catch(e){return[]}};
-  return{tipo_baumann:P.A.map(x=>x.L).join(''),edad:S.a.edad||null,pais:o('pais'),etapa:o('fase'),fototipo:S.a.foto!=null?['I','II','III','IV','V','VI'][S.a.foto]:null,
+  return{tipo_baumann:P.A.map(x=>x.L).join(''),sexo:o('sexo'),edad:S.a.edad||null,pais:o('pais'),etapa:esHombre()?null:o('fase'),fototipo:S.a.foto!=null?['I','II','III','IV','V','VI'][S.a.foto]:null,
    estado_piel:m('estado'),objetivos:m('meta'),plazo:o('plazo'),enfermedades_piel:m('enf'),tratamientos:m('trat'),medicamentos:m('med'),ultima_visita_dermatologo:o('derm'),
    alergias:S.a.alerg||'',productos_actuales:m('prod'),otros_productos:S.a.prodtxt||'',habitos:{sol:o('sol'),sueno:o('sueno'),estres:o('estres'),tabaco:o('tabaco'),clima:o('clima')},
    cosmetica:m('cos'),presupuesto:o('pres'),pasos:o('pasos'),preferencias:m('extra'),rutina:{manana:P.am.map(x=>x.p),noche:P.pm.map(x=>x.p)}}}catch(e){return null}}
@@ -431,7 +431,7 @@ async function canjear(cod){
   const j=await r.json().catch(()=>null);S.invPend=null;
   if(!r.ok){const m=(j&&j.message)||'';save();toast(m.includes('caducada')?'Esta invitación ya caducó.':m.includes('agotada')?'Esta invitación ya se usó todas las veces.':'Esta invitación no es válida.');return}
   S.inv=true;await syncPlan();save();render(true);track('invitacion');
-  toast(S.vence?`¡Bienvenida! Tienes Glow Esencial gratis hasta el ${fecha(S.vence)}`:'¡Bienvenida a Glow!');
+  toast(S.vence?`¡Te damos la bienvenida! Tienes Glow Esencial gratis hasta el ${fecha(S.vence)}`:'¡Te damos la bienvenida a Glow!');
  }catch(e){toast('No pudimos activar tu invitación. Vuelve a abrir el enlace en un momento.')}}
 const OPS=[['general','Glow en general'],['cuestionario','El cuestionario'],['rutina','La rutina y los productos'],['asistente','El asistente']];
 function opinionSheet(){
@@ -494,6 +494,13 @@ const qq=id=>Q.find(q=>q.id===id);
 const one=id=>{const q=qq(id),v=S.a[id];return v==null?null:q.o[v]};
 const many=id=>(S.a[id]||[]).map(i=>qq(id).o[i]);
 const has=(id,lab)=>many(id).includes(lab);
+/* Preguntas y opciones que dependen de otra respuesta (p. ej. hombre o mujer) */
+const esHombre=()=>{const q=qq('sexo');return !!q&&S.a.sexo!=null&&q.o[S.a.sexo]==='Hombre'};
+function visible(q){if(!q.solo_si)return true;return Object.entries(q.solo_si).every(([id,labs])=>{const v=S.a[id];return v==null||labs.includes(qq(id).o[v])})}
+function opcionesOcultas(q){const out=new Set();Object.entries(q.ocultar_opciones_si||{}).forEach(([cond,idx])=>{const [id,lab]=cond.split('=');const v=S.a[id];if(v!=null&&qq(id)&&qq(id).o[v]===lab)idx.forEach(i=>out.add(i))});return out}
+function limpiarOcultas(){Q.forEach(q=>{if(!visible(q))delete S.a[q.id];const h=opcionesOcultas(q);if(h.size&&Array.isArray(S.a[q.id]))S.a[q.id]=S.a[q.id].filter(i=>!h.has(i));if(h.size&&typeof S.a[q.id]==='number'&&h.has(S.a[q.id]))delete S.a[q.id]})}
+const sigVisible=i=>{for(let j=i+1;j<Q.length;j++)if(visible(Q[j]))return j;return -1};
+const antVisible=i=>{for(let j=i-1;j>=0;j--)if(visible(Q[j]))return j;return -1};
 const SLOTS=[['frontal','Frontal'],['izq','Perfil izquierdo'],['der','Perfil derecho']];
 const paid=()=>TEST_MODE||(S.plan!=='free'&&!(S.vence&&Date.now()>new Date(S.vence).getTime()));
 
@@ -506,7 +513,7 @@ function axes(){return AX.map((x,i)=>{const qs=Q.filter(q=>q.ax===i);const v=qs.
 /* ---------- Motor de rutina ---------- */
 function plan(){
  const A=axes(),[od,sr,pn,wt]=A.map(x=>x.L);
- const fase=one('fase'),fotoI=S.a.foto??0;
+ const fase=esHombre()?null:one('fase'),fotoI=S.a.foto??0;
  const preg=fase==='Embarazo'||fase==='Lactancia';
  const meno=fase==='Perimenopausia'||fase==='Menopausia';
  const iso=has('trat','Isotretinoína oral');
@@ -612,7 +619,7 @@ function loadSample(planName){
  S=fresh();S.sample=true;
  const set=(id,lab)=>{S.a[id]=qq(id).o.indexOf(lab)};
  const setm=(id,labs)=>{S.a[id]=labs.map(l=>qq(id).o.indexOf(l))};
- S.a.edad='47';set('pais','España');set('fase','Perimenopausia');S.a.foto=2;
+ if(qq('sexo'))set('sexo','Mujer');S.a.edad='47';set('pais','España');set('fase','Perimenopausia');S.a.foto=2;
  Object.assign(S.a,{a1:0,a2:0,a3:1,a4:2,a5:2,a6:1,a7:1,a8:2});
  setm('estado',['Manchas','Rojeces','Deshidratación','Líneas finas','Flacidez','Piel apagada']);
  setm('meta',['Menos manchas','Más firmeza','Más hidratación']);S.a.plazo=1;
@@ -674,10 +681,11 @@ function canNext(q){const v=S.a[q.id];
  return true}
 
 function vQuiz(){
- const q=Q[S.qi],v=S.a[q.id],last=S.qi===Q.length-1;
+ if(!visible(Q[S.qi])){const j=sigVisible(S.qi);S.qi=j<0?antVisible(S.qi):j}
+ const q=Q[S.qi],v=S.a[q.id],last=sigVisible(S.qi)<0,oc=opcionesOcultas(q),vis=Q.filter(visible),pos=vis.indexOf(q);
  let b='';
- if(q.k==='one')b=`<div class="opts ${q.o.length>6?'grid':''}">${q.o.map((o,i)=>`<button class="opt glass" aria-pressed="${v===i}" data-act="pick" data-arg="${i}"><span class="dot"></span><span>${o}</span></button>`).join('')}</div>`;
- if(q.k==='multi')b=`<div class="opts ${q.o.length>6?'grid':''}">${q.o.map((o,i)=>`<button class="opt multi glass" aria-pressed="${(v||[]).includes(i)}" data-act="tog" data-arg="${i}"><span class="dot"></span><span>${o}</span></button>`).join('')}</div>`;
+ if(q.k==='one')b=`<div class="opts ${q.o.length>6?'grid':''}">${q.o.map((o,i)=>oc.has(i)?'':`<button class="opt glass" aria-pressed="${v===i}" data-act="pick" data-arg="${i}"><span class="dot"></span><span>${o}</span></button>`).join('')}</div>`;
+ if(q.k==='multi')b=`<div class="opts ${q.o.length>6?'grid':''}">${q.o.map((o,i)=>oc.has(i)?'':`<button class="opt multi glass" aria-pressed="${(v||[]).includes(i)}" data-act="tog" data-arg="${i}"><span class="dot"></span><span>${o}</span></button>`).join('')}</div>`;
  if(q.k==='num')b=`<div class="num"><input id="f-${q.id}" class="field glass" type="number" inputmode="numeric" min="12" max="100" placeholder="00" value="${esc(v)}" data-field="${q.id}" aria-label="Edad"><span>años</span></div>`;
  if(q.k==='text')b=`<textarea id="f-${q.id}" class="field glass" placeholder="${q.ph}" data-field="${q.id}">${esc(v)}</textarea>`;
  if(q.k==='group')b=`<div class="group">${q.g.map(x=>`<div><h3>${x.l}</h3><div class="chips">${x.o.map((o,i)=>`<button class="chip-btn glass" aria-pressed="${S.a[x.id]===i}" data-act="grp" data-arg="${x.id}:${i}">${o}</button>`).join('')}</div></div>`).join('')}</div>`;
@@ -685,7 +693,7 @@ function vQuiz(){
  const label=last?(Object.keys(S.ph).length?'Ver mi tipo de piel':'Ver mi tipo de piel sin fotos'):'Siguiente';
  return`${brandBar()}
 <header class="qhead"><button class="icon-btn" data-act="back" aria-label="Atrás">${I.back}</button><div><small>Sección ${q.s+1} de ${SECS.length}</small><b>${SECS[q.s]}</b></div></header>
-<div class="bar"><i style="width:${(S.qi+1)/Q.length*100}%"></i></div>
+<div class="bar"><i style="width:${(pos+1)/vis.length*100}%"></i></div>
 <h1 class="qt">${q.t}</h1>${q.h?`<p class="hint">${q.h}</p>`:''}${b}
 <div class="qfoot"><div class="in"><button id="next" class="btn" data-act="next" ${canNext(q)?'':'disabled'}>${label}</button></div></div>`}
 
@@ -709,7 +717,7 @@ ${paid()?'':`<section class="card glass"><h2>Tu rutina ya está lista</h2><p cla
 <section class="card glass"><h2>Tu contexto</h2><dl class="kv">
  <dt>Edad</dt><dd>${esc(S.a.edad||'—')}</dd>
  <dt>País</dt><dd>${one('pais')||'—'}</dd>
- <dt>Etapa</dt><dd>${one('fase')||'—'}</dd>
+ ${esHombre()?'':`<dt>Etapa</dt><dd>${one('fase')||'—'}</dd>`}
  <dt>Fototipo</dt><dd>${S.a.foto!=null?R[S.a.foto]:'—'}</dd>
  <dt>Condiciones</dt><dd>${many('enf').join(', ')||'—'}</dd>
  <dt>Dermatólogo</dt><dd>${one('derm')||'—'}</dd></dl></section>
@@ -915,14 +923,14 @@ const ACT={
  start(){if(S.sample){const k={plan:S.plan,vence:S.vence,inv:S.inv};S=fresh();Object.assign(S,k)}S.screen='quiz';go();track('cuestionario_inicio')},
  sample(){if(Object.keys(S.a).length&&!S.sample){sheet(`<h2>¿Cargar el ejemplo?</h2><p>Se reemplazarán tus respuestas y fotos por un perfil de ejemplo.</p><div class="stack"><button class="btn" data-act="sampleyes">Cargar ejemplo</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)}else{loadSample();go();track('ejemplo');toast('Ejemplo: mujer de 47 años en perimenopausia')}},
  sampleyes(){closeSheet();loadSample();go();track('ejemplo');toast('Ejemplo: mujer de 47 años en perimenopausia')},
- pick(i){const q=Q[S.qi];S.a[q.id]=+i;save();render(true);setTimeout(()=>{if(S.screen==='quiz'&&Q[S.qi]===q&&S.qi<Q.length-1){S.qi++;go()}},260)},
+ pick(i){const q=Q[S.qi];S.a[q.id]=+i;limpiarOcultas();save();render(true);setTimeout(()=>{const j=sigVisible(S.qi);if(S.screen==='quiz'&&Q[S.qi]===q&&j>=0){S.qi=j;go()}},260)},
  tog(i){i=+i;const q=Q[S.qi];let a=(S.a[q.id]||[]).slice();
   if(a.includes(i))a=a.filter(x=>x!==i);
   else{if(q.none!=null)a=i===q.none?[]:a.filter(x=>x!==q.none);if(q.max&&a.length>=q.max){toast(`Elige hasta ${q.max}. Quita una para cambiarla.`);return}a.push(i)}
   S.a[q.id]=a;go(true)},
  grp(arg){const[id,i]=arg.split(':');S.a[id]=+i;go(true)},
- next(){if(S.qi<Q.length-1){const a=Q[S.qi].s;S.qi++;go();if(Q[S.qi].s!==a)track('seccion',Q[S.qi].s+1)}else{S.screen='app';S.tab='piel';go();track('cuestionario_fin')}},
- back(){if(S.qi>0){S.qi--;go()}else{S.screen='welcome';go()}},
+ next(){const j=sigVisible(S.qi);if(j>=0){const a=Q[S.qi].s;S.qi=j;go();if(Q[S.qi].s!==a)track('seccion',Q[S.qi].s+1)}else{S.screen='app';S.tab='piel';go();track('cuestionario_fin')}},
+ back(){const j=antVisible(S.qi);if(j>=0){S.qi=j;go()}else{S.screen='welcome';go()}},
  tab(t){S.tab=t;S.screen='app';go();track('pestana',t);if(t==='rutina')track(paid()?'rutina_vista':'rutina_bloqueada');if(t==='sim'&&!simVista){simVista=1;track('simulacion')}},
  seg(s){S.seg=s;go(true);track('mensajes',s);if(s==='caty'&&S.plan==='caty'){cargarChat().then(c=>{if(c)render(true)});if(C)rpc('marcar_leidos',{}).catch(()=>{})}},
  slot(k){S.slot=k;go(true)},

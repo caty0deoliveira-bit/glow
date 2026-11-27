@@ -30,6 +30,13 @@
 - [ ] Caty entra en su panel por primera vez (queda como administradora).
 - [ ] Caty activa los avisos en su móvil y prueba una conversación.
 
+## Hombres y mujeres (27/11, a partir de las opiniones de las testers)
+- [x] Primera pregunta «¿eres mujer u hombre?» (con «Prefiero no decirlo»).
+- [x] Hombres: sin etapa hormonal ni terapia hormonal o anticonceptivos; el motor ignora la etapa hormonal.
+- [x] Textos neutros («¿Cuántos pasos quieres hacer cada día?», «Te damos la bienvenida»).
+- [ ] Decidir con Caty si se añaden preguntas o pasos propios de hombres (afeitado, barba): contenido de salud nuevo, necesita su aprobación y referencias de PubMed.
+- [ ] Decidir con Caty si la portada sigue mencionando su libro «para mujeres 40+».
+
 ## Fases siguientes (solo tras aprobar la anterior)
 - Fase 4: textos legales (borrador para revisar con abogada).
 

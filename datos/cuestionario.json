@@ -1,478 +1,502 @@
 {
-  "secciones": [
-    "Sobre ti",
-    "Tu tipo de piel",
-    "Cómo está hoy",
-    "A dónde quieres llegar",
-    "Salud de tu piel",
-    "Tu rutina actual",
-    "Tu día a día",
-    "Tus preferencias",
-    "Tus fotos"
-  ],
-  "preguntas": [
+ "secciones": [
+  "Sobre ti",
+  "Tu tipo de piel",
+  "Cómo está hoy",
+  "A dónde quieres llegar",
+  "Salud de tu piel",
+  "Tu rutina actual",
+  "Tu día a día",
+  "Tus preferencias",
+  "Tus fotos"
+ ],
+ "preguntas": [
+  {
+   "id": "sexo",
+   "s": 0,
+   "k": "one",
+   "t": "Para empezar, ¿eres mujer u hombre?",
+   "h": "Así adaptamos las preguntas a ti.",
+   "o": [
+    "Mujer",
+    "Hombre",
+    "Prefiero no decirlo"
+   ]
+  },
+  {
+   "id": "edad",
+   "s": 0,
+   "k": "num",
+   "t": "¿Cuántos años tienes?",
+   "h": "La piel cambia con la edad y las hormonas. Lo usamos para ajustar tu rutina."
+  },
+  {
+   "id": "pais",
+   "s": 0,
+   "k": "one",
+   "t": "¿En qué país vives?",
+   "h": "Así te mostramos tiendas que envían a tu país y precios en tu moneda.",
+   "o": [
+    "España",
+    "México",
+    "Colombia",
+    "Argentina",
+    "Chile",
+    "Perú",
+    "Estados Unidos",
+    "Otro país de Latinoamérica",
+    "Otro país de Europa"
+   ]
+  },
+  {
+   "id": "fase",
+   "s": 0,
+   "k": "one",
+   "t": "¿En qué etapa hormonal estás?",
+   "o": [
+    "Ciclos regulares",
+    "Perimenopausia",
+    "Menopausia",
+    "Embarazo",
+    "Lactancia",
+    "Prefiero no decirlo"
+   ],
+   "solo_si": {
+    "sexo": [
+     "Mujer",
+     "Prefiero no decirlo"
+    ]
+   }
+  },
+  {
+   "id": "foto",
+   "s": 0,
+   "k": "one",
+   "t": "¿Cómo reacciona tu piel al sol sin protección?",
+   "h": "Así estimamos tu fototipo en la escala de Fitzpatrick.",
+   "o": [
+    "Siempre me quemo y nunca me bronceo",
+    "Me quemo con facilidad y me bronceo poco",
+    "A veces me quemo y me bronceo poco a poco",
+    "Rara vez me quemo y me bronceo con facilidad",
+    "Casi nunca me quemo; mi piel es morena",
+    "Nunca me quemo; mi piel es muy oscura"
+   ]
+  },
+  {
+   "id": "a1",
+   "s": 1,
+   "ax": 0,
+   "k": "one",
+   "t": "A mediodía, sin maquillaje, tu frente y nariz se ven…",
+   "o": [
+    "Mates o con descamación",
+    "Normales",
+    "Brillantes"
+   ]
+  },
+  {
+   "id": "a2",
+   "s": 1,
+   "ax": 0,
+   "k": "one",
+   "t": "Después de lavarte la cara sin ponerte nada, tu piel se siente…",
+   "o": [
+    "Tirante enseguida",
+    "Cómoda un buen rato",
+    "Con brillo a las pocas horas"
+   ]
+  },
+  {
+   "id": "a3",
+   "s": 1,
+   "ax": 1,
+   "k": "one",
+   "t": "Cuando pruebas un producto nuevo, ¿te pica o se enrojece la piel?",
+   "o": [
+    "Casi nunca",
+    "A veces",
+    "Con frecuencia"
+   ]
+  },
+  {
+   "id": "a4",
+   "s": 1,
+   "ax": 1,
+   "k": "one",
+   "t": "¿Te enrojeces con el calor, el viento, el alcohol o la comida picante?",
+   "o": [
+    "Casi nunca",
+    "A veces",
+    "Con frecuencia"
+   ]
+  },
+  {
+   "id": "a5",
+   "s": 1,
+   "ax": 2,
+   "k": "one",
+   "t": "Después de un granito, una picadura o el sol, ¿te queda una mancha oscura?",
+   "o": [
+    "Casi nunca",
+    "A veces",
+    "Con frecuencia"
+   ]
+  },
+  {
+   "id": "a6",
+   "s": 1,
+   "ax": 2,
+   "k": "one",
+   "t": "¿Tienes manchas visibles, como melasma o manchas solares?",
+   "o": [
+    "No",
+    "Pocas",
+    "Varias o marcadas"
+   ]
+  },
+  {
+   "id": "a7",
+   "s": 1,
+   "ax": 3,
+   "k": "one",
+   "t": "Con la cara relajada, ¿ves líneas o arrugas?",
+   "o": [
+    "No",
+    "Algunas finas",
+    "Varias marcadas"
+   ]
+  },
+  {
+   "id": "a8",
+   "s": 1,
+   "ax": 3,
+   "k": "one",
+   "t": "¿Cómo notas la firmeza del óvalo, el cuello y los párpados?",
+   "o": [
+    "Firme",
+    "He notado algo de pérdida",
+    "Pérdida evidente"
+   ]
+  },
+  {
+   "id": "estado",
+   "s": 2,
+   "k": "multi",
+   "t": "¿Qué ves hoy en tu piel?",
+   "h": "Elige todo lo que aplique.",
+   "o": [
+    "Granitos",
+    "Poros dilatados",
+    "Manchas",
+    "Rojeces",
+    "Deshidratación",
+    "Sequedad",
+    "Líneas finas",
+    "Flacidez",
+    "Textura irregular",
+    "Ojeras o bolsas",
+    "Brillo excesivo",
+    "Piel apagada"
+   ]
+  },
+  {
+   "id": "meta",
+   "s": 3,
+   "k": "multi",
+   "max": 3,
+   "t": "¿A dónde quieres llegar?",
+   "h": "Elige hasta 3 prioridades.",
+   "o": [
+    "Tono más uniforme",
+    "Más luminosidad",
+    "Menos manchas",
+    "Menos granitos",
+    "Más firmeza",
+    "Menos líneas",
+    "Piel más calmada",
+    "Más hidratación",
+    "Poros menos visibles"
+   ]
+  },
+  {
+   "id": "plazo",
+   "s": 3,
+   "k": "one",
+   "t": "¿En cuánto tiempo te gustaría notar cambios?",
+   "h": "Muchos activos necesitan de 8 a 12 semanas, y los retinoides hasta 6 meses.",
+   "o": [
+    "En un mes",
+    "En unos 3 meses",
+    "En 6 meses o más, sin prisa"
+   ]
+  },
+  {
+   "id": "enf",
+   "s": 4,
+   "k": "multi",
+   "none": 0,
+   "t": "¿Tienes alguna condición de piel diagnosticada?",
+   "o": [
+    "Ninguna",
+    "Rosácea",
+    "Dermatitis atópica",
+    "Dermatitis seborreica",
+    "Psoriasis",
+    "Melasma",
+    "Acné moderado o severo",
+    "Vitíligo",
+    "Otra"
+   ]
+  },
+  {
+   "id": "alerg",
+   "s": 4,
+   "k": "text",
+   "t": "¿Alergias o ingredientes que no toleras?",
+   "ph": "Ej.: perfume, alcohol, ácido glicólico (opcional)"
+  },
+  {
+   "id": "trat",
+   "s": 4,
+   "k": "multi",
+   "none": 0,
+   "t": "¿Usas algún tratamiento recetado o en clínica?",
+   "o": [
+    "Ninguno",
+    "Retinoide recetado (tretinoína, adapaleno…)",
+    "Isotretinoína oral",
+    "Antibiótico tópico u oral",
+    "Corticoide tópico",
+    "Hidroquinona",
+    "Láser, peeling o inyectables"
+   ]
+  },
+  {
+   "id": "med",
+   "s": 4,
+   "k": "multi",
+   "none": 0,
+   "t": "¿Tomas alguno de estos medicamentos?",
+   "h": "Algunos cambian cómo responde tu piel al sol o a los activos.",
+   "o": [
+    "Ninguno",
+    "Terapia hormonal de la menopausia",
+    "Anticonceptivos hormonales",
+    "Medicamentos que dan sensibilidad al sol"
+   ],
+   "ocultar_opciones_si": {
+    "sexo=Hombre": [
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "id": "derm",
+   "s": 4,
+   "k": "one",
+   "t": "¿Cuándo fue tu última visita al dermatólogo?",
+   "o": [
+    "Hace menos de un año",
+    "Hace 1 a 3 años",
+    "Hace más de 3 años",
+    "Nunca he ido"
+   ]
+  },
+  {
+   "id": "prod",
+   "s": 5,
+   "k": "multi",
+   "none": 0,
+   "t": "¿Qué usas hoy en tu rutina?",
+   "o": [
+    "Nada todavía",
+    "Limpiador",
+    "Tónico o esencia",
+    "Sérum de vitamina C",
+    "Niacinamida",
+    "Retinol o retinal",
+    "Ácidos exfoliantes",
+    "Hidratante",
+    "Contorno de ojos",
+    "Protector solar",
+    "Aceite facial",
+    "Maquillaje a diario"
+   ]
+  },
+  {
+   "id": "prodtxt",
+   "s": 5,
+   "k": "text",
+   "t": "¿Qué productos concretos usas?",
+   "h": "Así podemos detectar duplicados o mezclas que irritan.",
+   "ph": "Marca y nombre, uno por línea (opcional)"
+  },
+  {
+   "id": "vida",
+   "s": 6,
+   "k": "group",
+   "t": "Tu día a día",
+   "h": "El sol, el sueño y el tabaco también se notan en la piel.",
+   "g": [
     {
-      "id": "edad",
-      "s": 0,
-      "k": "num",
-      "t": "¿Cuántos años tienes?",
-      "h": "La piel cambia con la edad y las hormonas. Lo usamos para ajustar tu rutina."
+     "id": "sol",
+     "l": "Sol",
+     "o": [
+      "Casi siempre en interior",
+      "1 a 2 horas fuera",
+      "Muchas horas fuera"
+     ]
     },
     {
-      "id": "pais",
-      "s": 0,
-      "k": "one",
-      "t": "¿En qué país vives?",
-      "h": "Así te mostramos tiendas que envían a tu país y precios en tu moneda.",
-      "o": [
-        "España",
-        "México",
-        "Colombia",
-        "Argentina",
-        "Chile",
-        "Perú",
-        "Estados Unidos",
-        "Otro país de Latinoamérica",
-        "Otro país de Europa"
-      ]
+     "id": "sueno",
+     "l": "Sueño",
+     "o": [
+      "Menos de 6 h",
+      "6 a 7 h",
+      "Más de 7 h"
+     ]
     },
     {
-      "id": "fase",
-      "s": 0,
-      "k": "one",
-      "t": "¿En qué etapa hormonal estás?",
-      "o": [
-        "Ciclos regulares",
-        "Perimenopausia",
-        "Menopausia",
-        "Embarazo",
-        "Lactancia",
-        "Prefiero no decirlo"
-      ]
+     "id": "estres",
+     "l": "Estrés",
+     "o": [
+      "Bajo",
+      "Medio",
+      "Alto"
+     ]
     },
     {
-      "id": "foto",
-      "s": 0,
-      "k": "one",
-      "t": "¿Cómo reacciona tu piel al sol sin protección?",
-      "h": "Así estimamos tu fototipo en la escala de Fitzpatrick.",
-      "o": [
-        "Siempre me quemo y nunca me bronceo",
-        "Me quemo con facilidad y me bronceo poco",
-        "A veces me quemo y me bronceo poco a poco",
-        "Rara vez me quemo y me bronceo con facilidad",
-        "Casi nunca me quemo; mi piel es morena",
-        "Nunca me quemo; mi piel es muy oscura"
-      ]
+     "id": "tabaco",
+     "l": "Tabaco",
+     "o": [
+      "No fumo",
+      "Fumo",
+      "Lo dejé"
+     ]
     },
     {
-      "id": "a1",
-      "s": 1,
-      "ax": 0,
-      "k": "one",
-      "t": "A mediodía, sin maquillaje, tu frente y nariz se ven…",
-      "o": [
-        "Mates o con descamación",
-        "Normales",
-        "Brillantes"
-      ]
-    },
-    {
-      "id": "a2",
-      "s": 1,
-      "ax": 0,
-      "k": "one",
-      "t": "Después de lavarte la cara sin ponerte nada, tu piel se siente…",
-      "o": [
-        "Tirante enseguida",
-        "Cómoda un buen rato",
-        "Con brillo a las pocas horas"
-      ]
-    },
-    {
-      "id": "a3",
-      "s": 1,
-      "ax": 1,
-      "k": "one",
-      "t": "Cuando pruebas un producto nuevo, ¿te pica o se enrojece la piel?",
-      "o": [
-        "Casi nunca",
-        "A veces",
-        "Con frecuencia"
-      ]
-    },
-    {
-      "id": "a4",
-      "s": 1,
-      "ax": 1,
-      "k": "one",
-      "t": "¿Te enrojeces con el calor, el viento, el alcohol o la comida picante?",
-      "o": [
-        "Casi nunca",
-        "A veces",
-        "Con frecuencia"
-      ]
-    },
-    {
-      "id": "a5",
-      "s": 1,
-      "ax": 2,
-      "k": "one",
-      "t": "Después de un granito, una picadura o el sol, ¿te queda una mancha oscura?",
-      "o": [
-        "Casi nunca",
-        "A veces",
-        "Con frecuencia"
-      ]
-    },
-    {
-      "id": "a6",
-      "s": 1,
-      "ax": 2,
-      "k": "one",
-      "t": "¿Tienes manchas visibles, como melasma o manchas solares?",
-      "o": [
-        "No",
-        "Pocas",
-        "Varias o marcadas"
-      ]
-    },
-    {
-      "id": "a7",
-      "s": 1,
-      "ax": 3,
-      "k": "one",
-      "t": "Con la cara relajada, ¿ves líneas o arrugas?",
-      "o": [
-        "No",
-        "Algunas finas",
-        "Varias marcadas"
-      ]
-    },
-    {
-      "id": "a8",
-      "s": 1,
-      "ax": 3,
-      "k": "one",
-      "t": "¿Cómo notas la firmeza del óvalo, el cuello y los párpados?",
-      "o": [
-        "Firme",
-        "He notado algo de pérdida",
-        "Pérdida evidente"
-      ]
-    },
-    {
-      "id": "estado",
-      "s": 2,
-      "k": "multi",
-      "t": "¿Qué ves hoy en tu piel?",
-      "h": "Elige todo lo que aplique.",
-      "o": [
-        "Granitos",
-        "Poros dilatados",
-        "Manchas",
-        "Rojeces",
-        "Deshidratación",
-        "Sequedad",
-        "Líneas finas",
-        "Flacidez",
-        "Textura irregular",
-        "Ojeras o bolsas",
-        "Brillo excesivo",
-        "Piel apagada"
-      ]
-    },
-    {
-      "id": "meta",
-      "s": 3,
-      "k": "multi",
-      "max": 3,
-      "t": "¿A dónde quieres llegar?",
-      "h": "Elige hasta 3 prioridades.",
-      "o": [
-        "Tono más uniforme",
-        "Más luminosidad",
-        "Menos manchas",
-        "Menos granitos",
-        "Más firmeza",
-        "Menos líneas",
-        "Piel más calmada",
-        "Más hidratación",
-        "Poros menos visibles"
-      ]
-    },
-    {
-      "id": "plazo",
-      "s": 3,
-      "k": "one",
-      "t": "¿En cuánto tiempo te gustaría notar cambios?",
-      "h": "Muchos activos necesitan de 8 a 12 semanas, y los retinoides hasta 6 meses.",
-      "o": [
-        "En un mes",
-        "En unos 3 meses",
-        "En 6 meses o más, sin prisa"
-      ]
-    },
-    {
-      "id": "enf",
-      "s": 4,
-      "k": "multi",
-      "none": 0,
-      "t": "¿Tienes alguna condición de piel diagnosticada?",
-      "o": [
-        "Ninguna",
-        "Rosácea",
-        "Dermatitis atópica",
-        "Dermatitis seborreica",
-        "Psoriasis",
-        "Melasma",
-        "Acné moderado o severo",
-        "Vitíligo",
-        "Otra"
-      ]
-    },
-    {
-      "id": "alerg",
-      "s": 4,
-      "k": "text",
-      "t": "¿Alergias o ingredientes que no toleras?",
-      "ph": "Ej.: perfume, alcohol, ácido glicólico (opcional)"
-    },
-    {
-      "id": "trat",
-      "s": 4,
-      "k": "multi",
-      "none": 0,
-      "t": "¿Usas algún tratamiento recetado o en clínica?",
-      "o": [
-        "Ninguno",
-        "Retinoide recetado (tretinoína, adapaleno…)",
-        "Isotretinoína oral",
-        "Antibiótico tópico u oral",
-        "Corticoide tópico",
-        "Hidroquinona",
-        "Láser, peeling o inyectables"
-      ]
-    },
-    {
-      "id": "med",
-      "s": 4,
-      "k": "multi",
-      "none": 0,
-      "t": "¿Tomas alguno de estos medicamentos?",
-      "h": "Algunos cambian cómo responde tu piel al sol o a los activos.",
-      "o": [
-        "Ninguno",
-        "Terapia hormonal de la menopausia",
-        "Anticonceptivos hormonales",
-        "Medicamentos que dan sensibilidad al sol"
-      ]
-    },
-    {
-      "id": "derm",
-      "s": 4,
-      "k": "one",
-      "t": "¿Cuándo fue tu última visita al dermatólogo?",
-      "o": [
-        "Hace menos de un año",
-        "Hace 1 a 3 años",
-        "Hace más de 3 años",
-        "Nunca he ido"
-      ]
-    },
-    {
-      "id": "prod",
-      "s": 5,
-      "k": "multi",
-      "none": 0,
-      "t": "¿Qué usas hoy en tu rutina?",
-      "o": [
-        "Nada todavía",
-        "Limpiador",
-        "Tónico o esencia",
-        "Sérum de vitamina C",
-        "Niacinamida",
-        "Retinol o retinal",
-        "Ácidos exfoliantes",
-        "Hidratante",
-        "Contorno de ojos",
-        "Protector solar",
-        "Aceite facial",
-        "Maquillaje a diario"
-      ]
-    },
-    {
-      "id": "prodtxt",
-      "s": 5,
-      "k": "text",
-      "t": "¿Qué productos concretos usas?",
-      "h": "Así podemos detectar duplicados o mezclas que irritan.",
-      "ph": "Marca y nombre, uno por línea (opcional)"
-    },
-    {
-      "id": "vida",
-      "s": 6,
-      "k": "group",
-      "t": "Tu día a día",
-      "h": "El sol, el sueño y el tabaco también se notan en la piel.",
-      "g": [
-        {
-          "id": "sol",
-          "l": "Sol",
-          "o": [
-            "Casi siempre en interior",
-            "1 a 2 horas fuera",
-            "Muchas horas fuera"
-          ]
-        },
-        {
-          "id": "sueno",
-          "l": "Sueño",
-          "o": [
-            "Menos de 6 h",
-            "6 a 7 h",
-            "Más de 7 h"
-          ]
-        },
-        {
-          "id": "estres",
-          "l": "Estrés",
-          "o": [
-            "Bajo",
-            "Medio",
-            "Alto"
-          ]
-        },
-        {
-          "id": "tabaco",
-          "l": "Tabaco",
-          "o": [
-            "No fumo",
-            "Fumo",
-            "Lo dejé"
-          ]
-        },
-        {
-          "id": "clima",
-          "l": "Clima donde vives",
-          "o": [
-            "Seco",
-            "Húmedo",
-            "Frío",
-            "Cambiante"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "cos",
-      "s": 7,
-      "k": "multi",
-      "t": "¿Qué tipo de cosmética prefieres?",
-      "h": "Puedes elegir varias.",
-      "o": [
-        "Low cost",
-        "Coreana",
-        "Farmacia y dermocosmética",
-        "Alta gama",
-        "Natural o clean"
-      ]
-    },
-    {
-      "id": "pres",
-      "s": 7,
-      "k": "one",
-      "t": "¿Cuánto quieres invertir al mes?",
-      "h": "En tu moneda, aproximadamente.",
-      "o": [
-        "Poco, lo esencial (unos 30 €)",
-        "Moderado (de 30 a 70 €)",
-        "Generoso (de 70 a 150 €)",
-        "Sin límite (más de 150 €)"
-      ]
-    },
-    {
-      "id": "pasos",
-      "s": 7,
-      "k": "one",
-      "t": "¿Cuántos pasos estás dispuesta a hacer?",
-      "o": [
-        "3 pasos, lo esencial",
-        "4 o 5 pasos",
-        "6 o más, me encanta"
-      ]
-    },
-    {
-      "id": "extra",
-      "s": 7,
-      "k": "multi",
-      "none": 5,
-      "t": "¿Algo más que debamos tener en cuenta?",
-      "o": [
-        "Sin perfume",
-        "Texturas ligeras",
-        "Texturas ricas",
-        "Vegano o cruelty-free",
-        "Envase sostenible",
-        "Nada en especial"
-      ]
-    },
-    {
-      "id": "fotos",
-      "s": 8,
-      "k": "photos",
-      "t": "Haz tus fotos",
-      "h": "Nos ayudan a ver cómo está tu piel hoy y a simular tu objetivo."
+     "id": "clima",
+     "l": "Clima donde vives",
+     "o": [
+      "Seco",
+      "Húmedo",
+      "Frío",
+      "Cambiante"
+     ]
     }
-  ],
-  "baumann": {
-    "ejes": [
-      {
-        "lo": "D",
-        "hi": "O",
-        "lol": "Seca",
-        "hil": "Grasa"
-      },
-      {
-        "lo": "R",
-        "hi": "S",
-        "lol": "Resistente",
-        "hil": "Sensible"
-      },
-      {
-        "lo": "N",
-        "hi": "P",
-        "lol": "No pigmentada",
-        "hil": "Pigmentada"
-      },
-      {
-        "lo": "T",
-        "hi": "W",
-        "lol": "Tersa",
-        "hil": "Con arrugas"
-      }
-    ],
-    "letras": {
-      "D": "Seca",
-      "O": "Grasa",
-      "R": "Resistente",
-      "S": "Sensible",
-      "N": "No pigmentada",
-      "P": "Pigmentada",
-      "T": "Tersa",
-      "W": "Con arrugas"
-    },
-    "descripciones": {
-      "D": "Produce poco sebo y pierde agua con facilidad. Lo primero es reforzar la barrera.",
-      "O": "Produce más sebo. Le van mejor las texturas ligeras que no obstruyen los poros.",
-      "S": "Reacciona con facilidad con rojeces, picor o granitos. Pocos activos y bien elegidos.",
-      "R": "Tolera bien los activos, así que hay margen para subir la intensidad.",
-      "P": "Tiende a mancharse. El protector diario y los despigmentantes son clave.",
-      "N": "Tiene poca tendencia a mancharse.",
-      "W": "Muestra signos de envejecimiento. Retinoides, antioxidantes y protector solar.",
-      "T": "Pocas líneas por ahora. La prevención es lo principal."
-    },
-    "calculo": "Cada eje suma sus 2 preguntas (0-2 cada una). Si la suma > 2 (más de la mitad de 4) se asigna la letra 'hi', si no la 'lo'. Exactamente 2 = en el límite (se asigna 'lo' y se avisa).",
-    "aviso": "Cuestionario propio basado en los 4 ejes de Baumann; no es el test oficial (BSTI) ni copia sus preguntas."
+   ]
+  },
+  {
+   "id": "cos",
+   "s": 7,
+   "k": "multi",
+   "t": "¿Qué tipo de cosmética prefieres?",
+   "h": "Puedes elegir varias.",
+   "o": [
+    "Low cost",
+    "Coreana",
+    "Farmacia y dermocosmética",
+    "Alta gama",
+    "Natural o clean"
+   ]
+  },
+  {
+   "id": "pres",
+   "s": 7,
+   "k": "one",
+   "t": "¿Cuánto quieres invertir al mes?",
+   "h": "En tu moneda, aproximadamente.",
+   "o": [
+    "Poco, lo esencial (unos 30 €)",
+    "Moderado (de 30 a 70 €)",
+    "Generoso (de 70 a 150 €)",
+    "Sin límite (más de 150 €)"
+   ]
+  },
+  {
+   "id": "pasos",
+   "s": 7,
+   "k": "one",
+   "t": "¿Cuántos pasos quieres hacer cada día?",
+   "o": [
+    "3 pasos, lo esencial",
+    "4 o 5 pasos",
+    "6 o más, me encanta"
+   ]
+  },
+  {
+   "id": "extra",
+   "s": 7,
+   "k": "multi",
+   "none": 5,
+   "t": "¿Algo más que debamos tener en cuenta?",
+   "o": [
+    "Sin perfume",
+    "Texturas ligeras",
+    "Texturas ricas",
+    "Vegano o cruelty-free",
+    "Envase sostenible",
+    "Nada en especial"
+   ]
+  },
+  {
+   "id": "fotos",
+   "s": 8,
+   "k": "photos",
+   "t": "Haz tus fotos",
+   "h": "Nos ayudan a ver cómo está tu piel hoy y a simular tu objetivo."
   }
+ ],
+ "baumann": {
+  "ejes": [
+   {
+    "lo": "D",
+    "hi": "O",
+    "lol": "Seca",
+    "hil": "Grasa"
+   },
+   {
+    "lo": "R",
+    "hi": "S",
+    "lol": "Resistente",
+    "hil": "Sensible"
+   },
+   {
+    "lo": "N",
+    "hi": "P",
+    "lol": "No pigmentada",
+    "hil": "Pigmentada"
+   },
+   {
+    "lo": "T",
+    "hi": "W",
+    "lol": "Tersa",
+    "hil": "Con arrugas"
+   }
+  ],
+  "letras": {
+   "D": "Seca",
+   "O": "Grasa",
+   "R": "Resistente",
+   "S": "Sensible",
+   "N": "No pigmentada",
+   "P": "Pigmentada",
+   "T": "Tersa",
+   "W": "Con arrugas"
+  },
+  "descripciones": {
+   "D": "Produce poco sebo y pierde agua con facilidad. Lo primero es reforzar la barrera.",
+   "O": "Produce más sebo. Le van mejor las texturas ligeras que no obstruyen los poros.",
+   "S": "Reacciona con facilidad con rojeces, picor o granitos. Pocos activos y bien elegidos.",
+   "R": "Tolera bien los activos, así que hay margen para subir la intensidad.",
+   "P": "Tiende a mancharse. El protector diario y los despigmentantes son clave.",
+   "N": "Tiene poca tendencia a mancharse.",
+   "W": "Muestra signos de envejecimiento. Retinoides, antioxidantes y protector solar.",
+   "T": "Pocas líneas por ahora. La prevención es lo principal."
+  },
+  "calculo": "Cada eje suma sus 2 preguntas (0-2 cada una). Si la suma > 2 (más de la mitad de 4) se asigna la letra 'hi', si no la 'lo'. Exactamente 2 = en el límite (se asigna 'lo' y se avisa).",
+  "aviso": "Cuestionario propio basado en los 4 ejes de Baumann; no es el test oficial (BSTI) ni copia sus preguntas."
+ }
 }

@@ -112,3 +112,7 @@ Copia los tokens y estilos del prototipo: marfil, verde topo y marrones, vidrio 
 - **ASIN de EE. UU. que faltan:** los marca `amazon_us_asin: null` en el catálogo. Caty puede sacarlos con la barra SiteStripe de Amazon EE. UU. cuando quiera, o se quedan con búsqueda.
 - **Legal:** datos fiscales, email de contacto y revisión por un abogado.
 - **IVA:** Glow con Caty no usa Managed Payments, así que el IVA de ese plan lo declara ella (comentarlo con su gestoría).
+
+
+## Cambio 27/11/2026: hombres y mujeres
+La primera pregunta es `sexo` (Mujer, Hombre, Prefiero no decirlo). Las preguntas pueden llevar `solo_si` (se muestran solo si otra respuesta coincide) y `ocultar_opciones_si` (oculta opciones por índice). A los hombres no se les pregunta la etapa hormonal ni se les muestran terapia hormonal o anticonceptivos, y el motor no usa la etapa hormonal para ellos. No cambia ninguna recomendación de salud.

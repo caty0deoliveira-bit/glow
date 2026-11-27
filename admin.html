@@ -215,7 +215,7 @@ function perfilHtml(p){
   const r=p.resumen||{};
   const L=(t,v)=>{if(v==null||v===''||(Array.isArray(v)&&!v.length))return'';const x=Array.isArray(v)?v.join(', '):typeof v==='object'?Object.entries(v).filter(([,y])=>y).map(([k,y])=>k+': '+y).join(' · '):v;return x?`<dt>${t}</dt><dd>${esc(x)}</dd>`:''};
   return`<div class="card" style="background:var(--glass-strong);margin:10px 0"><dl class="perfil">
-   ${L('Tipo Baumann',r.tipo_baumann)}${L('Edad',r.edad)}${L('País',r.pais)}${L('Etapa',r.etapa)}${L('Fototipo',r.fototipo)}
+   ${L('Tipo Baumann',r.tipo_baumann)}${L('Sexo',r.sexo)}${L('Edad',r.edad)}${L('País',r.pais)}${L('Etapa',r.etapa)}${L('Fototipo',r.fototipo)}
    ${L('Cómo ve su piel',r.estado_piel)}${L('Objetivos',r.objetivos)}${L('Plazo',r.plazo)}${L('Enfermedades de la piel',r.enfermedades_piel)}
    ${L('Tratamientos',r.tratamientos)}${L('Medicamentos',r.medicamentos)}${L('Última visita al dermatólogo',r.ultima_visita_dermatologo)}${L('Alergias o lo que no tolera',r.alergias)}
    ${L('Productos que usa',r.productos_actuales)}${L('Otros productos',r.otros_productos)}${L('Hábitos',r.habitos)}${L('Cosmética que prefiere',r.cosmetica)}

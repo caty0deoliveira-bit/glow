@@ -43,6 +43,29 @@ const res=await pg.evaluate(()=>{
  return out});
 let fail=0;for(const [n,o,d] of res){console.log((o?'PASA ':'FALLA')+'  '+n+(d?'  ('+d+')':''));if(!o)fail++}
 
+// ---------- Hombre o mujer ----------
+const res6=await pg.evaluate(()=>{
+ const out=[];const idx=id=>Q.findIndex(q=>q.id===id);const lab=(id,l)=>qq(id).o.indexOf(l);
+ out.push(['Primera pregunta: mujer u hombre',Q[0].id==='sexo'&&Q[0].o.join()==='Mujer,Hombre,Prefiero no decirlo']);
+ S=fresh();S.screen='quiz';S.a.sexo=lab('sexo','Hombre');S.qi=idx('pais');S.a.pais=0;ACT.next();
+ out.push(['Hombre: salta la etapa hormonal',Q[S.qi].id==='foto']);
+ ACT.back();out.push(['Hombre: «Atrás» vuelve sin pasar por la etapa hormonal',Q[S.qi].id==='pais']);
+ S.qi=idx('med');render(true);const t=document.querySelector('#app').innerText;
+ out.push(['Hombre: sin terapia hormonal ni anticonceptivos',!t.includes('Terapia hormonal')&&!t.includes('Anticonceptivos')&&t.includes('sensibilidad al sol')]);
+ S=fresh();S.screen='quiz';S.a.sexo=lab('sexo','Mujer');S.qi=idx('pais');S.a.pais=0;ACT.next();
+ out.push(['Mujer: sí pregunta la etapa hormonal',Q[S.qi].id==='fase']);
+ S.qi=idx('med');render(true);out.push(['Mujer: ve todas las opciones de medicamentos',document.querySelector('#app').innerText.includes('Anticonceptivos')]);
+ S=fresh();S.screen='quiz';S.a.sexo=lab('sexo','Prefiero no decirlo');S.qi=idx('pais');S.a.pais=0;ACT.next();
+ out.push(['Prefiero no decirlo: puede indicar su etapa',Q[S.qi].id==='fase']);
+ loadSample();S.a.fase=lab('fase','Embarazo');S.a.med=[lab('med','Anticonceptivos hormonales')];S.qi=0;S.screen='quiz';ACT.pick(lab('sexo','Hombre'));
+ out.push(['Cambiar a hombre borra respuestas que no aplican',S.a.fase==null&&!(S.a.med||[]).includes(lab('med','Anticonceptivos hormonales'))]);
+ loadSample();S.a.sexo=lab('sexo','Hombre');S.a.fase=lab('fase','Embarazo');const P=plan();
+ out.push(['Motor: para un hombre no cuenta la etapa hormonal',P.pm.some(x=>x.cat==='retinoide')&&!P.ret===false]);
+ loadSample();out.push(['Ejemplo: sigue siendo la mujer de 47 años',one('sexo')==='Mujer'&&one('fase')==='Perimenopausia']);
+ out.push(['Textos neutros: «¿Cuántos pasos quieres hacer cada día?»',qq('pasos').t==='¿Cuántos pasos quieres hacer cada día?']);
+ S=fresh();render();return out});
+for(const [n,o] of res6){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
+
 // ---------- Fase 2: pagos y bloqueo ----------
 const UID='11111111-2222-4333-8444-555555555555';
 let filas=[];let pagoURL=null;
