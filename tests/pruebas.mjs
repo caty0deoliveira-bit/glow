@@ -34,15 +34,39 @@ const res=await pg.evaluate(()=>{
  loadSample();S.a.pasos=0;P=plan();
  ok('7 Rutina mínima: sin sérum de mañana, limpieza simple',!P.am.some(s=>s.id==='am2')&&P.pm[0].cat===null);
  // extra: Envío internacional en la tarjeta (México)
- loadSample();set('pais','México');S.tab='rutina';S.screen='app';render(true);
+ loadSample();set('pais','México');S.plan='esencial';S.tab='rutina';S.screen='app';render(true);
  ok('4b México muestra «Envío internacional»',document.body.innerText.includes('Envío internacional'));
  ok('Sin precios de Amazon en la rutina',!/\d+[,.]\d{2}\s?€|\$\s?\d/.test(document.querySelector('#app').innerText));
  return out});
 let fail=0;for(const [n,o,d] of res){console.log((o?'PASA ':'FALLA')+'  '+n+(d?'  ('+d+')':''));if(!o)fail++}
+
+// ---------- Fase 2: pagos y bloqueo ----------
+const UID='11111111-2222-4333-8444-555555555555';
+let filas=[];let pagoURL=null;
+await pg.route('**/auth/v1/signup',r=>r.fulfill({json:{access_token:'tok',refresh_token:'ref',expires_in:3600,user:{id:UID}}}));
+await pg.route('**/rest/v1/suscripciones**',r=>r.fulfill({json:filas}));
+await pg.route('https://buy.stripe.com/**',r=>{pagoURL=r.request().url();r.fulfill({body:'stripe',contentType:'text/html'})});
+await pg.evaluate(()=>{localStorage.clear()});await pg.reload();await pg.waitForFunction(()=>Q.length>0);
+const r2=await pg.evaluate(()=>{loadSample();S.tab='rutina';save();render(true);const t=document.querySelector('#app').innerText;return{lock:t.includes('Elige un plan'),comprar:t.includes('Comprar')}});
+const res2=[['Sin pagar: rutina bloqueada y sin productos',r2.lock&&!r2.comprar]];
+await pg.click('[data-act="buy"][data-arg="esencial"]');await pg.waitForTimeout(1500);
+res2.push(['Pagar abre Stripe con el id de la usuaria',!!pagoURL&&pagoURL.startsWith('https://buy.stripe.com/5kQaEY2Iu0OgcMf4oF53O03?client_reference_id='+UID)]);
+filas=[{plan:'esencial',estado:'active'}];
+await pg.goto(URL+'?pago=esencial');await pg.waitForFunction(()=>Q.length>0);
+const vuelto=await pg.waitForFunction(()=>S.plan==='esencial',null,{timeout:8000}).then(()=>true).catch(()=>false);
+res2.push(['Al volver del pago se activa Glow Esencial',vuelto&&!(await pg.evaluate(()=>location.search))]);
+res2.push(['Con plan: la rutina muestra productos',await pg.evaluate(()=>{S.tab='rutina';render(true);return document.querySelector('#app').innerText.includes('Comprar')})]);
+filas=[{plan:'esencial',estado:'canceled'},{plan:'caty',estado:'active'}];
+res2.push(['Gana el plan activo más alto',await pg.evaluate(async()=>{await syncPlan();return S.plan==='caty'})]);
+res2.push(['Borrar todo mantiene el plan',await pg.evaluate(()=>{ACT.resetyes();return S.plan==='caty'&&!!JSON.parse(localStorage.getItem('glow.cuenta')).uid})]);
+filas=[{plan:'caty',estado:'canceled'}];
+res2.push(['Cancelada: vuelve a gratis',await pg.evaluate(async()=>{await syncPlan();return S.plan==='free'})]);
+for(const [n,o] of res2){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
+await pg.unrouteAll({behavior:'ignoreErrors'});
 // capturas de pantallas
 await pg.evaluate(()=>{localStorage.clear()});await pg.reload();await pg.waitForFunction(()=>Q.length>0);
 await pg.screenshot({path:'tests/capturas/s1-bienvenida.png'});
-await pg.evaluate(()=>{loadSample();S.tab='rutina';save();render(true)});await pg.screenshot({path:'tests/capturas/s2-rutina.png'});
+await pg.evaluate(()=>{loadSample();S.plan='esencial';S.tab='rutina';save();render(true)});await pg.screenshot({path:'tests/capturas/s2-rutina.png'});
 await pg.evaluate(()=>{S.tab='msgs';render(true)});await pg.screenshot({path:'tests/capturas/s3-mensajes.png'});
 await pg.evaluate(()=>{S.tab='aj';render(true)});await pg.screenshot({path:'tests/capturas/s4-ajustes.png',fullPage:true});
 // sin conexión

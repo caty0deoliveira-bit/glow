@@ -4,11 +4,22 @@
 - [x] App PWA con cuestionario, perfil Baumann, fotos, simulación, rutina y asistente a los 2 días.
 - [x] Funciona sin conexión y permite borrar todos los datos.
 - [x] Las 7 pruebas del motor pasan.
-- [ ] Caty prueba en su móvil y aprueba.
+- [x] Caty probó y aprobó (27/11/2026).
+
+## Fase 2 (publicada, pendiente de prueba real)
+- [x] Supabase «glow» (organización «Glow by Caty», plan gratuito, Frankfurt), acceso anónimo activado.
+- [x] Decisión de Caty: sin login por email en el piloto. El acceso queda en el móvil; si cambia de móvil, Caty lo pasa (ver `docs/fase2.md`).
+- [x] Tablas `suscripciones` y `eventos_stripe` con RLS (`supabase/migrations/001_suscripciones.sql`).
+- [x] Función `stripe-webhook` desplegada, sin JWT, con verificación de firma (pruebas en `tests/webhook.test.mjs`).
+- [x] Stripe: destino de webhook «Glow app (Supabase)» con 3 eventos, redirección tras el pago en los dos enlaces, portal de clientes activado.
+- [x] App: pagos reales, bloqueo de rutina y mensajes, portal, «Ya pagué», código para cambiar de móvil.
+- [ ] Caty pega el secreto de firma del webhook en Supabase (`STRIPE_WEBHOOK_SECRET`).
+- [ ] Compra real de Caty y reembolso.
+- [ ] Más adelante: captcha para el acceso anónimo si hay abuso.
 
 ## Fases siguientes (solo tras aprobar la anterior)
-- Fase 2: cuentas (Supabase, UE), pagos con los enlaces de Stripe, webhook y portal de cliente. Quitar `TEST_MODE`.
-- Fase 3: avisos push del asistente, chat con Caty y panel `/admin`.
+- Fase 3: avisos push del asistente, chat con Caty (`CHAT_LISTO`) y panel `/admin` (incluido el botón para pasar el acceso a otro móvil).
+- No vender Glow con Caty hasta que la Fase 3 esté lista: el chat aún no funciona.
 - Fase 4: textos legales (borrador para revisar con abogada).
 
 ## Lo que tiene que hacer Caty
