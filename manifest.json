@@ -1,0 +1,16 @@
+{
+  "name": "Glow by Caty",
+  "short_name": "Glow",
+  "description": "Tu rutina de skincare personalizada, creada por la farmacéutica Caty De Oliveira.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4EFE6",
+  "theme_color": "#F4EFE6",
+  "icons": [
+    {"src": "assets/icon-180.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

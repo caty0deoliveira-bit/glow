@@ -1,0 +1,93 @@
+{
+  "marca": {
+    "nombre_app": "Glow",
+    "firma": "Glow by Caty",
+    "autora": "Caty De Oliveira",
+    "descripcion_autora": "Farmacéutica especialista en dermocosmética y autora de Manual de Skincare para mujeres 40+",
+    "instagram": "@caty.skincare"
+  },
+  "afiliados": {
+    "amazon_es": {
+      "dominio": "www.amazon.es",
+      "tag": "caterinedeoli-21",
+      "paises": [
+        "España",
+        "Otro país de Europa"
+      ]
+    },
+    "amazon_us": {
+      "dominio": "www.amazon.com",
+      "tag": "caterinedeoli-20",
+      "paises": [
+        "Estados Unidos",
+        "México",
+        "Colombia",
+        "Argentina",
+        "Chile",
+        "Perú",
+        "Otro país de Latinoamérica"
+      ],
+      "nota": "Para fuera de EE. UU. mostrar 'Envío internacional'."
+    },
+    "yesstyle": {
+      "codigo": "CATYSKIN1",
+      "enlace_producto": "https://www.yesstyle.com/es/info.html/pid.{pid}?rco=CATYSKIN1",
+      "enlace_corto_caty": "https://ystyle.co/gNhBf",
+      "pendiente": "Caty debe confirmar en su panel que las ventas con ?rco=CATYSKIN1 se le atribuyen."
+    },
+    "aviso_obligatorio": "En calidad de Afiliada de Amazon, Caty obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. Los enlaces de YesStyle también son de afiliada."
+  },
+  "planes": {
+    "gratis": {
+      "incluye": [
+        "Cuestionario completo",
+        "Perfil Baumann",
+        "Fotos y simulación orientativa"
+      ]
+    },
+    "esencial": {
+      "nombre": "Glow Esencial",
+      "precio_eur_mes": 10,
+      "stripe_producto": "prod_VhR4X6zaXW5BWl",
+      "stripe_payment_link": "https://buy.stripe.com/5kQaEY2Iu0OgcMf4oF53O03",
+      "managed_payments": true,
+      "codigo_fiscal": "txcd_10103000 (SaaS uso personal)",
+      "incluye": [
+        "Rutina completa",
+        "2 productos por paso",
+        "Asistente de seguimiento a los 2 días"
+      ]
+    },
+    "con_caty": {
+      "nombre": "Glow con Caty",
+      "precio_eur_mes": 15,
+      "stripe_payment_link": "https://buy.stripe.com/28E00kcj40OgeUnf3j53O04",
+      "managed_payments": false,
+      "nota_iva": "Incluye atención humana: NO es elegible para Managed Payments. Nunca activar Managed Payments en este plan. El IVA lo declara Caty.",
+      "incluye": [
+        "Todo Glow Esencial",
+        "Chat con Caty, respuesta en menos de 48 h",
+        "Hasta 10 mensajes al mes"
+      ]
+    },
+    "sesion_1a1": "Eliminada para el piloto. No implementar."
+  },
+  "stripe": {
+    "cuenta": "Cuenta existente de Caty en Stripe (nombre en el panel: «Instagram»), ya verificada",
+    "ambos_precios_con_iva_incluido": true,
+    "opciones_enlaces": [
+      "Recopilar nombre",
+      "Códigos promocionales"
+    ],
+    "pendiente": "Configurar redirección tras el pago a la app y webhooks."
+  },
+  "chat": {
+    "limite_mensajes_mes": 10,
+    "tiempo_respuesta": "menos de 48 h"
+  },
+  "github": {
+    "usuario": "caty0deoliveira-bit",
+    "repo": "glow",
+    "url_publica": "https://caty0deoliveira-bit.github.io/glow/"
+  }
+}

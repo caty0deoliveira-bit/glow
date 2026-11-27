@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Glow by Caty: tu rutina de skincare personalizada, creada por la farmacéutica Caty De Oliveira.">
+<meta name="theme-color" content="#F4EFE6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1D1915" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Glow">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="assets/icon-180.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<title>Glow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* Una columna de app móvil (máx. 440px) sobre fondo marfil con manchas de color difuminadas; vidrio esmerilado en tarjetas, hojas y barra de pestañas */
+:root{
+  --bg:#F4EFE6; --glass:rgba(255,252,246,.58); --glass-strong:rgba(255,252,246,.88);
+  --line:rgba(92,72,52,.14); --ink:#33291F; --muted:#6E6255;
+  --taupe:#7B7F6B; --brown:#6B4E3A; --sand:#B79F87;
+  --sel-bg:#5E6350; --sel-fg:#FBF8F2; --btn-bg:#6B4E3A; --btn-fg:#FBF8F2;
+  --warn:#9A5B2E; --danger:#8E3B2E; --track:rgba(92,72,52,.12);
+  --bubble-me:#5E6350; --bubble-me-fg:#FBF8F2;
+  --blob1:rgba(123,127,107,.45); --blob2:rgba(183,159,135,.5); --blob3:rgba(107,78,58,.18);
+  --font:"Manrope",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  --r-lg:26px; --r-md:18px; --r-sm:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1D1915; --glass:rgba(52,46,38,.55); --glass-strong:rgba(44,39,32,.92);
+  --line:rgba(241,234,220,.12); --ink:#F1EADC; --muted:#BFB2A1;
+  --taupe:#A3A992; --brown:#D9BC9E; --sand:#8C755F;
+  --sel-bg:#AEB49C; --sel-fg:#1D1915; --btn-bg:#D9BC9E; --btn-fg:#1D1915;
+  --warn:#E0A36F; --danger:#E58B79; --track:rgba(241,234,220,.12);
+  --bubble-me:#AEB49C; --bubble-me-fg:#1D1915;
+  --blob1:rgba(123,127,107,.38); --blob2:rgba(140,117,95,.35); --blob3:rgba(217,188,158,.12);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1D1915; --glass:rgba(52,46,38,.55); --glass-strong:rgba(44,39,32,.92);
+  --line:rgba(241,234,220,.12); --ink:#F1EADC; --muted:#BFB2A1;
+  --taupe:#A3A992; --brown:#D9BC9E; --sand:#8C755F;
+  --sel-bg:#AEB49C; --sel-fg:#1D1915; --btn-bg:#D9BC9E; --btn-fg:#1D1915;
+  --warn:#E0A36F; --danger:#E58B79; --track:rgba(241,234,220,.12);
+  --bubble-me:#AEB49C; --bubble-me-fg:#1D1915;
+  --blob1:rgba(123,127,107,.38); --blob2:rgba(140,117,95,.35); --blob3:rgba(217,188,158,.12);
+  color-scheme:dark}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--font);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  -webkit-font-smoothing:antialiased;min-height:100vh}
+.bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bgfx i{position:absolute;border-radius:50%;filter:blur(60px)}
+.bgfx i:nth-child(1){width:70vmax;height:70vmax;right:-30vmax;top:-30vmax;background:var(--blob1)}
+.bgfx i:nth-child(2){width:60vmax;height:60vmax;left:-28vmax;top:45vh;background:var(--blob2)}
+.bgfx i:nth-child(3){width:40vmax;height:40vmax;right:-10vmax;bottom:-18vmax;background:var(--blob3)}
+
+#app{max-width:440px;margin:0 auto;padding-block:10px 140px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+small,.fine{color:var(--muted)}
+.fine{font-size:13px;line-height:1.45}
+button{font:inherit;color:inherit}
+a{color:var(--brown)}
+:focus-visible{outline:2px solid var(--brown);outline-offset:3px}
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6);border:1px solid var(--line)}
+
+/* barra de marca */
+.brandbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.brand svg{width:22px;height:22px}
+.brand span{font-weight:400;color:var(--muted)}
+.protobtn{border:1px dashed var(--sand);background:transparent;border-radius:99px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+
+/* botones */
+.btn{display:block;width:100%;text-align:center;border:0;border-radius:var(--r-md);padding:16px 20px;font-weight:600;font-size:16px;background:var(--btn-bg);color:var(--btn-fg);cursor:pointer;transition:transform .15s,opacity .15s;text-decoration:none}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.ghost{background:var(--glass);color:var(--ink);border:1px solid var(--line);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.btn.danger{background:var(--danger);color:var(--btn-fg)}
+.btn.sm{padding:10px 14px;font-size:14px;border-radius:12px;width:auto;display:inline-block}
+.btn.proto{background:transparent;border:1px dashed var(--sand);color:var(--muted);font-size:14px;padding:12px}
+.stack{display:grid;gap:10px}
+.link{background:none;border:0;padding:0;color:var(--brown);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* bienvenida */
+.hero{padding-block:44px 24px;display:grid;gap:18px}
+.hero svg{width:64px;height:64px}
+.wordmark{font-size:64px;line-height:.95;font-weight:300;letter-spacing:-.045em}
+.wordmark small{display:block;font-size:17px;letter-spacing:0;font-weight:500;color:var(--muted);margin-top:10px}
+.lead{font-size:19px;line-height:1.45;color:var(--muted);max-width:30ch}
+.author{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:var(--r-md);margin-bottom:12px}
+.avatar{flex:none;width:44px;height:44px;border-radius:50%;background:var(--sel-bg);color:var(--sel-fg);display:grid;place-items:center;font-weight:600;font-size:15px}
+.author b{display:block;font-weight:600}
+.author small{font-size:13px;line-height:1.35;display:block}
+.facts{list-style:none;margin:0;padding:6px 18px;border-radius:var(--r-lg)}
+.facts li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.facts li:first-child{border-top:0}
+.facts b{font-weight:600}
+.facts span{color:var(--muted);text-align:right}
+
+/* cuestionario */
+.qhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.qhead div{display:grid;line-height:1.25}
+.qhead small{font-size:13px}
+.qhead b{font-weight:600}
+.icon-btn{width:40px;height:40px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);display:grid;place-items:center;cursor:pointer}
+.icon-btn svg{width:18px;height:18px}
+.bar{height:4px;border-radius:9px;background:var(--track);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--taupe);border-radius:9px;transition:width .35s ease}
+.qt{font-size:27px;line-height:1.2;font-weight:600;letter-spacing:-.02em;margin:26px 0 8px}
+.hint{color:var(--muted);margin-bottom:6px}
+.opts{display:grid;gap:10px;margin-top:20px}
+.opts.grid{grid-template-columns:1fr 1fr}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:15px 16px;border-radius:var(--r-md);cursor:pointer;min-height:56px;line-height:1.3;transition:background .15s,color .15s}
+.opt .dot{flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center}
+.opt.multi .dot{border-radius:6px}
+.opt[aria-pressed="true"]{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-bg)}
+.opt[aria-pressed="true"] .dot{border-color:currentColor;background:currentColor}
+.opt[aria-pressed="true"] .dot::after{content:"";width:6px;height:10px;border:solid var(--sel-bg);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.opts.grid .opt{font-size:15px;padding:13px 12px}
+.field{width:100%;font:inherit;color:inherit;border-radius:var(--r-md);padding:16px;margin-top:20px}
+textarea.field{min-height:140px;resize:vertical}
+.num{display:flex;align-items:baseline;gap:10px;margin-top:20px}
+.num input{width:140px;font-size:44px;font-weight:300;text-align:center;padding:10px;margin:0}
+.num span{font-size:20px;color:var(--muted)}
+.group{display:grid;gap:18px;margin-top:22px}
+.group h3{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-btn{border-radius:99px;padding:10px 14px;font-size:15px;cursor:pointer;line-height:1.2}
+.chip-btn[aria-pressed="true"]{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-bg)}
+.qfoot{position:fixed;left:0;right:0;bottom:0;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 14px) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(to top,var(--bg) 55%,transparent)}
+.qfoot .in{max-width:440px;margin:0 auto}
+
+/* fotos */
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.slot{position:relative;aspect-ratio:3/4;max-width:100%;border-radius:var(--r-md);display:grid;place-items:center;text-align:center;cursor:pointer;overflow:hidden;font-size:13px;padding:8px}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot .lbl{position:relative;display:grid;gap:6px;justify-items:center;color:var(--muted)}
+.slot .lbl svg{width:26px;height:26px}
+.slot.has .lbl{position:absolute;left:6px;right:6px;bottom:6px;background:var(--glass-strong);color:var(--ink);border-radius:10px;padding:4px;font-weight:600}
+.tips{margin-top:18px;padding:16px 18px;border-radius:var(--r-md);display:grid;gap:8px;font-size:15px}
+.tips div{display:flex;gap:10px}
+.tips div::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--taupe);margin-top:9px}
+
+/* app */
+.page-title{font-size:34px;font-weight:300;letter-spacing:-.03em;margin:10px 0 18px}
+.card{border-radius:var(--r-lg);padding:20px;margin-bottom:14px}
+.card h2{font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:10px}
+.eyebrow{font-size:13px;color:var(--muted);font-weight:500}
+
+/* Baumann */
+.code{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:10px 0 16px}
+.code span{display:grid;justify-items:center;gap:2px}
+.code b{font-size:58px;line-height:1;font-weight:300;color:var(--brown);letter-spacing:-.02em}
+.code em{font-style:normal;font-size:12px;color:var(--muted);text-align:center;line-height:1.2}
+.spectra{display:grid;gap:14px;margin:6px 0 14px}
+.spec-l{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px}
+.spec-l .on{color:var(--ink);font-weight:600}
+.track{position:relative;height:8px;border-radius:9px;background:var(--track)}
+.track::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--line)}
+.track i{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--brown);border:3px solid var(--bg);transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.desc{display:grid;gap:8px;margin-bottom:12px}
+.desc div{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:15px}
+.desc b{color:var(--brown);font-weight:700}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.two>div{min-width:0;display:grid;gap:8px;align-content:start}
+.tagl{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-block;padding:5px 11px;border-radius:99px;font-size:13px;background:var(--track);line-height:1.3}
+.tag.goal{background:var(--sel-bg);color:var(--sel-fg)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;margin:0;font-size:15px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;text-align:right;min-width:0}
+
+.alerts{display:grid;gap:10px}
+.alert{display:grid;grid-template-columns:8px 1fr;gap:12px;font-size:15px;line-height:1.45}
+.alert::before{content:"";width:8px;height:8px;border-radius:50%;margin-top:7px;background:var(--taupe)}
+.alert.warn::before{background:var(--warn)}
+.ev{font-size:12px;font-weight:600;color:var(--brown);text-decoration:none;white-space:nowrap}
+.ev:hover{text-decoration:underline}
+
+/* rutina */
+.rhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.rhead small{font-size:13px}
+.steps{list-style:none;margin:0;padding:0}
+.steps>li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;padding:16px 0;border-top:1px solid var(--line)}
+.steps>li:first-child{border-top:0;padding-top:6px}
+.steps .n{width:28px;height:28px;border-radius:50%;background:var(--track);display:grid;place-items:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.steps .n.done{background:var(--sel-bg);color:var(--sel-fg)}
+.steps b.st{display:block;font-weight:600;margin-bottom:2px}
+.steps p{font-size:15px}
+.steps .why{display:block;font-size:13px;margin-top:4px;color:var(--muted)}
+.prods{display:grid;gap:8px;margin-top:12px}
+.prod{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:12px 12px 12px 14px;border-radius:14px;background:var(--glass-strong);border:1px solid var(--line)}
+.prod .pb{font-size:12px;color:var(--muted);font-weight:500}
+.prod .pn{font-size:14px;font-weight:600;line-height:1.3}
+.prod .pm{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.store{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;background:var(--track);color:var(--ink)}
+.buy{grid-row:1/3;grid-column:2;align-self:center;border:0;border-radius:11px;padding:9px 12px;font-size:13px;font-weight:600;background:var(--btn-bg);color:var(--btn-fg);text-decoration:none;cursor:pointer}
+.code-chip{border:1px dashed var(--sand);background:none;border-radius:99px;padding:2px 9px;font-size:11px;font-weight:700;cursor:pointer;color:var(--ink)}
+.have{margin-top:10px;border:1px solid var(--line);background:none;border-radius:99px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--muted)}
+.have[aria-pressed="true"]{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-bg)}
+.timeline{list-style:none;margin:4px 0 0;padding:0}
+.timeline li{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.timeline li:first-child{border-top:0}
+.timeline b{font-weight:600;font-variant-numeric:tabular-nums}
+.signoff{display:flex;gap:12px;align-items:center;margin:8px 0 14px}
+.signoff p{font-size:14px;color:var(--muted)}
+
+/* planes */
+.lockhero{text-align:center;display:grid;gap:10px;justify-items:center;padding:26px 20px}
+.lockhero svg{width:40px;height:40px;color:var(--taupe)}
+.stat{display:flex;justify-content:center;gap:18px;margin-top:4px}
+.stat div{display:grid}
+.stat b{font-size:28px;font-weight:300;font-variant-numeric:tabular-nums}
+.stat small{font-size:12px}
+.plan{position:relative}
+.plan.feat{border:1.5px solid var(--sel-bg)}
+.plan .badge{position:absolute;top:-11px;left:20px;padding:3px 11px;border-radius:99px;font-size:12px;font-weight:700;background:var(--sel-bg);color:var(--sel-fg)}
+.plan-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.plan-h h2{margin:0}
+.price{text-align:right;white-space:nowrap}
+.price b{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.price span{font-size:13px;color:var(--muted);margin-left:2px}
+.feats{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:8px;font-size:15px}
+.feats li{display:grid;grid-template-columns:18px 1fr;gap:8px}
+.feats li::before{content:"";width:10px;height:6px;border:solid var(--taupe);border-width:0 0 2px 2px;transform:rotate(-45deg);margin-top:7px}
+
+/* mensajes */
+.thread{display:grid;gap:10px;margin-bottom:14px}
+.msg{max-width:86%;padding:11px 14px;border-radius:18px;font-size:15px;line-height:1.45}
+.msg.bot,.msg.caty{justify-self:start;border-bottom-left-radius:6px}
+.msg.me{justify-self:end;background:var(--bubble-me);color:var(--bubble-me-fg);border-bottom-right-radius:6px}
+.msg .who{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:2px}
+.msg ul{margin:6px 0 0;padding-left:18px}
+.qr{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.qr button{border-radius:99px;padding:9px 14px;font-size:14px;cursor:pointer;border:1px solid var(--sel-bg);background:var(--glass);color:var(--ink)}
+.chathead{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:var(--r-md);margin-bottom:12px}
+.chathead b{display:block}
+.chathead small{font-size:13px}
+.compose{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+.compose textarea{margin:0;min-height:52px;max-height:140px;padding:13px 14px}
+.compose .btn{width:auto;padding:14px 16px}
+
+/* simular */
+.seg{display:flex;padding:4px;border-radius:14px;gap:4px;margin-bottom:14px}
+.seg button{flex:1;border:0;background:none;padding:9px 6px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--glass-strong);color:var(--ink);box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.compare{position:relative;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:4/5;max-width:100%;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:ew-resize;background:var(--track)}
+.compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.compare .after{position:absolute;inset:0}
+.compare .handle{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.9);transform:translateX(-1px);pointer-events:none}
+.compare .handle::after{content:"";position:absolute;top:50%;left:50%;width:36px;height:36px;border-radius:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1.5px solid #fff}
+.compare .lab{position:absolute;top:12px;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:600;background:rgba(255,252,246,.72);color:#33291F;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.compare .lab.l{left:12px}.compare .lab.r{right:12px}
+.compare .smp{position:absolute;left:12px;bottom:12px;padding:4px 10px;border-radius:99px;font-size:12px;background:rgba(51,41,31,.6);color:#FBF8F2}
+.meter{display:grid;gap:6px;margin:12px 0}
+.meter div:first-child{display:flex;justify-content:space-between;font-size:14px}
+.meter div:first-child span:last-child{font-variant-numeric:tabular-nums;color:var(--muted)}
+.meter .tr{height:6px;border-radius:9px;background:var(--track);overflow:hidden}
+.meter .tr i{display:block;height:100%;background:var(--taupe);border-radius:9px}
+.empty{text-align:center;display:grid;gap:14px;justify-items:center;padding:34px 22px}
+.empty svg{width:44px;height:44px;color:var(--taupe)}
+
+/* catálogo (solo prototipo) */
+.cat h2{display:flex;justify-content:space-between;align-items:baseline}
+.cat h2 small{font-size:12px;font-weight:500}
+.catrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.catrow:first-of-type{border-top:0}
+.catrow small{grid-column:1/-1;font-size:12px}
+
+/* pestañas */
+.tabs{position:fixed;left:0;right:0;bottom:0;padding:0 max(12px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 12px) max(12px,env(safe-area-inset-left,0px));pointer-events:none}
+.tabs .in{max-width:440px;margin:0 auto;display:flex;padding:6px;border-radius:26px;pointer-events:auto;box-shadow:0 8px 30px rgba(51,41,31,.12)}
+.tabs button{position:relative;flex:1;min-width:0;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:8px 0 6px;border-radius:20px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer}
+.tabs svg{width:22px;height:22px}
+.tabs button[aria-current="page"]{color:var(--ink);background:var(--glass-strong)}
+.tabs .pip{position:absolute;top:6px;left:calc(50% + 8px);width:8px;height:8px;border-radius:50%;background:var(--warn)}
+
+/* hojas, avisos y notificación */
+.sheet-wrap{position:fixed;inset:0;z-index:20;display:grid;align-items:end;background:rgba(29,25,21,.32)}
+.sheet{max-width:470px;width:100%;margin:0 auto;border-radius:28px 28px 0 0;padding:10px max(20px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 20px) max(20px,env(safe-area-inset-left,0px));background:var(--glass-strong);-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);border:1px solid var(--line);max-height:88vh;overflow:auto;animation:up .28s ease}
+.sheet .grab{width:38px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.sheet h2{font-size:20px;font-weight:600;margin-bottom:8px}
+.sheet>p{color:var(--muted);margin-bottom:16px}
+.maplist{list-style:none;margin:0 0 8px;padding:0}
+.maplist li+li{border-top:1px solid var(--line)}
+.maplist button{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:left;border:0;background:none;padding:12px 2px;cursor:pointer;font-size:15px}
+.maplist button span:last-child{color:var(--muted);font-size:13px}
+.maplist button[aria-pressed="true"] span:first-child{font-weight:700}
+.sheet h3{font-size:13px;color:var(--muted);font-weight:600;margin:14px 0 2px}
+.paybox{padding:16px;border-radius:var(--r-md);margin-bottom:14px;display:grid;gap:6px}
+.paybox .row{display:flex;justify-content:space-between;gap:10px}
+.paybox b{font-weight:600}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);z-index:30;padding:10px 16px;border-radius:99px;font-size:14px;font-weight:500;max-width:calc(100% - 32px);width:max-content}
+.notif{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translateX(-50%);z-index:31;width:min(420px,calc(100% - 24px));padding:12px 14px;border-radius:20px;display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;text-align:left;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.16);animation:drop .35s ease}
+.notif .ic{width:36px;height:36px;border-radius:9px;background:var(--sel-bg);display:grid;place-items:center}
+.notif .ic svg{width:22px;height:22px}
+.notif b{display:block;font-size:14px}
+.notif span{font-size:14px;color:var(--muted)}
+@keyframes drop{from{transform:translate(-50%,-30px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:360px){.opts.grid{grid-template-columns:1fr}.code b{font-size:46px}.tabs button{font-size:10px}}
+</style>
+
+</head>
+<body>
+<div class="bgfx" aria-hidden="true"><i></i><i></i><i></i></div>
+<main id="app"></main>
+<nav id="tabs" class="tabs" hidden></nav>
+<div id="sheet" class="sheet-wrap" hidden></div>
+<div id="toast" class="toast glass" role="status" hidden></div>
+<button id="notif" class="notif glass" hidden data-act="opennotif"></button>
+
+<script>
+const KEY='glow.v1';
+const TEST_MODE=true; /* Fase 1: sin pagos, todo desbloqueado para probar */
+const AMZ={es:{host:'www.amazon.es',tag:'caterinedeoli-21',name:'Amazon España'},us:{host:'www.amazon.com',tag:'caterinedeoli-20',name:'Amazon EE. UU.'}}, YS_CODE='CATYSKIN1';
+const MSG_LIMIT=10;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fresh=()=>({screen:'welcome',qi:0,a:{},ph:{},tab:'piel',slot:'frontal',k:1,sample:false,plan:'free',have:{},bot:[],botOn:false,chat:[],seg:'bot',session:false,seen:true});
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.a)S=fresh();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('No queda espacio para guardar las fotos en este navegador.')}}
+
+/* ---------- Evidencia (PubMed) ---------- */
+let REF={}; /* se carga de datos/evidencia.json */
+const ev=id=>id?` <a class="ev" href="https://pubmed.ncbi.nlm.nih.gov/${id}/" target="_blank" rel="noopener">Ver estudio</a>`:'';
+
+/* ---------- Catálogo de productos (borrador para aprobar) ----------
+   [marca, producto, nivel 1-3, etiquetas, enlaces {es: ASIN Amazon.es, us: ASIN Amazon.com, ys: id YesStyle}, contiene retinoide]
+   Etiquetas: lc low cost, co coreana, fa farmacia, ag alta gama, na natural, pf lleva perfume */
+let CATN={},CAT={}; /* se cargan de datos/catalogo.json */
+const TIERN=['','Económico','Precio medio','Premium'];
+const TIERMAX=[1,2,3,3];
+const PREFTAG={'Low cost':'lc','Coreana':'co','Farmacia y dermocosmética':'fa','Alta gama':'ag','Natural o clean':'na'};
+const TAGN={lc:'Low cost',co:'Coreana',fa:'Farmacia',ag:'Alta gama',na:'Natural',pf:'Lleva perfume'};
+const mkt=()=>{const p=one('pais');return !p||p==='España'||p==='Otro país de Europa'?'es':'us'};
+function link(p,m){
+ if(p.ids.ys)return{url:`https://www.yesstyle.com/es/info.html/pid.${p.ids.ys}?rco=${YS_CODE}`,direct:true,store:'YesStyle'};
+ const a=AMZ[m];
+ if(p.ids[m])return{url:`https://${a.host}/dp/${p.ids[m]}?tag=${a.tag}`,direct:true,store:a.name};
+ return{url:`https://${a.host}/s?k=${encodeURIComponent(m==='us'&&p.ids.q?p.ids.q:p.b+' '+p.n)}&tag=${a.tag}`,direct:false,store:a.name};
+}
+/* Marcas que nunca se recomiendan (decisión de Caty: marketing del miedo «clean») */
+let MARCAS_EXCLUIDAS=['Freshly Cosmetics','Cocunat']; /* se completa con datos/catalogo.json */
+const prodList=cat=>(CAT[cat]||[]).filter(([b])=>!MARCAS_EXCLUIDAS.some(m=>b.toLowerCase()===m.toLowerCase())).map(([b,n,t,c,ids,ret],i)=>({b,n,t,c,ids,ret,id:cat+i,st:ids.ys?'y':'a'}));
+function picks(cat,preg,sinPerfume){
+ const m=mkt(),max=TIERMAX[S.a.pres??1],prefs=many('cos').map(c=>PREFTAG[c]);
+ const all=prodList(cat).filter(p=>!(preg&&p.ret));
+ all.forEach(p=>{p.lk=link(p,m);p.sc=(p.t>max?-10:0)+prefs.filter(x=>p.c.includes(x)).length*3-Math.abs(max-p.t)*.8-(p.lk.direct?0:4)-(sinPerfume&&p.c.includes('pf')?3:0)});
+ all.sort((a,b)=>b.sc-a.sc);
+ const f=all[0];if(!f)return[];
+ const s=all.find(p=>p!==f&&p.st!==f.st&&p.sc>=f.sc-4)||all[1];
+ return[f,s].filter(Boolean);
+}
+
+/* ---------- Cuestionario ---------- */
+let SECS=[];
+let Q=[]; /* se carga de datos/cuestionario.json */
+const qq=id=>Q.find(q=>q.id===id);
+const one=id=>{const q=qq(id),v=S.a[id];return v==null?null:q.o[v]};
+const many=id=>(S.a[id]||[]).map(i=>qq(id).o[i]);
+const has=(id,lab)=>many(id).includes(lab);
+const SLOTS=[['frontal','Frontal'],['izq','Perfil izquierdo'],['der','Perfil derecho']];
+const paid=()=>TEST_MODE||S.plan!=='free';
+
+/* ---------- Baumann ---------- */
+let AX=[];
+let WORD={};
+let DESC={};
+function axes(){return AX.map((x,i)=>{const qs=Q.filter(q=>q.ax===i);const v=qs.reduce((s,q)=>s+(S.a[q.id]??0),0);const p=v/(qs.length*2);return{...x,p,L:p>.5?x.hi:x.lo,mid:p===.5}})}
+
+/* ---------- Motor de rutina ---------- */
+function plan(){
+ const A=axes(),[od,sr,pn,wt]=A.map(x=>x.L);
+ const fase=one('fase'),fotoI=S.a.foto??0;
+ const preg=fase==='Embarazo'||fase==='Lactancia';
+ const meno=fase==='Perimenopausia'||fase==='Menopausia';
+ const iso=has('trat','Isotretinoína oral');
+ const rxret=has('trat','Retinoide recetado (tretinoína, adapaleno…)');
+ const rosacea=has('enf','Rosácea');
+ const sens=sr==='S'||rosacea||has('enf','Dermatitis atópica');
+ const melasma=has('enf','Melasma');
+ const manchas=pn==='P'||has('estado','Manchas')||has('meta','Menos manchas')||melasma;
+ const aging=wt==='W'||has('estado','Líneas finas')||has('estado','Flacidez')||has('meta','Más firmeza')||has('meta','Menos líneas');
+ const acne=has('estado','Granitos')||has('meta','Menos granitos');
+ const oily=od==='O';
+ const minimal=S.a.pasos===0;
+ const fotosens=has('med','Medicamentos que dan sensibilidad al sol');
+ const sinPerfume=has('extra','Sin perfume')||sens;
+ const dark=fotoI>=3;
+ const useRet=!preg&&!iso&&!rxret&&!rosacea&&aging;
+ const tinted=manchas&&(dark||melasma);
+ const sp=sinPerfume?' Sin perfume.':'';
+
+ const am=[],pm=[];
+ am.push({id:'am1',p:'Limpieza suave',cat:oily?'limpGel':'limpCrema',t:oily?'Gel limpiador suave, sin sulfatos fuertes.':'Agua tibia o un limpiador cremoso suave.'+sp,w:oily?'Retira el sebo de la noche sin resecar.':'Por la mañana tu piel no necesita una limpieza intensa.'});
+ if(!minimal){
+  if(manchas&&!sens) am.push({id:'am2',p:'Antioxidante',cat:'vitc',ev:'37128827',t:'Sérum de vitamina C (ácido ascórbico o un derivado estable).',w:'Ayuda a unificar el tono y a mejorar el fotoenvejecimiento.'});
+  else if(manchas&&sens) am.push({id:'am2',p:'Antioxidante',cat:'vitcSuave',ev:'16029679',t:'Un derivado suave de vitamina C o niacinamida.',w:'Unifica el tono con menos riesgo de irritar.'});
+  else if(oily) am.push({id:'am2',p:'Sérum',cat:'niacin',ev:'16029679',t:'Niacinamida.',w:'Mejora la textura, las rojeces y el aspecto de las manchas.'});
+  else am.push({id:'am2',p:'Sérum de barrera',cat:'barrera',ev:'35038127',t:'Sérum con ceramidas o ectoína.',w:'Refuerzan la barrera y reducen la pérdida de agua, con muy buena tolerancia.'});
+ }
+ am.push({id:'am3',p:'Hidratante',cat:oily?'hidraLigera':'hidraRica',ev:meno?'33242128':'37717558',t:oily?'Gel-crema ligera.':(meno||od==='D'?'Crema con ceramidas, colesterol y ácidos grasos.':'Crema ligera con ceramidas.')+sp,w:meno?'Con la bajada de estrógenos la piel pierde hidratación y grosor: hay que cuidar la barrera.':'Sella la hidratación y cuida la barrera.'});
+ am.push({id:'am4',p:'Protector solar',cat:tinted?'spfColor':'spf',ev:tinted?'32335182':'38772426',t:tinted?'FPS 50 de amplio espectro, mejor con color (óxidos de hierro).':'FPS 50 de amplio espectro.',w:tinted?'El color protege también de la luz visible, que empeora el melasma y las manchas.':'Es el paso que más previene manchas y envejecimiento. Reaplica cada 2 horas al aire libre.'});
+
+ pm.push({id:'pm1',p:'Limpieza',cat:minimal?null:'balsamo',t:minimal?'El mismo limpiador de la mañana. Si usas maquillaje o protector resistente al agua, retíralo antes.':'Doble limpieza: bálsamo y luego tu limpiador de la mañana.',w:'Retira protector, maquillaje y contaminación para que el tratamiento funcione.'});
+ let tr;
+ if(preg) tr={id:'pm2',p:'Tratamiento',cat:'azelaico',ev:'36447117',t:'Sin retinoides. Ácido azelaico, con el visto bueno de tu médico.',w:'Es una de las opciones que se consideran durante el embarazo y la lactancia.'};
+ else if(iso) tr={id:'pm2',p:'Reparación',cat:null,t:'Ningún retinoide ni exfoliante extra mientras tomes isotretinoína.',w:'La isotretinoína ya reseca mucho. Ahora toca reparar la barrera con tu hidratante.'};
+ else if(rxret) tr={id:'pm2',p:'Tu tratamiento',cat:null,t:'Tu retinoide recetado, tal como te lo indicó tu médico.',w:'No sumes otro retinoide ni ácidos exfoliantes la misma noche.'};
+ else if(rosacea) tr={id:'pm2',p:'Tratamiento',cat:'azelaico',ev:'14979745',t:'Ácido azelaico.',w:'Reduce las lesiones y las rojeces de la rosácea. Evita exfoliantes fuertes y perfumes.'};
+ else if(useRet) tr={id:'pm2',p:'Retinoide',cat:'retinoide',ev:'17515510',t:'Retinal o retinol, 2 noches por semana al principio.'+(sens?' Si te irrita, aplícalo después de la hidratante.':''),w:'Mejora las líneas finas y la firmeza, pero necesita constancia: en los estudios se mide a las 24 semanas.'};
+ else if(acne) tr={id:'pm2',p:'Tratamiento',cat:oily?'bha':'azelaico',ev:oily?'26347269':'14979745',t:oily?'Ácido salicílico en las zonas con granitos.':'Ácido azelaico.',w:'Ayuda a destapar los poros y a calmar la inflamación.'};
+ else if(manchas) tr={id:'pm2',p:'Despigmentante',cat:'despig',ev:'33849384',t:'Ácido tranexámico tópico, ácido azelaico o niacinamida.',w:'Aclaran las manchas poco a poco y sin irritar.'};
+ else tr={id:'pm2',p:'Sérum',cat:'niacin',ev:'16029679',t:'Niacinamida.',w:'Mantiene la piel equilibrada. Más adelante puedes sumar un retinol suave.'};
+ pm.push(tr);
+ if(!minimal&&useRet&&manchas) pm.push({id:'pm3',p:'Noches sin retinoide',noRet:1,cat:'despig',ev:'33849384',t:'Ácido tranexámico o azelaico para las manchas.',w:'Alternarlos evita acumular irritación.'});
+ if(S.a.pasos===2&&has('estado','Ojeras o bolsas')) pm.push({id:'pm4',p:'Contorno de ojos',cat:'contorno',t:'Con cafeína o péptidos.',w:'La zona es fina: mejor una fórmula específica.'});
+ pm.push({id:'pm5',p:'Hidratante de noche',cat:oily?'hidraLigera':'hidraRica',ev:'37717558',t:oily?'Hidratante ligera que no obstruya los poros.':'Crema rica con ceramidas. Si notas mucha sequedad, unas gotas de escualano encima.',w:'Por la noche la piel pierde más agua: es el momento de reparar.'});
+ [...am,...pm].forEach(s=>{s.pk=s.cat?picks(s.cat,preg||s.noRet,sinPerfume):[]});
+
+ const ret=useRet?[['Semanas 1 y 2','2 noches por semana'],['Semanas 3 y 4','3 noches por semana'],['Semanas 5 a 8','Noche sí, noche no'],['Desde la semana 9','Cada noche, si tu piel lo tolera']]:null;
+
+ const al=[];
+ if(S.a.derm>=2) al.push({w:1,t:S.a.derm===3?'Nunca has ido al dermatólogo. Te recomendamos una primera revisión, también de lunares.':'Hace más de 3 años de tu última revisión. Te recomendamos volver al dermatólogo.'});
+ if(has('enf','Acné moderado o severo')) al.push({w:1,t:'El acné moderado o severo necesita tratamiento médico. Esta rutina lo acompaña, no lo sustituye.'});
+ if(preg) al.push({w:1,t:'Durante el embarazo y la lactancia, consulta cada activo con tu médico.',ev:'24528911'});
+ if(iso) al.push({w:1,t:'Con isotretinoína, consulta con tu dermatólogo antes de peelings, láser o depilación con cera.',ev:'28658462'});
+ if(fotosens) al.push({w:1,t:'Tomas un medicamento que da sensibilidad al sol: protector diario y nada de peelings sin consultar.'});
+ if(dark&&manchas) al.push({w:0,t:'En fototipos IV a VI la irritación puede dejar manchas. Introduce los activos poco a poco.',ev:'20725554'});
+ if(!has('prod','Protector solar')) al.push({w:0,t:'Todavía no usas protector solar: es el cambio con más impacto en tu rutina.',ev:'38772426'});
+ if(S.a.tabaco===1) al.push({w:0,t:'El tabaco se asocia a un envejecimiento facial más rápido.',ev:'19337100'});
+ if(S.a.sueno===0) al.push({w:0,t:'Dormir mal se asocia a más signos de envejecimiento y a una barrera que se recupera peor.',ev:'25266053'});
+ al.push({w:0,t:'Consulta si un lunar cambia de forma, color o tamaño, o si una herida no cicatriza.'});
+
+ const NOTE={'Low cost':'Low cost: fórmulas sencillas que indican la concentración del activo.','Coreana':'Coreana: texturas ligeras y protectores muy agradables de usar.','Farmacia y dermocosmética':'Farmacia: fórmulas con estudios y versiones para piel sensible.','Alta gama':'Alta gama: invierte primero en protector y tratamiento; lo demás puede ser básico.','Natural o clean':'Natural: no siempre irrita menos. Si tu piel es sensible, evita los aceites esenciales.'};
+ const notes=many('cos').map(c=>NOTE[c]);
+ let exp;
+ if(S.a.plazo===0&&aging) exp='Los cambios en líneas y firmeza llevan tiempo: con retinol se miden a las 24 semanas. En el primer mes notarás más hidratación y luminosidad.';
+ else if(S.a.plazo===0&&manchas) exp='Las manchas se aclaran despacio, en unos 2 a 3 meses. En el primer mes notarás el tono más luminoso.';
+ else exp='Con constancia, los primeros cambios se notan entre las semanas 8 y 12.';
+ const nProd=[...am,...pm].reduce((s,x)=>s+x.pk.length,0);
+ return{A,am,pm,ret,al,notes,exp,nProd,preg};
+}
+
+/* ---------- Análisis de foto (orientativo) ---------- */
+const cl=n=>Math.max(0,Math.min(100,Math.round(n)));
+function analyze(ctx,w,h){
+ const d=ctx.getImageData(w*.2|0,h*.2|0,w*.6|0,h*.6|0).data;
+ let s=0,q=0,r=0,g=0,n=0,prev=0;
+ for(let i=0;i<d.length;i+=4){const L=.299*d[i]+.587*d[i+1]+.114*d[i+2];s+=L;q+=L*L;r+=d[i]/(d[i]+d[i+1]+d[i+2]+1);if(i)g+=Math.abs(L-prev);prev=L;n++}
+ const m=s/n,sd=Math.sqrt(Math.max(0,q/n-m*m));
+ return{u:cl(100-sd*2.2),l:cl(m/2.55),r:cl((r/n-.36)*600),t:cl(100-g/n*6)};
+}
+function fileToPhoto(file,cb){
+ const im=new Image();
+ im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);cb({d:c.toDataURL('image/jpeg',.82),s:analyze(x,c.width,c.height)});URL.revokeObjectURL(im.src)};
+ im.onerror=()=>toast('No pudimos abrir esa imagen. Prueba con una foto en JPG o PNG.');
+ im.src=URL.createObjectURL(file);
+}
+function samplePhoto(){
+ const c=document.createElement('canvas');c.width=600;c.height=750;const x=c.getContext('2d');
+ let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+ const g=x.createRadialGradient(300,330,40,300,380,560);g.addColorStop(0,'#E6BB9F');g.addColorStop(.55,'#D7A588');g.addColorStop(1,'#B68267');x.fillStyle=g;x.fillRect(0,0,600,750);
+ for(let i=0;i<9;i++){const cx=120+rnd()*360,cy=180+rnd()*420,rr=60+rnd()*110,rg=x.createRadialGradient(cx,cy,0,cx,cy,rr);rg.addColorStop(0,'rgba(205,95,85,.22)');rg.addColorStop(1,'rgba(205,95,85,0)');x.fillStyle=rg;x.fillRect(0,0,600,750)}
+ x.filter='blur(2px)';
+ for(let i=0;i<46;i++){const cx=60+rnd()*480,cy=60+rnd()*620,rr=3+rnd()*11;x.fillStyle=`rgba(${110+rnd()*30|0},${62+rnd()*20|0},40,${.22+rnd()*.25})`;x.beginPath();x.ellipse(cx,cy,rr,rr*(.7+rnd()*.5),rnd()*3,0,7);x.fill()}
+ x.filter='blur(.6px)';x.strokeStyle='rgba(125,78,58,.28)';x.lineWidth=1.4;
+ for(let i=0;i<7;i++){const y=470+i*22+rnd()*8;x.beginPath();x.moveTo(330+rnd()*30,y);x.quadraticCurveTo(430,y-30-rnd()*20,560,y-60);x.stroke()}
+ x.filter='none';
+ const id=x.getImageData(0,0,600,750),d=id.data;for(let i=0;i<d.length;i+=4){const v=(rnd()-.5)*22;d[i]+=v;d[i+1]+=v;d[i+2]+=v}x.putImageData(id,0,0);
+ return{d:c.toDataURL('image/jpeg',.85),s:analyze(x,600,750),sample:true};
+}
+
+/* ---------- Datos de ejemplo ---------- */
+function loadSample(planName){
+ S=fresh();S.sample=true;
+ const set=(id,lab)=>{S.a[id]=qq(id).o.indexOf(lab)};
+ const setm=(id,labs)=>{S.a[id]=labs.map(l=>qq(id).o.indexOf(l))};
+ S.a.edad='47';set('pais','España');set('fase','Perimenopausia');S.a.foto=2;
+ Object.assign(S.a,{a1:0,a2:0,a3:1,a4:2,a5:2,a6:1,a7:1,a8:2});
+ setm('estado',['Manchas','Rojeces','Deshidratación','Líneas finas','Flacidez','Piel apagada']);
+ setm('meta',['Menos manchas','Más firmeza','Más hidratación']);S.a.plazo=1;
+ setm('enf',['Ninguna']);setm('trat',['Ninguno']);setm('med',['Ninguno']);S.a.derm=1;S.a.alerg='';
+ setm('prod',['Limpiador','Sérum de vitamina C','Hidratante','Protector solar']);S.a.prodtxt='';
+ Object.assign(S.a,{sol:1,sueno:1,estres:2,tabaco:0,clima:0});
+ setm('cos',['Farmacia y dermocosmética','Coreana']);S.a.pres=1;S.a.pasos=1;setm('extra',['Sin perfume']);
+ S.ph.frontal=samplePhoto();
+ S.plan=planName||'free';S.screen='app';S.tab='piel';
+}
+
+/* ---------- Iconos ---------- */
+const I={
+ back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+ logo:'<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--taupe)" stroke-width="5"/><circle cx="32" cy="32" r="13" fill="none" stroke="var(--sand)" stroke-width="3"/><circle cx="32" cy="32" r="5" fill="var(--brown)"/></svg>',
+ cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+ lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="3"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg>',
+ piel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>',
+ sim:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="4"/><path d="M12 4v16"/><path d="M15 10l2 2-2 2"/></svg>',
+ rut:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.5" cy="7" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="17" r="1.2" fill="currentColor"/></svg>',
+ msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17A2.5 2.5 0 0 1 4 14.5z"/></svg>',
+ aj:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>',
+ bell:'<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="none" stroke="var(--sel-fg)" stroke-width="5"/><circle cx="32" cy="32" r="7" fill="var(--sel-fg)"/></svg>'
+};
+
+/* ---------- Piezas comunes ---------- */
+function brandBar(){return`<div class="brandbar"><div class="brand">${I.logo}Glow <span>by Caty</span></div>${TEST_MODE?'<span class="protobtn" style="cursor:default">Versión de prueba</span>':''}</div>`}
+const avatar='<span class="avatar" aria-hidden="true">CD</span>';
+const PLANS={esencial:{n:'Glow Esencial',p:10},caty:{n:'Glow con Caty',p:15}};
+function plansHtml(){return`
+<section class="card glass plan"><div class="plan-h"><h2>Glow Esencial</h2><div class="price"><b>10 €</b><span>/mes</span></div></div>
+ <ul class="feats"><li>Tu rutina completa de mañana y noche</li><li>2 productos recomendados por paso, según tu presupuesto</li><li>Seguimiento del asistente de Caty</li><li>Nuevas fotos y simulación cuando quieras</li></ul>
+ <button class="btn ghost" disabled>Disponible muy pronto</button></section>
+<section class="card glass plan feat"><span class="badge">Con acceso a Caty</span><div class="plan-h"><h2>Glow con Caty</h2><div class="price"><b>15 €</b><span>/mes</span></div></div>
+ <ul class="feats"><li>Todo lo de Glow Esencial</li><li>Chat con Caty: te responde en menos de 48 h</li><li>Hasta ${MSG_LIMIT} mensajes al mes</li></ul>
+ <button class="btn" disabled>Disponible muy pronto</button></section>
+<p class="fine">Pago seguro con Stripe. Cancela cuando quieras.</p>`}
+
+/* ---------- Pantallas ---------- */
+function vWelcome(){return`${brandBar()}
+<section class="hero">${I.logo}<h1 class="wordmark">Glow<small>by Caty De Oliveira</small></h1>
+<p class="lead">Tu rutina de skincare, pensada para tu piel. Responde unas preguntas, añade tus fotos y descubre tu tipo de piel.</p></section>
+<div class="author glass">${avatar}<div><b>Creada por Caty</b><small>Farmacéutica especialista en dermocosmética y autora de Manual de Skincare para mujeres 40+</small></div></div>
+<ul class="facts glass">
+ <li><b>Gratis</b><span>Cuestionario y tu tipo de piel</span></li>
+ <li><b>Unos 5 minutos</b><span>9 secciones cortas</span></li>
+ <li><b>Privado</b><span>Tus fotos se quedan en tu teléfono</span></li></ul>
+<div class="stack" style="margin-top:22px">
+ <button class="btn" data-act="start">${Object.keys(S.a).length&&!S.sample?'Continuar':'Empezar gratis'}</button>
+ <button class="btn ghost" data-act="sample">Ver un ejemplo completo</button></div>
+<p class="fine" style="margin-top:18px">Glow es una guía cosmética orientativa y no sustituye la consulta con un dermatólogo.</p>`}
+
+function canNext(q){const v=S.a[q.id];
+ if(q.k==='one')return v!=null;
+ if(q.k==='num'){const n=+v;return n>=12&&n<=100}
+ if(q.k==='multi')return(v||[]).length>0;
+ if(q.k==='group')return q.g.every(x=>S.a[x.id]!=null);
+ return true}
+
+function vQuiz(){
+ const q=Q[S.qi],v=S.a[q.id],last=S.qi===Q.length-1;
+ let b='';
+ if(q.k==='one')b=`<div class="opts ${q.o.length>6?'grid':''}">${q.o.map((o,i)=>`<button class="opt glass" aria-pressed="${v===i}" data-act="pick" data-arg="${i}"><span class="dot"></span><span>${o}</span></button>`).join('')}</div>`;
+ if(q.k==='multi')b=`<div class="opts ${q.o.length>6?'grid':''}">${q.o.map((o,i)=>`<button class="opt multi glass" aria-pressed="${(v||[]).includes(i)}" data-act="tog" data-arg="${i}"><span class="dot"></span><span>${o}</span></button>`).join('')}</div>`;
+ if(q.k==='num')b=`<div class="num"><input id="f-${q.id}" class="field glass" type="number" inputmode="numeric" min="12" max="100" placeholder="00" value="${esc(v)}" data-field="${q.id}" aria-label="Edad"><span>años</span></div>`;
+ if(q.k==='text')b=`<textarea id="f-${q.id}" class="field glass" placeholder="${q.ph}" data-field="${q.id}">${esc(v)}</textarea>`;
+ if(q.k==='group')b=`<div class="group">${q.g.map(x=>`<div><h3>${x.l}</h3><div class="chips">${x.o.map((o,i)=>`<button class="chip-btn glass" aria-pressed="${S.a[x.id]===i}" data-act="grp" data-arg="${x.id}:${i}">${o}</button>`).join('')}</div></div>`).join('')}</div>`;
+ if(q.k==='photos')b=photoSlots()+`<div class="tips glass"><div>Luz natural de frente, cerca de una ventana</div><div>Sin maquillaje y con el pelo recogido</div><div>Misma luz y hora cuando repitas las fotos</div><div>Se guardan solo en tu teléfono</div></div>`;
+ const label=last?(Object.keys(S.ph).length?'Ver mi tipo de piel':'Ver mi tipo de piel sin fotos'):'Siguiente';
+ return`${brandBar()}
+<header class="qhead"><button class="icon-btn" data-act="back" aria-label="Atrás">${I.back}</button><div><small>Sección ${q.s+1} de ${SECS.length}</small><b>${SECS[q.s]}</b></div></header>
+<div class="bar"><i style="width:${(S.qi+1)/Q.length*100}%"></i></div>
+<h1 class="qt">${q.t}</h1>${q.h?`<p class="hint">${q.h}</p>`:''}${b}
+<div class="qfoot"><div class="in"><button id="next" class="btn" data-act="next" ${canNext(q)?'':'disabled'}>${label}</button></div></div>`}
+
+function photoSlots(){return`<div class="slots">${SLOTS.map(([k,l])=>{const p=S.ph[k];return`<label class="slot glass ${p?'has':''}">${p?`<img src="${p.d}" alt="">`:''}<span class="lbl">${p?'':I.cam}<span>${l}</span></span><input type="file" accept="image/*" hidden data-slot="${k}"></label>`}).join('')}</div>`}
+function chipList(a,cls){return a.length?`<div class="tagl">${a.map(x=>`<span class="tag ${cls||''}">${esc(x)}</span>`).join('')}</div>`:'<small>Sin datos</small>'}
+
+function vPiel(P){
+ const R=['I','II','III','IV','V','VI'];
+ return`<h1 class="page-title">Tu piel</h1>
+<section class="card glass">
+ <div class="eyebrow">Tu perfil Baumann</div>
+ <div class="code">${P.A.map(x=>`<span><b>${x.L}</b><em>${WORD[x.L]}</em></span>`).join('')}</div>
+ <div class="spectra">${P.A.map(x=>`<div><div class="spec-l"><span class="${x.L===x.lo?'on':''}">${x.lol}</span><span class="${x.L===x.hi?'on':''}">${x.hil}</span></div><div class="track"><i style="left:${8+x.p*84}%"></i></div></div>`).join('')}</div>
+ <div class="desc">${P.A.map(x=>`<div><b>${x.L}</b><span>${DESC[x.L]}${x.mid?' <small>(en el límite)</small>':''}</span></div>`).join('')}</div>
+ <p class="fine">Orientativo. Cuestionario propio basado en los cuatro ejes de la clasificación de Baumann; no es el test oficial.</p>
+</section>
+${paid()?'':`<section class="card glass"><h2>Tu rutina ya está lista</h2><p class="fine" style="margin-bottom:14px">Caty ha preparado ${P.am.length+P.pm.length} pasos y ${P.nProd} productos para tu piel ${P.A.map(x=>x.L).join('')}.</p><button class="btn" data-act="tab" data-arg="rutina">Ver mi rutina</button></section>`}
+<section class="card glass"><h2>Hoy y tu objetivo</h2>
+ <div class="two"><div><small>Hoy</small>${chipList(many('estado'))}</div><div><small>Tu objetivo</small>${chipList(many('meta'),'goal')}</div></div>
+ <p class="fine" style="margin-top:14px">${P.exp}</p></section>
+<section class="card glass"><h2>Tu contexto</h2><dl class="kv">
+ <dt>Edad</dt><dd>${esc(S.a.edad||'—')}</dd>
+ <dt>País</dt><dd>${one('pais')||'—'}</dd>
+ <dt>Etapa</dt><dd>${one('fase')||'—'}</dd>
+ <dt>Fototipo</dt><dd>${S.a.foto!=null?R[S.a.foto]:'—'}</dd>
+ <dt>Condiciones</dt><dd>${many('enf').join(', ')||'—'}</dd>
+ <dt>Dermatólogo</dt><dd>${one('derm')||'—'}</dd></dl></section>
+<section class="card glass"><h2>Para tener en cuenta</h2><div class="alerts">${P.al.slice(0,3).map(a=>`<div class="alert ${a.w?'warn':''}"><span>${a.t}${ev(a.ev)}</span></div>`).join('')}</div></section>`}
+
+function filt(k){return`blur(${(.55*k).toFixed(2)}px) brightness(${(1+.05*k).toFixed(3)}) saturate(${(1-.12*k).toFixed(3)}) contrast(${(1-.05*k).toFixed(3)})`}
+function vSim(){
+ const p=S.ph[S.slot];
+ const seg=`<div class="seg glass" role="group" aria-label="Foto">${SLOTS.map(([k,l])=>`<button aria-pressed="${S.slot===k}" data-act="slot" data-arg="${k}">${l}</button>`).join('')}</div>`;
+ if(!p)return`<h1 class="page-title">Simular</h1>${seg}
+<section class="card glass empty">${I.cam}<h2>Añade tu foto ${SLOTS.find(s=>s[0]===S.slot)[1].toLowerCase()}</h2><p class="fine">Con luz natural de frente y sin maquillaje. La foto se queda en tu teléfono.</p>
+<label class="btn" style="cursor:pointer">Elegir foto<input type="file" accept="image/*" hidden data-slot="${S.slot}"></label>
+<button class="link" data-act="samplephoto">Usar una imagen de muestra</button></section>`;
+ const m=(l,v)=>`<div class="meter"><div><span>${l}</span><span>${v}/100</span></div><div class="tr"><i style="width:${v}%"></i></div></div>`;
+ return`<h1 class="page-title">Simular</h1>${seg}
+<div class="compare" id="cmp" aria-label="Comparación hoy y objetivo. Arrastra para comparar.">
+ <img src="${p.d}" alt="Tu piel hoy"><div class="after" id="aft" style="clip-path:inset(0 0 0 50%)"><img src="${p.d}" alt="Simulación del objetivo" style="filter:${filt(S.k)}"></div>
+ <div class="handle" id="hdl" style="left:50%"></div><span class="lab l">Hoy</span><span class="lab r">Tu objetivo</span>${p.sample?'<span class="smp">Imagen de muestra</span>':''}</div>
+<div class="seg glass" role="group" aria-label="Intensidad" style="margin-top:12px">${[['0.6','Suave'],['1','Media'],['1.5','Marcada']].map(([k,l])=>`<button aria-pressed="${+S.k===+k}" data-act="k" data-arg="${k}">${l}</button>`).join('')}</div>
+<p class="fine" style="margin-bottom:14px">Simulación ilustrativa de un tono más uniforme, luminoso y con textura más fina. No es una promesa de resultados.</p>
+<section class="card glass"><h2>Análisis visual orientativo</h2>
+ ${m('Uniformidad del tono',p.s.u)}${m('Luminosidad',p.s.l)}${m('Rojeces',p.s.r)}${m('Textura lisa',p.s.t)}
+ <p class="fine">Depende mucho de la luz y la cámara. Úsalo para comparar tus propias fotos en el tiempo, no como diagnóstico.</p></section>
+<div class="stack"><label class="btn ghost" style="cursor:pointer">Cambiar foto<input type="file" accept="image/*" hidden data-slot="${S.slot}"></label>
+<button class="btn ghost" data-act="rmphoto">Borrar esta foto</button></div>`}
+
+function prodCard(p){
+ const lk=p.lk,pais=one('pais'),intl=lk.store==='Amazon EE. UU.'&&pais&&pais!=='Estados Unidos';
+ return`<div class="prod"><span class="pb">${esc(p.b)}</span><span class="pn">${esc(p.n)}</span>
+ <a class="buy" href="${lk.url}" target="_blank" rel="noopener sponsored">${lk.direct?'Comprar':'Buscar'}</a>
+ <span class="pm"><span class="store">${lk.store}</span>${TIERN[p.t]}${p.st==='y'?` <button class="code-chip" data-act="copycode" aria-label="Copiar código ${YS_CODE}">Código ${YS_CODE}</button>`:''}${intl?' <span>Envío internacional</span>':''}${lk.direct?'':' <span>Enlace directo pendiente</span>'}</span></div>`}
+
+function vRut(P){
+ if(paid()&&!S.rutinaAt){S.rutinaAt=Date.now();save()}
+ if(!paid())return`<h1 class="page-title">Tu rutina</h1>
+<section class="card glass lockhero">${I.lock}<h2>Tu rutina está lista</h2>
+ <div class="stat"><div><b>${P.am.length}</b><small>pasos de mañana</small></div><div><b>${P.pm.length}</b><small>pasos de noche</small></div><div><b>${P.nProd}</b><small>productos</small></div></div>
+ <p class="fine">Elige un plan para ver tu rutina completa, los productos que Caty recomienda para ti y el seguimiento.</p></section>${plansHtml()}`;
+ const L=(a)=>`<ol class="steps">${a.map((s,i)=>`<li><span class="n ${S.have[s.id]?'done':''}">${i+1}</span><div><b class="st">${s.p}</b><p>${s.t}</p><span class="why">${s.w}${ev(s.ev)}</span>
+ ${s.pk.length?`<div class="prods">${s.pk.map(prodCard).join('')}</div><button class="have" aria-pressed="${!!S.have[s.id]}" data-act="have" data-arg="${s.id}">${S.have[s.id]?'Ya lo tengo':'Marcar como conseguido'}</button>`:''}</div></li>`).join('')}</ol>`;
+ return`<h1 class="page-title">Tu rutina</h1>
+<div class="signoff">${avatar}<p>Rutina creada para tu piel ${P.A.map(x=>x.L).join('')} con el método de Caty De Oliveira, farmacéutica.</p></div>
+<section class="card glass"><div class="rhead"><h2>Mañana</h2><small>${P.am.length} pasos</small></div>${L(P.am)}</section>
+<section class="card glass"><div class="rhead"><h2>Noche</h2><small>${P.pm.length} pasos</small></div>${L(P.pm)}</section>
+${P.ret?`<section class="card glass"><h2>Cómo introducir tu retinoide</h2><ol class="timeline">${P.ret.map(r=>`<li><b>${r[0]}</b><span>${r[1]}</span></li>`).join('')}</ol><p class="fine" style="margin-top:10px">Si notas ardor o descamación, vuelve al paso anterior una o dos semanas.</p></section>`:''}
+<section class="card glass"><h2>Tu cosmética</h2>
+ ${P.notes.length?`<div class="alerts">${P.notes.map(n=>`<div class="alert"><span>${n}</span></div>`).join('')}</div>`:''}
+ <dl class="kv" style="margin-top:14px"><dt>Presupuesto</dt><dd>${(one('pres')||'—').split(' (')[0]}</dd><dt>Dónde invertir</dt><dd>Protector y tratamiento</dd></dl>
+ ${S.a.alerg?`<p class="fine" style="margin-top:12px">Revisa que tus productos no lleven lo que no toleras: ${esc(S.a.alerg)}</p>`:''}</section>
+<section class="card glass"><h2>Para tener en cuenta</h2><div class="alerts">${P.al.map(a=>`<div class="alert ${a.w?'warn':''}"><span>${a.t}${ev(a.ev)}</span></div>`).join('')}</div></section>
+<p class="fine" style="margin-bottom:10px">Introduce un producto nuevo cada 2 semanas y pruébalo antes en una zona pequeña, como detrás de la oreja.</p>
+<p class="fine">En calidad de Afiliada de Amazon, Caty obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. Los enlaces de YesStyle también son de afiliada.</p>`}
+
+/* ---------- Mensajes: asistente y chat con Caty ---------- */
+const BOTQ='Hola, soy el asistente de Caty. Hace 2 días recibiste tu rutina. ¿Pudiste conseguir tus productos?';
+function botStart(){S.botOn=true;S.seen=false;S.bot=[{f:'bot',t:BOTQ,o:[['Sí, todos','todos'],['Algunos','algunos'],['Todavía no','no'],['Tengo una duda','duda']]}]}
+function missingSteps(){const P=plan();return[...P.am,...P.pm].filter(s=>s.pk.length&&!S.have[s.id])}
+function botReply(k){
+ const last=S.bot[S.bot.length-1];const lab=(last.o||[]).find(o=>o[1]===k);last.o=null;
+ if(lab)S.bot.push({f:'me',t:lab[0]});
+ const B=(t,o)=>S.bot.push({f:'bot',t,o});
+ if(k==='todos'){Object.assign(S.have,Object.fromEntries(missingSteps().map(s=>[s.id,true])));B('¡Qué bien! Empieza por la rutina de mañana y suma un producto nuevo cada 2 semanas. Te escribo en 2 semanas para ver cómo va tu piel.')}
+ else if(k==='algunos'||k==='no'){const m=missingSteps();
+  B(m.length?`Sin problema. Te faltan estos pasos:<ul>${m.map(s=>`<li>${s.p}</li>`).join('')}</ul>En tu rutina tienes 2 opciones de compra para cada uno.`:'Según tu rutina ya tienes todo marcado. ¡Bien hecho!');
+  B('¿Qué te frenó?',[['El precio','precio'],['No llega a mi país','envio'],['No sé cuál elegir','elegir'],['Tengo una duda','duda']])}
+ else if(k==='precio')B('Empieza por lo que más impacto tiene: protector solar y limpiador. En cada paso, la primera opción es la que mejor encaja con tu presupuesto.',[['Ver mi rutina','gorut']]);
+ else if(k==='envio')B(`YesStyle envía a casi todos los países. Usa el código ${YS_CODE} al pagar.`,[['Ver mi rutina','gorut']]);
+ else if(k==='elegir')B('Elige la primera opción de cada paso: es la que mejor encaja con tu perfil y tu presupuesto.',[['Ver mi rutina','gorut'],['Tengo una duda','duda']]);
+ else if(k==='duda'){if(S.plan==='caty')B('Escríbele tu duda a Caty y te responderá en menos de 48 h.',[['Escribir a Caty','gochat']]);else B('Tu plan no incluye chat con Caty. Si quieres escribirle, puedes pasarte a Glow con Caty.',[['Ver planes','goplans']])}
+ else if(k==='gorut'){S.tab='rutina';return go()}
+ else if(k==='gochat'){S.seg='caty';return go(true)}
+ else if(k==='goplans'){return plansSheet()}
+ else if(k==='gosession'){return ACT.session()}
+ go(true);
+}
+const DOS_DIAS=2*24*60*60*1000;
+function checkBot(){if(paid()&&S.rutinaAt&&!S.botOn&&Date.now()-S.rutinaAt>=DOS_DIAS){botStart();save();return true}return false}
+function vMsgs(){
+ const seg=`<div class="seg glass" role="group" aria-label="Conversación"><button aria-pressed="${S.seg==='bot'}" data-act="seg" data-arg="bot">Asistente</button><button aria-pressed="${S.seg==='caty'}" data-act="seg" data-arg="caty">Caty</button></div>`;
+ if(!paid())return`<h1 class="page-title">Mensajes</h1>
+<section class="card glass lockhero">${I.lock}<h2>Seguimiento y chat con Caty</h2><p class="fine">El asistente te escribe 2 días después de recibir tu rutina para ver si conseguiste tus productos. Con Glow con Caty, además, puedes escribirle a ella.</p></section>${plansHtml()}`;
+ if(S.seg==='bot'){
+  S.seen=true;
+  if(!S.botOn)return`<h1 class="page-title">Mensajes</h1>${seg}
+<section class="card glass empty">${I.msg}<h2>El asistente de Caty te escribirá pronto</h2><p class="fine">2 días después de recibir tu rutina te preguntará si conseguiste tus productos y si tienes dudas. Lo verás aquí cuando abras Glow.</p></section>`;
+  const last=S.bot[S.bot.length-1];
+  return`<h1 class="page-title">Mensajes</h1>${seg}
+<div class="thread">${S.bot.map(m=>`<div class="msg ${m.f} ${m.f==='me'?'':'glass'}">${m.f==='bot'?'<span class="who">Asistente de Caty</span>':''}${m.t}</div>`).join('')}</div>
+${last.o?`<div class="qr">${last.o.map(([l,k])=>`<button data-act="bot" data-arg="${k}">${l}</button>`).join('')}</div>`:''}`;
+ }
+ const sess='';
+ if(TEST_MODE)return`<h1 class="page-title">Mensajes</h1>${seg}
+<section class="card glass empty">${I.msg}<h2>Muy pronto podrás escribirle a Caty</h2><p class="fine">El chat con Caty llega con el plan Glow con Caty: te responde en menos de 48 h, hasta ${MSG_LIMIT} mensajes al mes.</p></section>`;
+ if(S.plan!=='caty')return`<h1 class="page-title">Mensajes</h1>${seg}
+<section class="card glass lockhero">${I.lock}<h2>Escríbele a Caty</h2><p class="fine">Con Glow con Caty le escribes directamente y te responde en menos de 48 h. Hasta ${MSG_LIMIT} mensajes al mes.</p><button class="btn" data-act="buy" data-arg="caty">Pasarme a Glow con Caty</button></section>${sess}`;
+ const used=S.chat.filter(m=>m.f==='me').length,left=Math.max(0,MSG_LIMIT-used);
+ return`<h1 class="page-title">Mensajes</h1>${seg}
+<div class="chathead glass">${avatar}<div><b>Caty De Oliveira</b><small>Farmacéutica. Responde en menos de 48 h.</small></div></div>
+<div class="thread">${S.chat.length?S.chat.map(m=>`<div class="msg ${m.f} ${m.f==='me'?'':'glass'}">${m.f==='caty'?'<span class="who">Caty</span>':''}${esc(m.t)}</div>`).join(''):'<p class="fine">Cuéntale a Caty qué dudas tienes sobre tu piel o tu rutina. Ella ya ve tu perfil y tu rutina.</p>'}</div>
+<div class="compose"><textarea id="chatbox" class="field glass" placeholder="${left?'Escribe tu mensaje':'Has usado tus mensajes de este mes'}" ${left?'':'disabled'} aria-label="Mensaje para Caty"></textarea><button class="btn" data-act="send" ${left?'':'disabled'}>Enviar</button></div>
+<p class="fine" style="margin:8px 0 14px">Te quedan ${left} de ${MSG_LIMIT} mensajes este mes.</p>
+${sess}`;
+}
+
+function vAj(){
+ const n=Object.keys(S.ph).length,pl=PLANS[S.plan];
+ return`<h1 class="page-title">Ajustes</h1>
+${TEST_MODE?`<section class="card glass"><h2>Versión de prueba</h2><p class="fine" style="margin-bottom:14px">Mientras probamos Glow, la rutina y el asistente están desbloqueados. Los planes de pago (Glow Esencial, 10 € al mes, y Glow con Caty, 15 € al mes) llegan en la siguiente versión.</p><div class="stack"><button class="btn ghost" data-act="plans">Ver los planes</button><button class="btn ghost" data-act="test2d">Probar el asistente: simular que pasaron 2 días</button></div></section>`:`<section class="card glass"><h2>Tu plan</h2><dl class="kv" style="margin-bottom:14px"><dt>Plan actual</dt><dd>${pl?pl.n:'Gratis'}</dd>${pl?`<dt>Precio</dt><dd>${pl.p} € al mes</dd>`:''}</dl>
+ <div class="stack"><button class="btn ghost" data-act="plans">${pl?'Cambiar de plan':'Ver planes'}</button></div></section>`}
+<section class="card glass"><h2>Tus respuestas</h2><p class="fine" style="margin-bottom:14px">Revisa o cambia lo que contestaste. Tus fotos se mantienen.</p><button class="btn ghost" data-act="edit">Revisar respuestas</button></section>
+<section class="card glass"><h2>Tus fotos</h2><p class="fine" style="margin-bottom:14px">${n} de 3 guardadas en este teléfono.</p><button class="btn ghost" data-act="tab" data-arg="sim">Gestionar fotos</button></section>
+<section class="card glass"><h2>La ciencia detrás de tu rutina</h2><p class="fine" style="margin-bottom:10px">Cada recomendación está contrastada en PubMed.</p><div class="alerts">${Object.entries(REF).map(([id,[t,s]])=>`<div class="alert"><span>${t}. <small>${s}.</small>${ev(id)}</span></div>`).join('')}</div></section>
+<section class="card glass"><h2>Borrar todos mis datos</h2><p class="fine" style="margin-bottom:14px">Elimina tus respuestas y tus fotos de este teléfono. No se puede deshacer.</p><button class="btn danger" data-act="askreset">Borrar todo</button></section>
+<section class="card glass"><h2>Instalar Glow</h2><dl class="kv"><dt>iPhone</dt><dd>Safari, Compartir, Añadir a pantalla de inicio</dd><dt>Android</dt><dd>Chrome, menú, Instalar app</dd></dl><p class="fine" style="margin-top:12px">Instálala para recibir los avisos del asistente.</p></section>
+<p class="fine" style="margin-bottom:10px">En calidad de Afiliada de Amazon, Caty obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. Los enlaces de YesStyle también son de afiliada.</p>
+<p class="fine">Glow es una guía cosmética orientativa y no sustituye la consulta con un dermatólogo.</p>`}
+
+function vCatalog(){
+ const all=Object.values(CAT).flat(),ids=new Set(),rows=[];
+ let total=0,ok=0;
+ Object.entries(CAT).forEach(([k,L])=>L.forEach(x=>{const key=x[0]+x[1];if(ids.has(key))return;ids.add(key);const i=x[4];if(i.ys){total++;ok++}else{total+=2;ok+=(i.es?1:0)+(i.us?1:0)}}));
+ const lnk=(url,l)=>`<a class="ev" href="${url}" target="_blank" rel="noopener sponsored">${l}</a>`;
+ const pend=l=>`<span class="tag">${l}: pendiente</span>`;
+ const back=S.prev||'piel';
+ return`${brandBar()}<header class="qhead"><button class="icon-btn" data-act="jump" data-arg="${back}" aria-label="Volver">${I.back}</button><div><small>Solo en el prototipo</small><b>Catálogo para aprobar</b></div></header>
+<section class="card glass" style="margin-top:10px"><h2>Cómo elige la app</h2>
+ <p class="fine">En cada paso muestra 2 productos según el presupuesto, el tipo de cosmética y el país de la usuaria. En España usa Amazon España; en EE. UU. y Latinoamérica, Amazon EE. UU. YesStyle sirve para todos los países.</p>
+ <dl class="kv" style="margin-top:12px"><dt>Enlaces directos listos</dt><dd>${ok} de ${total}</dd><dt>Amazon España</dt><dd>caterinedeoli-21</dd><dt>Amazon EE. UU.</dt><dd>caterinedeoli-20</dd><dt>YesStyle</dt><dd>${YS_CODE}</dd><dt>Marcas excluidas</dt><dd>${MARCAS_EXCLUIDAS.join(', ')}</dd></dl>
+ <p class="fine" style="margin-top:12px">Toca cada enlace para comprobar que abre el producto correcto. Donde pone pendiente, la app usa una búsqueda en Amazon con tu ID mientras tanto.</p></section>
+${Object.entries(CAT).map(([k,L])=>`<section class="card glass cat"><h2>${CATN[k]} <small>${L.length} productos</small></h2>${L.map(([b,n,t,c,i,ret])=>`<div class="catrow" style="grid-template-columns:1fr"><span><b>${esc(b)}</b> ${esc(n)}</span><small>${TIERN[t]}. ${c.map(x=>TAGN[x]).join(', ')}${ret?'. Contiene retinoide: no se muestra en embarazo ni lactancia':''}</small><div class="tagl" style="margin-top:6px">${i.ys?lnk(`https://www.yesstyle.com/es/info.html/pid.${i.ys}?rco=${YS_CODE}`,'Abrir en YesStyle'):`${i.es?lnk(`https://www.amazon.es/dp/${i.es}?tag=${AMZ.es.tag}`,'Abrir en Amazon España'):pend('Amazon España')} ${i.us?lnk(`https://www.amazon.com/dp/${i.us}?tag=${AMZ.us.tag}`,'Abrir en Amazon EE. UU.'):pend('Amazon EE. UU.')}`}</div></div>`).join('')}</section>`).join('')}`}
+
+function vApp(){const P=plan();return brandBar()+({piel:vPiel,sim:vSim,rutina:vRut,msgs:vMsgs,aj:vAj}[S.tab]||vPiel)(P)}
+
+function renderTabs(){
+ const T=[['piel','Mi piel',I.piel],['sim','Simular',I.sim],['rutina','Rutina',I.rut],['msgs','Mensajes',I.msg],['aj','Ajustes',I.aj]];
+ const nav=$('#tabs');nav.hidden=S.screen!=='app';
+ nav.innerHTML=`<div class="in glass">${T.map(([k,l,ic])=>`<button data-act="tab" data-arg="${k}" ${S.tab===k?'aria-current="page"':''}>${ic}<span>${l}</span>${k==='msgs'&&!S.seen?'<span class="pip" aria-label="Mensaje nuevo"></span>':''}</button>`).join('')}</div>`;
+}
+function render(keep){
+ $('#app').innerHTML=S.screen==='quiz'?vQuiz():S.screen==='app'?vApp():S.screen==='catalog'?vCatalog():vWelcome();
+ renderTabs();bindCompare();
+ if(!keep)window.scrollTo(0,0);
+}
+function go(keep){save();render(keep)}
+
+/* ---------- Comparador arrastrable ---------- */
+function bindCompare(){
+ const c=$('#cmp');if(!c)return;
+ const set=x=>{const r=c.getBoundingClientRect(),p=Math.max(0,Math.min(100,(x-r.left)/r.width*100));$('#aft').style.clipPath=`inset(0 0 0 ${p}%)`;$('#hdl').style.left=p+'%'};
+ let on=false;
+ c.addEventListener('pointerdown',e=>{on=true;c.setPointerCapture(e.pointerId);set(e.clientX)});
+ c.addEventListener('pointermove',e=>{if(on)set(e.clientX)});
+ c.addEventListener('pointerup',()=>on=false);c.addEventListener('pointercancel',()=>on=false);
+}
+
+/* ---------- Hojas, avisos y notificación ---------- */
+function sheet(html){const w=$('#sheet');w.innerHTML=`<div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div>`;w.hidden=false}
+function closeSheet(){$('#sheet').hidden=true;$('#sheet').innerHTML=''}
+$('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet()});
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2800)}
+let nt;function notify(){const n=$('#notif');n.innerHTML=`<span class="ic">${I.bell}</span><span><b>Asistente de Caty</b><span>¿Pudiste conseguir tus productos?</span></span>`;n.hidden=false;clearTimeout(nt);nt=setTimeout(()=>n.hidden=true,5000)}
+function plansSheet(){sheet(`<h2>Elige tu plan</h2><p>Desbloquea tu rutina, tus productos y el seguimiento.</p>${plansHtml()}`)}
+function paySheet(k){
+ const name=PLANS[k].n,price=PLANS[k].p+' € al mes';
+ sheet(`<h2>${name}</h2><p>Pago simulado en el prototipo. En la app real se abre el pago seguro de Stripe.</p>
+<div class="paybox glass"><div class="row"><span>${name}</span><b>${price}</b></div><small>Se cobra en tu moneda local. Cancela cuando quieras.</small></div>
+<label class="fine" for="payemail">Tu email</label><input id="payemail" class="field glass" type="email" placeholder="tu@email.com" style="margin:6px 0 14px">
+<div class="stack"><button class="btn" data-act="pay" data-arg="${k}">Pagar ${price}</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)}
+const SLOTS_DEMO=['jueves 3 de diciembre, 18:00','viernes 4 de diciembre, 10:00','lunes 7 de diciembre, 17:30'];
+function sessionSheet(){
+ sheet(`<h2>Sesión 1 a 1 con Caty</h2><p>Una hora por Google Meet. Eliges día y hora en el calendario de Caty, pagas 50 € al reservar y recibes el enlace de Meet por email.</p>
+<h3>Horarios disponibles (ejemplo, hora de Madrid)</h3><ul class="maplist">${SLOTS_DEMO.map((t,i)=>`<li><button data-act="slotpick" data-arg="${i}"><span>${t[0].toUpperCase()+t.slice(1)}</span><span>Elegir</span></button></li>`).join('')}</ul>
+<p class="fine" style="margin:10px 0 14px">En la app real esta pantalla es tu calendario de Calendly, conectado a Stripe y a Google Meet.</p>
+<button class="btn ghost" data-act="close">Cancelar</button>`)}
+function sessionPay(i){
+ const t=SLOTS_DEMO[i];
+ sheet(`<h2>Confirmar sesión</h2><p>Pago simulado en el prototipo. En la app real se cobra con Stripe dentro de Calendly.</p>
+<div class="paybox glass"><div class="row"><span>Sesión 1 a 1 con Caty</span><b>50 €</b></div><small>${t[0].toUpperCase()+t.slice(1)} (hora de Madrid). Google Meet, 1 hora.</small></div>
+<div class="stack"><button class="btn" data-act="sessionpay" data-arg="${i}">Pagar 50 € y reservar</button><button class="btn ghost" data-act="session">Elegir otro horario</button></div>`)}
+
+function mapSheet(){
+ const firsts=SECS.map((s,i)=>[s,Q.findIndex(q=>q.s===i)]);
+ sheet(`<h2>Pantallas del prototipo</h2><p>Salta a cualquier pantalla. Este menú no estará en la app final.</p>
+<h3>Simular plan de la usuaria</h3><ul class="maplist">${[['free','Gratis'],['esencial','Glow Esencial (10 €)'],['caty','Glow con Caty (15 €)']].map(([k,l])=>`<li><button aria-pressed="${S.plan===k}" data-act="setplan" data-arg="${k}"><span>${l}</span><span>${S.plan===k?'Activo':''}</span></button></li>`).join('')}</ul>
+<h3>Inicio y cuestionario</h3><ul class="maplist"><li><button data-act="jump" data-arg="welcome"><span>Bienvenida</span><span>Inicio</span></button></li>${firsts.map(([s,i],n)=>`<li><button data-act="jump" data-arg="q${i}"><span>${s}</span><span>Sección ${n+1}</span></button></li>`).join('')}</ul>
+<h3>App</h3><ul class="maplist">${[['piel','Mi piel'],['sim','Simular'],['rutina','Rutina y productos'],['msgs','Mensajes: asistente y Caty'],['aj','Ajustes'],['catalog','Catálogo para aprobar']].map(([k,l])=>`<li><button data-act="jump" data-arg="${k}"><span>${l}</span><span>${k==='catalog'?'Solo prototipo':(Object.keys(S.a).length?'Con tus datos':'Con el ejemplo')}</span></button></li>`).join('')}</ul>
+<button class="btn ghost" data-act="close">Cerrar</button>`)}
+
+/* ---------- Acciones ---------- */
+const ACT={
+ start(){if(S.sample){S=fresh()}S.screen='quiz';go()},
+ sample(){if(Object.keys(S.a).length&&!S.sample){sheet(`<h2>¿Cargar el ejemplo?</h2><p>Se reemplazarán tus respuestas y fotos por un perfil de ejemplo.</p><div class="stack"><button class="btn" data-act="sampleyes">Cargar ejemplo</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)}else{loadSample();go();toast('Ejemplo: mujer de 47 años en perimenopausia')}},
+ sampleyes(){closeSheet();loadSample();go();toast('Ejemplo: mujer de 47 años en perimenopausia')},
+ pick(i){const q=Q[S.qi];S.a[q.id]=+i;save();render(true);setTimeout(()=>{if(S.screen==='quiz'&&Q[S.qi]===q&&S.qi<Q.length-1){S.qi++;go()}},260)},
+ tog(i){i=+i;const q=Q[S.qi];let a=(S.a[q.id]||[]).slice();
+  if(a.includes(i))a=a.filter(x=>x!==i);
+  else{if(q.none!=null)a=i===q.none?[]:a.filter(x=>x!==q.none);if(q.max&&a.length>=q.max){toast(`Elige hasta ${q.max}. Quita una para cambiarla.`);return}a.push(i)}
+  S.a[q.id]=a;go(true)},
+ grp(arg){const[id,i]=arg.split(':');S.a[id]=+i;go(true)},
+ next(){if(S.qi<Q.length-1){S.qi++;go()}else{S.screen='app';S.tab='piel';go()}},
+ back(){if(S.qi>0){S.qi--;go()}else{S.screen='welcome';go()}},
+ tab(t){S.tab=t;S.screen='app';go()},
+ seg(s){S.seg=s;go(true)},
+ slot(k){S.slot=k;go(true)},
+ k(v){S.k=+v;go(true)},
+ samplephoto(){S.ph[S.slot]=samplePhoto();go(true)},
+ rmphoto(){delete S.ph[S.slot];go(true);toast('Foto borrada')},
+ edit(){S.screen='quiz';S.qi=0;go()},
+ have(id){S.have[id]=!S.have[id];go(true)},
+ copycode(){const done=()=>toast(`Código ${YS_CODE} copiado. Pégalo al pagar en YesStyle.`);try{navigator.clipboard.writeText(YS_CODE).then(done,()=>toast(`Tu código: ${YS_CODE}`))}catch(e){toast(`Tu código: ${YS_CODE}`)}},
+ plans(){plansSheet()},
+ buy(k){paySheet(k)},
+ session(){if(CALENDLY_URL){window.open(CALENDLY_URL,'_blank','noopener');return}sessionSheet()},
+ slotpick(i){sessionPay(+i)},
+ sessionpay(i){closeSheet();S.session=SLOTS_DEMO[+i];go(true);toast('Sesión reservada. El enlace de Google Meet llega a tu email.')},
+ pay(k){closeSheet();
+  S.plan=k;S.tab='rutina';S.screen='app';go();toast(`Ya tienes ${PLANS[k].n}`)},
+ cancel(){sheet(`<h2>¿Cancelar tu suscripción?</h2><p>Mantendrás el acceso hasta el final del periodo pagado. Tu tipo de piel y tus fotos seguirán aquí.</p><div class="stack"><button class="btn danger" data-act="cancelyes">Cancelar suscripción</button><button class="btn ghost" data-act="close">Volver</button></div>`)},
+ cancelyes(){closeSheet();S.plan='free';go();toast('Suscripción cancelada')},
+ setplan(k){S.plan=k;if(!Object.keys(S.a).length)loadSample(k);S.plan=k;save();mapSheet();render(true)},
+ test2d(){if(!S.rutinaAt){toast('Primero abre tu rutina en la pestaña Rutina.');return}S.rutinaAt=Date.now()-DOS_DIAS-1000;S.botOn=false;S.bot=[];checkBot();go(true);notify()},
+ bot(k){botReply(k)},
+ opennotif(){$('#notif').hidden=true;S.tab='msgs';S.seg='bot';S.screen='app';go()},
+ send(){const t=$('#chatbox').value.trim();if(!t){toast('Escribe tu mensaje antes de enviarlo.');return}S.chat.push({f:'me',t});go(true);toast('Enviado. Caty te responderá en menos de 48 h.')},
+ catyreply(){S.chat.push({f:'caty',t:'¡Hola! Gracias por escribirme. Te leo y te respondo con calma: cuéntame también si notas tirantez después de aplicar el retinoide.'});go(true)},
+ map(){mapSheet()},
+ close(){closeSheet()},
+ jump(a){closeSheet();
+  if(a==='welcome'){S.screen='welcome';return go()}
+  if(a[0]==='q'&&!isNaN(+a.slice(1))){S.screen='quiz';S.qi=+a.slice(1);return go()}
+  if(a==='catalog'){if(S.screen!=='catalog')S.prev=S.screen==='app'?S.tab:S.screen==='welcome'?'welcome':'piel';S.screen='catalog';return go()}
+  if(!Object.keys(S.a).length)loadSample(S.plan);
+  S.screen='app';S.tab=a;go()},
+ askreset(){sheet(`<h2>¿Borrar todos tus datos?</h2><p>Se eliminarán tus respuestas y tus fotos de este teléfono. No se puede deshacer.</p><div class="stack"><button class="btn danger" data-act="resetyes">Sí, borrar todo</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)},
+ resetyes(){closeSheet();try{localStorage.removeItem(KEY)}catch(e){}S=fresh();render();toast('Datos borrados')}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b.dataset.arg,b)}});
+document.addEventListener('input',e=>{const f=e.target.dataset.field;if(!f)return;S.a[f]=e.target.value;save();const q=Q[S.qi];const n=$('#next');if(n&&q)n.disabled=!canNext(q)});
+document.addEventListener('change',e=>{const k=e.target.dataset.slot;if(!k||!e.target.files[0])return;fileToPhoto(e.target.files[0],p=>{S.ph[k]=p;S.slot=k;go(true);toast('Foto guardada en tu teléfono')})});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
+async function boot(){
+ try{
+  const get=u=>fetch(u,{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(u);return r.json()});
+  const [cat,cue,evi]=await Promise.all([get('datos/catalogo.json'),get('datos/cuestionario.json'),get('datos/evidencia.json')]);
+  const T={low_cost:'lc',coreana:'co',farmacia:'fa',alta_gama:'ag',natural:'na',lleva_perfume:'pf'};
+  CATN={};CAT={};
+  cat.categorias.forEach(c=>{CATN[c.id]=c.nombre;CAT[c.id]=c.productos.map(p=>[p.marca,p.producto,p.nivel_precio,p.etiquetas.map(e=>T[e]).filter(Boolean),{es:p.amazon_es_asin||undefined,us:p.amazon_us_asin||undefined,q:p.amazon_us_busqueda||undefined,ys:p.yesstyle_pid||undefined},p.contiene_retinoide?1:0])});
+  MARCAS_EXCLUIDAS=[...new Set([...MARCAS_EXCLUIDAS,...(cat.reglas.marcas_excluidas||[])])];
+  SECS=cue.secciones;Q=cue.preguntas;AX=cue.baumann.ejes;WORD=cue.baumann.letras;DESC=cue.baumann.descripciones;
+  REF={};evi.referencias.forEach(r=>{REF[r.pmid]=[r.titulo_es,r.cita]});
+ }catch(e){
+  $('#app').innerHTML=`${brandBar()}<section class="card glass empty" style="margin-top:40px"><h2>No pudimos abrir Glow</h2><p class="fine">Conéctate a internet y vuelve a abrir la app. Después funcionará también sin conexión.</p><button class="btn" onclick="location.reload()">Volver a intentar</button></section>`;
+  return;
+ }
+ if(S.screen==='catalog')S.screen='app';
+ checkBot();
+ render();
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&checkBot())render(true)});
+}
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+boot();
+</script>
+</body>
+</html>

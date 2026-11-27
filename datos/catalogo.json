@@ -1,0 +1,700 @@
+{
+  "version": "2026-11-26",
+  "aprobado_por_caty": true,
+  "reglas": {
+    "marcas_excluidas": [
+      "Freshly Cosmetics",
+      "Cocunat"
+    ],
+    "motivo_exclusion": "Caty no recomienda marcas que hacen marketing del miedo «clean».",
+    "productos_por_paso": 2,
+    "embarazo_lactancia": "No mostrar productos con contiene_retinoide=true.",
+    "noches_sin_retinoide": "No mostrar productos con contiene_retinoide=true en el paso de noches alternas.",
+    "sin_perfume": "Bajar prioridad a etiqueta lleva_perfume.",
+    "nivel_maximo_por_presupuesto": [
+      1,
+      2,
+      3,
+      3
+    ],
+    "preferencias_a_etiquetas": {
+      "Low cost": "low_cost",
+      "Coreana": "coreana",
+      "Farmacia y dermocosmética": "farmacia",
+      "Alta gama": "alta_gama",
+      "Natural o clean": "natural"
+    },
+    "precios": "No mostrar precios de Amazon (política de Amazon Afiliados)."
+  },
+  "categorias": [
+    {
+      "id": "limpGel",
+      "nombre": "Limpiador en gel",
+      "productos": [
+        {
+          "marca": "CeraVe",
+          "producto": "Gel Limpiador Espumoso",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost",
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B07C5XD33D",
+          "amazon_us_asin": "B01N1LL62W",
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "COSRX",
+          "producto": "Low pH Good Morning Gel Cleanser",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1052684732"
+        }
+      ]
+    },
+    {
+      "id": "limpCrema",
+      "nombre": "Limpiador suave",
+      "productos": [
+        {
+          "marca": "CeraVe",
+          "producto": "Limpiador Crema-Espuma Hidratante",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost",
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B08GCK4MYS",
+          "amazon_us_asin": "B0B33M2XLR",
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "Round Lab",
+          "producto": "1025 Dokdo Cleanser",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1074113181"
+        }
+      ]
+    },
+    {
+      "id": "balsamo",
+      "nombre": "Primera limpieza",
+      "productos": [
+        {
+          "marca": "Banila Co",
+          "producto": "Clean It Zero Cleansing Balm Original",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1128890370"
+        },
+        {
+          "marca": "CeraVe",
+          "producto": "Limpiador en Aceite Espumoso Hidratante",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost",
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B09CCJD53W",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": "CeraVe Hydrating Foaming Oil Cleanser",
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "vitc",
+      "nombre": "Vitamina C",
+      "productos": [
+        {
+          "marca": "L'Oréal Paris",
+          "producto": "Revitalift Clinical Sérum 12% Vitamina C Pura",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0BKLWC84G",
+          "amazon_us_asin": "B0B645WSPG",
+          "amazon_us_busqueda": "L'Oreal Paris Revitalift 12% Pure Vitamin C Serum",
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "Dear, Klairs",
+          "producto": "Freshly Juiced Vitamin Drop",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1060708173"
+        },
+        {
+          "marca": "ISDIN",
+          "producto": "Flavo-C Ultraglican (ampollas)",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B01BMLQ19Y",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "Medik8",
+          "producto": "C-Tetra",
+          "nivel_precio": 3,
+          "nivel_precio_texto": "Premium",
+          "etiquetas": [
+            "alta_gama",
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B002KKZQ84",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "vitcSuave",
+      "nombre": "Antioxidante suave",
+      "productos": [
+        {
+          "marca": "Dear, Klairs",
+          "producto": "Freshly Juiced Vitamin Drop",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1060708173"
+        },
+        {
+          "marca": "Medik8",
+          "producto": "C-Tetra",
+          "nivel_precio": 3,
+          "nivel_precio_texto": "Premium",
+          "etiquetas": [
+            "alta_gama",
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B002KKZQ84",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "niacin",
+      "nombre": "Niacinamida",
+      "productos": [
+        {
+          "marca": "The Ordinary",
+          "producto": "Niacinamide 5% Face and Body Emulsion",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0DFYFXDDP",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "Beauty of Joseon",
+          "producto": "Glow Serum: Propolis + Niacinamide",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1089210994"
+        }
+      ]
+    },
+    {
+      "id": "barrera",
+      "nombre": "Sérum de ceramidas o ectoína",
+      "productos": [
+        {
+          "marca": "9wishes",
+          "producto": "Cera Barrier Ampule (ceramidas y ectoína)",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1135172876"
+        },
+        {
+          "marca": "By Wishtrend",
+          "producto": "Ceramide Milky Ampoule",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "coreana"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1116256744"
+        },
+        {
+          "marca": "Paula's Choice",
+          "producto": "Booster 7% Ectoína",
+          "nivel_precio": 3,
+          "nivel_precio_texto": "Premium",
+          "etiquetas": [
+            "alta_gama"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0FJ8H7QQQ",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "hidraRica",
+      "nombre": "Hidratante con ceramidas",
+      "productos": [
+        {
+          "marca": "CeraVe",
+          "producto": "Crema Hidratante",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost",
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B07CHPWFXK",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": "CeraVe Moisturizing Cream 16 oz",
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "Round Lab",
+          "producto": "1025 Dokdo Cream",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "coreana"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1074113215"
+        }
+      ]
+    },
+    {
+      "id": "hidraLigera",
+      "nombre": "Hidratante ligera",
+      "productos": [
+        {
+          "marca": "CeraVe",
+          "producto": "Gel-Crema Hidratante Oil Control",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost",
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0D3F5JXGR",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "Round Lab",
+          "producto": "Birch Juice Moisturizing Cream",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "coreana"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1086574613"
+        }
+      ]
+    },
+    {
+      "id": "spf",
+      "nombre": "Protector solar",
+      "productos": [
+        {
+          "marca": "Beauty of Joseon",
+          "producto": "Relief Sun: Rice + Probiotics SPF50+",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1107744417"
+        },
+        {
+          "marca": "La Roche-Posay",
+          "producto": "Anthelios UVMune 400 Fluido Invisible SPF50+",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B09SLF5ZH8",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "spfColor",
+      "nombre": "Protector solar con color",
+      "productos": [
+        {
+          "marca": "Heliocare",
+          "producto": "360º Color Gel Oil-Free SPF50+ Beige",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B07D8TZL4Q",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "La Roche-Posay",
+          "producto": "Anthelios UVMune 400 Fluido con Color SPF50+",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "farmacia"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B09SLGZDXH",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "retinoide",
+      "nombre": "Retinoide",
+      "productos": [
+        {
+          "marca": "The Ordinary",
+          "producto": "Retinal 0.2% Emulsion",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost"
+          ],
+          "contiene_retinoide": true,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0CZ5VG3L1",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "SOME BY MI",
+          "producto": "Retinol Intense Reactivating Serum",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": true,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1126717155"
+        },
+        {
+          "marca": "La Roche-Posay",
+          "producto": "Retinol B3 Sérum",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "farmacia"
+          ],
+          "contiene_retinoide": true,
+          "tienda": "amazon",
+          "amazon_es_asin": "B07Z9Y4M3C",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": "La Roche-Posay Retinol B3 Serum",
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "azelaico",
+      "nombre": "Ácido azelaico",
+      "productos": [
+        {
+          "marca": "The Ordinary",
+          "producto": "Azelaic Acid Suspension 10%",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0BBLZ2YBP",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "Paula's Choice",
+          "producto": "10% Azelaic Acid Booster",
+          "nivel_precio": 3,
+          "nivel_precio_texto": "Premium",
+          "etiquetas": [
+            "alta_gama"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B09S9R72XB",
+          "amazon_us_asin": "B00V4PNAI4",
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "despig",
+      "nombre": "Despigmentante",
+      "productos": [
+        {
+          "marca": "La Roche-Posay",
+          "producto": "Mela B3 Sérum",
+          "nivel_precio": 2,
+          "nivel_precio_texto": "Precio medio",
+          "etiquetas": [
+            "farmacia"
+          ],
+          "contiene_retinoide": true,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0CM4B43DZ",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": "La Roche-Posay Mela B3 Serum",
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "SKIN1004",
+          "producto": "Madagascar Centella Tone Brightening Capsule Ampoule",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1107199865"
+        },
+        {
+          "marca": "The Ordinary",
+          "producto": "Azelaic Acid Suspension 10%",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0BBLZ2YBP",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        }
+      ]
+    },
+    {
+      "id": "bha",
+      "nombre": "Ácido salicílico",
+      "productos": [
+        {
+          "marca": "The Ordinary",
+          "producto": "Salicylic Acid 2% Solution",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B0C3PCJ6SD",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "COSRX",
+          "producto": "BHA Blackhead Power Liquid",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana",
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1052684693"
+        }
+      ]
+    },
+    {
+      "id": "contorno",
+      "nombre": "Contorno de ojos",
+      "productos": [
+        {
+          "marca": "The Ordinary",
+          "producto": "Caffeine Solution 5% + EGCG",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "low_cost"
+          ],
+          "contiene_retinoide": false,
+          "tienda": "amazon",
+          "amazon_es_asin": "B09N6Z61GL",
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": null
+        },
+        {
+          "marca": "Beauty of Joseon",
+          "producto": "Revive Eye Serum: Ginseng + Retinal",
+          "nivel_precio": 1,
+          "nivel_precio_texto": "Económico",
+          "etiquetas": [
+            "coreana"
+          ],
+          "contiene_retinoide": true,
+          "tienda": "yesstyle",
+          "amazon_es_asin": null,
+          "amazon_us_asin": null,
+          "amazon_us_busqueda": null,
+          "yesstyle_pid": "1114255822"
+        }
+      ]
+    }
+  ]
+}
