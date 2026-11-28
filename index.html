@@ -14,10 +14,10 @@
 <link rel="icon" type="image/png" href="assets/icon-180.png">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
 <title>Glow</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap">
 <style>
+/* Manrope servida desde la propia app (sin Google Fonts: ningún dato sale a terceros) */
+@font-face{font-family:"Manrope";font-style:normal;font-display:swap;font-weight:200 800;src:url(assets/fonts/manrope-latin-wght-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Manrope";font-style:normal;font-display:swap;font-weight:200 800;src:url(assets/fonts/manrope-latin-ext-wght-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}.oprow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0}.oprow>span{font-size:14px}.opstars{display:flex;gap:6px}.opstars button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(110,90,70,.25);background:rgba(255,255,255,.5);font:inherit;font-size:14px;color:inherit;cursor:pointer}.opstars button[aria-pressed=true]{background:var(--brown);color:#fff;border-color:var(--brown)}.linkbtn{background:none;border:0;padding:0;color:var(--brown);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font:inherit;font-size:13px}
 /* Una columna de app móvil (máx. 440px) sobre fondo marfil con manchas de color difuminadas; vidrio esmerilado en tarjetas, hojas y barra de pestañas */
 :root{
@@ -222,6 +222,9 @@ textarea.field{min-height:140px;resize:vertical}
 .stat small{font-size:12px}
 .plan{position:relative}
 .plan.feat{border:1.5px solid var(--sel-bg)}
+.inp{display:block;width:100%;box-sizing:border-box;font:inherit;color:inherit;min-height:46px;padding:12px 14px;margin:0 0 10px;border-radius:var(--r-md);border:1px solid rgba(110,90,70,.22)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--muted);margin:4px 0 14px;cursor:pointer}.chk input{width:20px;height:20px;margin:1px 0 0;flex:none;accent-color:var(--brown)}
+.legal-links a,.chk a,.fine a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .promo{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:16px;margin:0 0 14px;border:1px solid var(--sel-bg)}.promo b{font-size:15px}.promo span{font-size:13px;line-height:1.45;color:var(--muted)}
 .plan .badge{position:absolute;top:-11px;left:20px;padding:3px 11px;border-radius:99px;font-size:12px;font-weight:700;background:var(--sel-bg);color:var(--sel-fg)}
 .plan-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
@@ -359,14 +362,18 @@ async function syncPlan(){
   const cambio=np!==S.plan||nv!==(S.vence||null);S.plan=np;S.vence=nv;save();return cambio;
  }catch(e){return false}}
 const tester=()=>!!S.inv&&!!S.vence&&paid(); /* amiga con invitación activa: nunca ve botones de pago */
-const VER='1.6.1';
+const VER='1.7';
 /* ---------- Contador anónimo de uso ----------
    Solo pasos de la app (nunca respuestas, fotos ni datos de piel). Id aleatorio del móvil, sin cookies. */
 const DISP=(()=>{try{let d=localStorage.getItem('glow.disp');if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2));localStorage.setItem('glow.disp',d)}return d}catch(e){return 'sin-id'}})();
 let colaEv=[];try{colaEv=JSON.parse(localStorage.getItem('glow.cola'))||[]}catch(e){}
 let trackT;
 function guardaCola(){try{localStorage.setItem('glow.cola',JSON.stringify(colaEv.slice(-300)))}catch(e){}}
+const PASOS_CT={cuestionario_fin:1,planes:2,pago_inicio:3,pago_ok:4};
+const CONSENT_TXT='Acepto que Caty De Oliveira guarde mi email y mi nombre para escribirme con consejos de skincare y novedades de Glow, y que sepa hasta qué paso de la app llegué. Nunca mis respuestas, fotos ni datos de piel.';
+function avanzaPaso(ev){const n=PASOS_CT[ev];if(!n||S.sample||(PASOS_CT[S.pasoMax]||0)>=n)return;S.pasoMax=ev;save();if(S.contacto)rpc('contacto_paso',{p_paso:ev}).catch(()=>{})}
 function track(ev,dato){
+ avanzaPaso(ev);
  colaEv.push({disp:DISP,evento:ev,dato:dato==null?null:String(dato).slice(0,60),plan:['esencial','caty'].includes(S.plan)?S.plan:'free',prueba:!!S.inv,version:VER});
  guardaCola();clearTimeout(trackT);trackT=setTimeout(enviaUso,3000)}
 async function enviaUso(fin){
@@ -671,7 +678,7 @@ function plansHtml(){return`${promoActiva()?`<div class="promo glass"><b>Código
 <section class="card glass plan feat"><span class="badge">Con acceso a Caty</span><div class="plan-h"><h2>Glow con Caty</h2><div class="price"><b>15 €</b><span>/mes</span></div></div>
  <ul class="feats"><li>Todo lo de Glow Esencial</li><li>Chat con Caty: te responde en menos de 48 h</li><li>Hasta ${MSG_LIMIT} mensajes al mes</li></ul>
  <button class="btn" data-act="buy" data-arg="caty">Elegir Glow con Caty</button></section>
-<p class="fine">Pago seguro con Stripe. Cancela cuando quieras desde Ajustes.</p><button class="linkbtn fine" data-act="code" style="margin-top:6px">¿Ya pagaste desde otro móvil?</button>`}
+<p class="fine">Pago seguro con Stripe. Cancela cuando quieras desde Ajustes. Al suscribirte aceptas las <a href="legal.html#condiciones">condiciones</a> y la <a href="legal.html#privacidad">política de privacidad</a>.</p><button class="linkbtn fine" data-act="code" style="margin-top:6px">¿Ya pagaste desde otro móvil?</button>`}
 
 /* ---------- Pantallas ---------- */
 function vWelcome(){return`${brandBar()}
@@ -685,7 +692,8 @@ function vWelcome(){return`${brandBar()}
 <div class="stack" style="margin-top:22px">
  <button class="btn" data-act="start">${Object.keys(S.a).length&&!S.sample?'Continuar':'Empezar gratis'}</button>
  <button class="btn ghost" data-act="sample">Ver un ejemplo completo</button></div>
-<p class="fine" style="margin-top:18px">Glow es una guía cosmética orientativa y no sustituye la consulta con un dermatólogo.</p>`}
+<p class="fine" style="margin-top:18px">Glow es una guía cosmética orientativa y no sustituye la consulta con un dermatólogo.</p>
+<p class="fine legal-links"><a href="legal.html#aviso">Aviso legal</a> · <a href="legal.html#privacidad">Privacidad</a> · <a href="legal.html#condiciones">Condiciones</a></p>`}
 
 function canNext(q){const v=S.a[q.id];
  if(q.k==='one')return v!=null;
@@ -714,6 +722,14 @@ function vQuiz(){
 function photoSlots(){return`<div class="slots">${SLOTS.map(([k,l])=>{const p=S.ph[k];return`<label class="slot glass ${p?'has':''}">${p?`<img src="${p.d}" alt="">`:''}<span class="lbl">${p?'':I.cam}<span>${l}</span></span><input type="file" accept="image/*" hidden data-slot="${k}"></label>`}).join('')}</div>`}
 function chipList(a,cls){return a.length?`<div class="tagl">${a.map(x=>`<span class="tag ${cls||''}">${esc(x)}</span>`).join('')}</div>`:'<small>Sin datos</small>'}
 
+function contactoCard(){
+ if(S.sample)return'';
+ if(S.contacto)return`<section class="card glass"><h2>Emails de Caty</h2><p class="fine" style="margin-bottom:14px">Caty te escribirá a <b>${esc(S.contacto)}</b> con consejos y novedades de Glow.</p><button class="btn ghost" data-act="contactobaja">Dejar de recibir emails</button></section>`;
+ return`<section class="card glass"><h2>¿Quieres que Caty te escriba?</h2><p class="fine" style="margin-bottom:14px">Déjanos tu email y Caty te escribirá de vez en cuando con consejos de skincare y novedades de Glow. Te das de baja cuando quieras.</p>
+ <input class="inp glass" id="ctNombre" maxlength="60" autocomplete="given-name" placeholder="Tu nombre (opcional)" aria-label="Tu nombre (opcional)">
+ <input class="inp glass" id="ctEmail" type="email" inputmode="email" maxlength="120" autocomplete="email" placeholder="Tu email" aria-label="Tu email">
+ <label class="chk"><input type="checkbox" id="ctOk"><span>${CONSENT_TXT} <a href="legal.html#privacidad">Privacidad</a>.</span></label>
+ <button class="btn" data-act="contacto">Quiero recibirlos</button></section>`}
 function vPiel(P){
  const R=['I','II','III','IV','V','VI'];
  return`<h1 class="page-title">Tu piel</h1>${invCard()}
@@ -725,6 +741,7 @@ function vPiel(P){
  <p class="fine">Orientativo. Cuestionario propio basado en los cuatro ejes de la clasificación de Baumann; no es el test oficial.</p>
 </section>
 ${paid()?'':`<section class="card glass"><h2>Tu rutina ya está lista</h2><p class="fine" style="margin-bottom:14px">Caty ha preparado ${P.am.length+P.pm.length} pasos y ${P.nProd} productos para tu piel ${P.A.map(x=>x.L).join('')}.</p><button class="btn" data-act="tab" data-arg="rutina">Ver mi rutina</button></section>`}
+${contactoCard()}
 <section class="card glass"><h2>Hoy y tu objetivo</h2>
  <div class="two"><div><small>Hoy</small>${chipList(many('estado'))}</div><div><small>Tu objetivo</small>${chipList(many('meta'),'goal')}</div></div>
  <p class="fine" style="margin-top:14px">${P.exp}</p></section>
@@ -856,10 +873,12 @@ ${S.plan==='caty'&&S.perfilOk!=null?`<section class="card glass"><h2>Tu perfil y
 <section class="card glass"><h2>Tus respuestas</h2><p class="fine" style="margin-bottom:14px">Revisa o cambia lo que contestaste. Tus fotos se mantienen.</p><button class="btn ghost" data-act="edit">Revisar respuestas</button></section>
 <section class="card glass"><h2>Tus fotos</h2><p class="fine" style="margin-bottom:14px">${n} de 3 guardadas en este teléfono.</p><button class="btn ghost" data-act="tab" data-arg="sim">Gestionar fotos</button></section>
 <section class="card glass"><h2>La ciencia detrás de tu rutina</h2><p class="fine" style="margin-bottom:10px">Cada recomendación está contrastada en PubMed.</p><div class="alerts">${Object.entries(REF).map(([id,[t,s]])=>`<div class="alert"><span>${t}. <small>${s}.</small>${ev(id)}</span></div>`).join('')}</div></section>
-<section class="card glass"><h2>Borrar todos mis datos</h2><p class="fine" style="margin-bottom:14px">Elimina tus respuestas y tus fotos de este teléfono. Tu plan se mantiene. No se puede deshacer.</p><button class="btn danger" data-act="askreset">Borrar todo</button></section>
+${S.contacto?contactoCard():''}
+<section class="card glass"><h2>Borrar todos mis datos</h2><p class="fine" style="margin-bottom:14px">Elimina tus respuestas y tus fotos de este teléfono y, en el servidor, tu email, tus mensajes con Caty y tu perfil compartido. Tu plan se mantiene. No se puede deshacer.</p><button class="btn danger" data-act="askreset">Borrar todo</button></section>
 <section class="card glass"><h2>Instalar Glow</h2><dl class="kv"><dt>iPhone</dt><dd>Safari, Compartir, Añadir a pantalla de inicio</dd><dt>Android</dt><dd>Chrome, menú, Instalar app</dd></dl><p class="fine" style="margin-top:12px">Instálala para recibir los avisos del asistente y de Caty.</p></section>
 <p class="fine" style="margin-bottom:10px">En calidad de Afiliada de Amazon, Caty obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. Los enlaces de YesStyle también son de afiliada.</p>
-<p class="fine">Glow es una guía cosmética orientativa y no sustituye la consulta con un dermatólogo.</p>`}
+<p class="fine" style="margin-bottom:10px">Glow es una guía cosmética orientativa y no sustituye la consulta con un dermatólogo.</p>
+<p class="fine legal-links"><a href="legal.html#aviso">Aviso legal</a> · <a href="legal.html#privacidad">Privacidad</a> · <a href="legal.html#condiciones">Condiciones</a> · <a href="legal.html#cookies">Cookies</a></p>`}
 
 function vCatalog(){
  const all=Object.values(CAT).flat(),ids=new Set(),rows=[];
@@ -955,6 +974,13 @@ const ACT={
  have(id){S.have[id]=!S.have[id];go(true);if(S.have[id])track('conseguido',id)},
  copycode(){track('codigo_ys');const done=()=>toast(`Código ${YS_CODE} copiado. Pégalo al pagar en YesStyle.`);try{navigator.clipboard.writeText(YS_CODE).then(done,()=>toast(`Tu código: ${YS_CODE}`))}catch(e){toast(`Tu código: ${YS_CODE}`)}},
  plans(){plansSheet();track('planes')},
+ async contacto(){const q=id=>document.getElementById(id)||{},em=(q('ctEmail').value||'').trim(),nom=(q('ctNombre').value||'').trim(),ok=!!q('ctOk').checked;
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){toast('Escribe un email válido');return}
+  if(!ok){toast('Marca la casilla para aceptar');return}
+  if(!navigator.onLine){toast('Sin conexión. Inténtalo de nuevo cuando tengas internet.');return}
+  try{await rpc('guardar_contacto',{p_email:em,p_nombre:nom,p_texto:CONSENT_TXT,p_paso:S.pasoMax||'inicio'});S.contacto=em.toLowerCase();save();render(true);toast('¡Listo! Caty te escribirá pronto');track('contacto')}
+  catch(e){toast('No se pudo guardar. Inténtalo de nuevo.')}},
+ async contactobaja(){try{await rpc('borrar_contacto');S.contacto=null;save();render(true);toast('Ya no recibirás emails');track('contacto_baja')}catch(e){toast('No se pudo. Inténtalo de nuevo.')}},
  buy(k){
   if(tester()){toast('Durante tu prueba no tienes que pagar nada.');return}
   if(!navigator.onLine){toast('Necesitas conexión a internet para pagar.');return}
@@ -1008,8 +1034,8 @@ const ACT={
   if(a==='catalog'){if(S.screen!=='catalog')S.prev=S.screen==='app'?S.tab:S.screen==='welcome'?'welcome':'piel';S.screen='catalog';return go()}
   if(!Object.keys(S.a).length)loadSample(S.plan);
   S.screen='app';S.tab=a;go()},
- askreset(){sheet(`<h2>¿Borrar todos tus datos?</h2><p>Se eliminarán tus respuestas y tus fotos de este teléfono. Tu plan se mantiene. No se puede deshacer.</p><div class="stack"><button class="btn danger" data-act="resetyes">Sí, borrar todo</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)},
- resetyes(){closeSheet();const pl=S.plan,v=S.vence,inv=S.inv;try{localStorage.removeItem(KEY)}catch(e){}S=fresh();S.plan=pl;S.vence=v;S.inv=inv;save();render();toast('Datos borrados');track('borrado')}
+ askreset(){sheet(`<h2>¿Borrar todos tus datos?</h2><p>Se eliminarán tus respuestas y tus fotos de este teléfono y, en el servidor, tu email, tus mensajes con Caty y tu perfil compartido. Tu plan se mantiene. No se puede deshacer.</p><div class="stack"><button class="btn danger" data-act="resetyes">Sí, borrar todo</button><button class="btn ghost" data-act="close">Cancelar</button></div>`)},
+ resetyes(){closeSheet();if(C)rpc('borrar_mis_datos').catch(()=>{});const pl=S.plan,v=S.vence,inv=S.inv;try{localStorage.removeItem(KEY)}catch(e){}S=fresh();S.plan=pl;S.vence=v;S.inv=inv;save();render();toast('Datos borrados');track('borrado')}
 };
 let simVista=0;
 document.addEventListener('click',e=>{const a=e.target.closest('a.buy[data-ev]');if(a){track('comprar',a.dataset.ev);enviaUso(true)}const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b.dataset.arg,b)}});

@@ -59,12 +59,20 @@
 - [x] Aviso en la pantalla de planes y código ya puesto al pagar; desaparece solo el 6/12. Las testers no lo ven.
 - [ ] Después del 5/12: quitar `PROMO` de index.html (opcional, ya no se muestra).
 
-## Fases siguientes (solo tras aprobar la anterior)
-- Fase 4: textos legales (borrador para revisar con abogada).
+## Fase 4: legal y lanzamiento (empezada 28/11)
+- [x] `legal.html`: aviso legal, privacidad, condiciones y cookies, marcado como borrador. Enlazado en portada, planes y Ajustes.
+- [x] Manrope servida desde la app (sin Google Fonts).
+- [x] «Borrar todos mis datos» también borra en el servidor (email, mensajes, perfil, avisos). La suscripción se conserva por obligación legal.
+- [x] Contactos con consentimiento (pedido por Caty): email y nombre opcional en «Tu piel», hasta qué paso llegó, baja en Ajustes. Panel: pestaña «Contactos» con filtros, copiar emails y CSV. Migración `004_contactos_borrado.sql` aplicada.
+- [ ] Caty: domicilio profesional para el aviso legal (no quiere publicar el de su casa). Ahora pone «Madrid (España)».
+- [ ] Caty: ¿está colegiada como farmacéutica? Si lo está, el aviso legal debe indicar colegio y número.
+- [ ] Caty: aprobar una limpieza automática del contador de uso a los 2 años (la privacidad lo promete; ahora no hay tarea que lo borre).
+- [ ] Revisión de los textos por una abogada. Decisiones a confirmar: desistimiento con devolución íntegra en 14 días, edad mínima 18 años.
+- [ ] QR final y lanzamiento.
 
 ## Lo que tiene que hacer Caty
 - Añadir `https://caty0deoliveira-bit.github.io/glow/` como sitio web en Amazon Afiliados España y EE. UU.
 - Confirmar en el panel de YesStyle que las compras con `?rco=CATYSKIN1` se atribuyen.
 - Conseguir con SiteStripe los ASIN de EE. UU. que faltan (ahora usan búsqueda).
-- Datos legales para el aviso legal y la privacidad; revisión por abogada.
-- Consultar con su gestoría el IVA del plan Glow con Caty (15 €, Stripe normal).
+- Revisión de los textos legales por abogada y domicilio profesional.
+- IVA de Glow con Caty: lo declara Caty; tiene la hoja «Glow con Caty - control de IVA.xlsx» (28/11).

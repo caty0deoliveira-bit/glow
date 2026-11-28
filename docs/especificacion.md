@@ -122,3 +122,9 @@ Preguntas `afeitado` y `trasafeitado` con `solo_si_estricto` (solo se muestran s
 
 ### Cambio 27/11/2026: catálogo ampliado
 A petición de Caty se añadieron limpiadores, sérums de ceramidas y ectoína, hidratantes con ceramidas, protectores, azelaicos coreanos, sérums con ácido tranexámico (dentro del paso despigmentante, cuyo texto ya los menciona) y contornos de ojos. Se quitó Pixi. Los contornos llevan el campo `preocupaciones` (ojeras, bolsas, líneas) y la selección prioriza los que coinciden con la usuaria; las líneas cuentan si su perfil es de envejecimiento. No cambia ningún texto de salud ni ninguna recomendación.
+
+### Cambio 28/11/2026: legal, contactos y borrado
+- `legal.html` con aviso legal, privacidad, condiciones y cookies (borrador para abogada). El domicilio queda en «Madrid (España)» hasta que Caty tenga uno profesional.
+- Contactos con consentimiento: tarjeta «¿Quieres que Caty te escriba?» en «Tu piel», tabla `contactos` y pestaña «Contactos» en el panel.
+- «Borrar todos mis datos» llama a `borrar_mis_datos` en el servidor.
+- Fuente Manrope servida desde `assets/fonts` (sin Google Fonts).

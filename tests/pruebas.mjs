@@ -201,6 +201,39 @@ res4.push(['Contador: «Comprar» guarda paso, tienda y opción',eventos.some(e=
 for(const [n,o] of res4){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
 await pg.unrouteAll({behavior:'ignoreErrors'});
 
+// ---------- Contactos con consentimiento, borrado y páginas legales ----------
+let ctGuardado=null;const ctPasos=[];let borradoServidor=false,ctBaja=false;
+await pg.route('**/auth/v1/signup',r=>r.fulfill({json:{access_token:'tok',refresh_token:'ref',expires_in:3600,user:{id:UID}}}));
+await pg.route('**/rest/v1/suscripciones**',r=>r.fulfill({json:[]}));
+await pg.route('**/rest/v1/rpc/guardar_contacto',r=>{ctGuardado=r.request().postDataJSON();r.fulfill({json:null})});
+await pg.route('**/rest/v1/rpc/contacto_paso',r=>{ctPasos.push(r.request().postDataJSON().p_paso);r.fulfill({json:null})});
+await pg.route('**/rest/v1/rpc/borrar_contacto',r=>{ctBaja=true;r.fulfill({json:null})});
+await pg.route('**/rest/v1/rpc/borrar_mis_datos',r=>{borradoServidor=true;r.fulfill({json:null})});
+await pg.evaluate(()=>{localStorage.clear();C=null;loadSample();S.sample=false;S.plan='free';S.inv=null;S.vence=null;S.pasoMax=null;S.contacto=null;S.screen='app';S.tab='piel';save();render(true)});
+const res9=[['Email: la tarjeta aparece en «Tu piel»',await pg.evaluate(()=>!!document.getElementById('ctEmail'))]];
+await pg.fill('#ctEmail','ana@');await pg.click('[data-act="contacto"]');await pg.waitForTimeout(200);
+res9.push(['Email: no se guarda un email inválido',!ctGuardado]);
+await pg.fill('#ctEmail','Ana@Ejemplo.com');await pg.fill('#ctNombre','Ana');await pg.click('[data-act="contacto"]');await pg.waitForTimeout(200);
+res9.push(['Email: sin marcar la casilla no se guarda',!ctGuardado]);
+await pg.check('#ctOk');await pg.click('[data-act="contacto"]');await pg.waitForFunction(()=>!!S.contacto,null,{timeout:5000}).catch(()=>{});
+res9.push(['Email: con consentimiento se guarda email, nombre y el texto aceptado',ctGuardado?.p_email==='Ana@Ejemplo.com'&&ctGuardado?.p_nombre==='Ana'&&/Acepto que Caty/.test(ctGuardado?.p_texto||'')]);
+res9.push(['Email: después muestra «Dejar de recibir emails»',await pg.evaluate(()=>!!document.querySelector('[data-act="contactobaja"]'))]);
+await pg.evaluate(()=>{track('planes');track('cuestionario_fin')});await pg.waitForTimeout(400);
+res9.push(['Email: registra hasta dónde llegó, sin retroceder',ctPasos.join()==='planes']);
+res9.push(['Email: nunca envía respuestas ni datos de piel',!/DSPW|Perimenopausia|Manchas|47/.test(JSON.stringify(ctGuardado)+ctPasos.join())]);
+await pg.click('[data-act="contactobaja"]');await pg.waitForTimeout(400);
+res9.push(['Email: darse de baja lo borra del servidor',ctBaja&&await pg.evaluate(()=>!S.contacto)]);
+await pg.evaluate(()=>{ACT.resetyes()});await pg.waitForTimeout(400);
+res9.push(['«Borrar todos mis datos» también borra en el servidor',borradoServidor]);
+res9.push(['Ejemplo: no pide el email',await pg.evaluate(()=>{loadSample();S.screen='app';S.tab='piel';render(true);return !document.getElementById('ctEmail')})]);
+res9.push(['Legal: enlaces en portada y en planes',await pg.evaluate(()=>{S=fresh();render(true);const a=document.body.innerHTML.includes('legal.html#privacidad');const b=plansHtml().includes('legal.html#condiciones');return a&&b})]);
+res9.push(['Sin Google Fonts ni otros servidores de terceros en la app',await pg.evaluate(()=>!document.querySelector('link[href*="googleapis"],link[href*="gstatic"]'))]);
+const lg=await ctx.newPage();await lg.goto(URL+'legal.html');
+res9.push(['Legal: aviso, privacidad, condiciones y cookies, marcado como borrador',await lg.evaluate(()=>['aviso','privacidad','condiciones','cookies'].every(id=>document.getElementById(id))&&document.body.innerText.includes('Borrador')&&document.body.innerText.includes('Y3968612E'))]);
+await lg.setViewportSize({width:390,height:844});await lg.screenshot({path:'tests/capturas/legal.png',fullPage:false});await lg.close();
+for(const [n,o] of res9){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
+await pg.unrouteAll({behavior:'ignoreErrors'});
+
 // ---------- Panel de Caty ----------
 const adm=await ctx.newPage();adm.on('pageerror',e=>errs.push('admin: '+e.message));
 let respuesta=null;
@@ -214,6 +247,7 @@ await adm.route('**/rest/v1/rpc/resumen_uso',r=>r.fulfill({json:[{evento:'abrir'
 await adm.route('**/rest/v1/rpc/uso_diario',r=>r.fulfill({json:[{dia:'2026-11-27',personas:6},{dia:'2026-11-28',personas:4}]}));
 await adm.route('**/rest/v1/opiniones**',r=>r.fulfill({json:[{creado:new Date().toISOString(),general:5,cuestionario:4,rutina:5,asistente:3,texto:'Muy clara',plan:'esencial'}]}));
 await adm.route('**/rest/v1/rpc/lista_invitaciones',r=>r.fulfill({json:[{codigo:'AMIGAS-TEST',plan:'esencial',dias:7,usos:3,usos_max:10,caduca:new Date(Date.now()+5*864e5).toISOString(),nota:'Prueba'}]}));
+await adm.route('**/rest/v1/rpc/lista_contactos',r=>r.fulfill({json:[{email:'ana@ejemplo.com',nombre:'Ana',creado:new Date().toISOString(),paso:'pago_inicio',paso_fecha:new Date().toISOString(),plan:null,prueba:false},{email:'eva@ejemplo.com',nombre:null,creado:new Date().toISOString(),paso:'pago_ok',paso_fecha:new Date().toISOString(),plan:'esencial',prueba:false}]}));
 await adm.route('**/rest/v1/rpc/lista_suscripciones',r=>r.fulfill({json:[{email:'ana@ejemplo.com',plan:'caty',estado:'active',origen:'stripe',vence:null,creado:new Date().toISOString(),con_movil:true}]}));
 await adm.goto(URL+'admin.html');
 const res5=[['Panel: sin sesión pide el email',await adm.evaluate(()=>!!document.querySelector('#em')&&!document.querySelector('#em').value)]];
@@ -233,6 +267,12 @@ await adm.click('[data-tab="inv"]');await adm.waitForSelector('#crear');
 res5.push(['Panel · Invitaciones: usos y crear nueva',await adm.evaluate(()=>document.body.innerText.includes('3 de 10'))]);
 await adm.click('[data-tab="subs"]');await adm.waitForSelector('#pasar');
 res5.push(['Panel · Suscripciones: lista y pasar acceso',await adm.evaluate(()=>document.body.innerText.includes('ana@ejemplo.com'))]);
+await adm.click('[data-tab="ctos"]');await adm.waitForSelector('[data-f]');
+res5.push(['Panel · Contactos: lista, quién abandonó el pago y descarga',await adm.evaluate(()=>{const t=document.body.innerText;return t.includes('ana@ejemplo.com')&&t.includes('Fue a pagar y no terminó')&&t.includes('Fueron a pagar y no terminaron (1)')&&!!document.querySelector('#csv')})]);
+await adm.click('[data-f="abandono"]');await adm.waitForTimeout(200);
+res5.push(['Panel · Contactos: el filtro deja solo a quien no terminó el pago',await adm.evaluate(()=>{const t=document.querySelector('table').innerText;return t.includes('ana@ejemplo.com')&&!t.includes('eva@ejemplo.com')})]);
+await adm.evaluate(()=>localStorage.setItem('glow.admin.ctf','todos'));
+await adm.screenshot({path:'tests/capturas/admin-contactos.png',fullPage:true});
 for(const [n,o] of res5){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
 await adm.close();
 // capturas de pantallas

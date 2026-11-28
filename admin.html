@@ -151,7 +151,7 @@ function pintaLogin(msg){
 }
 
 /* ---------- Estructura ---------- */
-const TABS=[['msgs','Mensajes'],['uso','Uso'],['ops','Opiniones'],['inv','Invitaciones'],['subs','Suscripciones']];
+const TABS=[['msgs','Mensajes'],['ctos','Contactos'],['uso','Uso'],['ops','Opiniones'],['inv','Invitaciones'],['subs','Suscripciones']];
 let tab=localStorage.getItem('glow.admin.tab')||'uso';
 let SECS=[];
 function pintaMarco(){
@@ -162,7 +162,7 @@ function pintaMarco(){
   document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;localStorage.setItem('glow.admin.tab',tab);pintaMarco()});
   $('#salir').onclick=()=>{C=null;saveC();pintaLogin()};
   $('#push').onclick=activarPush;
-  ({msgs:vMsgs,uso:vUso,ops:vOps,inv:vInv,subs:vSubs})[tab]();
+  ({msgs:vMsgs,ctos:vCtos,uso:vUso,ops:vOps,inv:vInv,subs:vSubs})[tab]();
   if(tab!=='msgs')contarSinLeer();
 }
 async function contarSinLeer(){try{const cs=await rpc('conversaciones');const n=cs.reduce((s,c)=>s+Number(c.sin_leer||0),0);const b=$('#badge-msgs');if(b)b.innerHTML=n?` <span class="pill on">${n}</span>`:''}catch(e){}}
@@ -256,6 +256,7 @@ async function vUso(){
      <div class="kpi"><b>${P('abrir')}</b><small>personas abrieron Glow</small></div>
      <div class="kpi"><b>${P('cuestionario_fin')}</b><small>terminaron el cuestionario</small></div>
      <div class="kpi"><b>${V('comprar')}</b><small>clics en «Comprar»</small></div>
+     <div class="kpi"><b>${P('contacto')}</b><small>dejaron su email</small></div>
      <div class="kpi"><b>${P('opinion_enviada')}</b><small>enviaron su opinión</small></div>
      <div class="kpi"><b>${P('abrir','instalada')}</b><small>la usan instalada</small></div>
      <div class="kpi"><b>${P('avisos_si')}</b><small>activaron avisos</small></div>
@@ -321,6 +322,30 @@ async function vSubs(){
     if(!em||!/^[0-9a-f-]{36}$/.test(co)){toast('Revisa el email y el código (36 caracteres).');return}
     try{const k=await rpc('pasar_acceso',{p_email:em,p_codigo:co});toast(k?'Listo. Dile que toque «Ya pagué: actualizar mi plan».':'No encontré ninguna suscripción con ese email.')}
     catch(e){toast(e.message.includes('codigo_no_existe')?'Ese código no existe. Que lo copie otra vez desde su móvil.':'No se pudo: '+e.message)}};
+}
+
+/* ---------- Contactos ---------- */
+/* Solo personas que dejaron su email en la app y aceptaron que Caty les escriba. Sin respuestas ni datos de piel. */
+const PASO_CT={inicio:'Dejó su email',cuestionario_fin:'Terminó el cuestionario',planes:'Vio los planes',pago_inicio:'Fue a pagar y no terminó',pago_ok:'Pagó'};
+let ctFiltro=localStorage.getItem('glow.admin.ctf')||'todos';
+async function vCtos(){
+  const v=$('#vista');v.innerHTML='<p class="fine">Cargando…</p>';
+  let cs;try{cs=await rpc('lista_contactos')}catch(e){v.innerHTML=`<p class="fine">${esc(e.message)}</p>`;return}
+  const F={todos:['Todas',c=>true],nopagan:['No pagan',c=>!c.plan],abandono:['Fueron a pagar y no terminaron',c=>c.paso==='pago_inicio'&&!c.plan],planes:['Vieron planes sin pagar',c=>c.paso==='planes'&&!c.plan],pagan:['Pagan',c=>!!c.plan&&!c.prueba]};
+  const lista=cs.filter(F[ctFiltro][1]);
+  const planTxt=c=>c.plan?(c.prueba?'Invitación':c.plan==='caty'?'Glow con Caty':'Glow Esencial'):'Gratis';
+  const k=f=>cs.filter(F[f][1]).length;
+  v.innerHTML=`<div class="kpis"><div class="kpi"><b>${cs.length}</b><small>dejaron su email</small></div><div class="kpi"><b>${k('nopagan')}</b><small>todavía no pagan</small></div><div class="kpi"><b>${k('abandono')}</b><small>fueron a pagar y no terminaron</small></div><div class="kpi"><b>${k('pagan')}</b><small>pagan</small></div></div>
+   <section class="card"><h2>Contactos</h2><p class="fine" style="margin-bottom:10px">Personas que dejaron su email en Glow y aceptaron que les escribas. «Hasta dónde llegó» te dice en qué paso se quedaron. Escríbeles desde tu correo personal y pon los emails en copia oculta (CCO).</p>
+   <div class="row" style="margin-bottom:12px;flex-wrap:wrap">${Object.entries(F).map(([id,[t]])=>`<button class="btn ${id===ctFiltro?'':'ghost'} sm" data-f="${id}">${t} (${k(id)})</button>`).join('')}</div>
+   ${lista.length?`<div class="row" style="margin-bottom:12px"><button class="btn ghost sm" id="copiar">${lista.length===1?'Copiar el email':`Copiar los ${lista.length} emails`}</button><button class="btn ghost sm" id="csv">Descargar lista (CSV)</button></div>
+   <div class="tablewrap"><table><thead><tr><th>Nombre</th><th>Email</th><th>Se apuntó</th><th>Hasta dónde llegó</th><th>Plan ahora</th></tr></thead><tbody>${lista.map(c=>`<tr><td>${esc(c.nombre||'—')}</td><td>${esc(c.email)}</td><td>${fDia(c.creado)}</td><td>${esc(PASO_CT[c.paso]||'—')}${c.paso_fecha?` <small class="fine">(${fDia(c.paso_fecha)})</small>`:''}</td><td>${planTxt(c)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="fine">Nadie en este grupo todavía.</p>'}</section>
+   <p class="fine">Los emails de quienes pagan también están en «Suscripciones». Si alguien te pide que no le escribas más, puede darse de baja en Ajustes de la app, o bórralo tú respondiendo a su petición.</p>`;
+  v.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{ctFiltro=b.dataset.f;localStorage.setItem('glow.admin.ctf',ctFiltro);vCtos()});
+  const c1=$('#copiar');if(c1)c1.onclick=async()=>{try{await navigator.clipboard.writeText(lista.map(c=>c.email).join(', '));toast('Emails copiados. Pégalos en CCO.')}catch(e){toast('No se pudo copiar')}};
+  const c2=$('#csv');if(c2)c2.onclick=()=>{const q=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"';
+    const txt='\ufeff'+[['Nombre','Email','Se apuntó','Hasta dónde llegó','Plan ahora'].map(q).join(';'),...lista.map(c=>[c.nombre,c.email,new Date(c.creado).toLocaleDateString('es-ES'),PASO_CT[c.paso]||'',planTxt(c)].map(q).join(';'))].join('\r\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));a.download='glow-contactos-'+new Date().toISOString().slice(0,10)+'.csv';a.click()};
 }
 
 /* ---------- Arranque ---------- */

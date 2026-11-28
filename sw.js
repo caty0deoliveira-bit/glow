@@ -1,9 +1,10 @@
 /* Glow by Caty: funciona sin conexión.
    Sube la versión cada vez que cambies la app para que todas reciban la nueva. */
-const VERSION = 'glow-v1.6.1';
+const VERSION = 'glow-v1.7.0';
 const SHELL = [
   './', 'index.html', 'manifest.json',
-  'assets/icon-180.png', 'assets/icon-512.png',
+  'assets/icon-180.png', 'assets/icon-512.png', 'legal.html',
+  'assets/fonts/manrope-latin-wght-normal.woff2', 'assets/fonts/manrope-latin-ext-wght-normal.woff2',
   'datos/catalogo.json', 'datos/cuestionario.json', 'datos/evidencia.json'
 ];
 self.addEventListener('install', e => {
