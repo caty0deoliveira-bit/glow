@@ -53,6 +53,12 @@
 - [ ] Sin ASIN en Amazon España (van por búsqueda): La Roche-Posay Toleriane Crema Limpiadora. Sin ASIN de EE. UU.: ISDIN Fusion Water Magic y Magic Color.
 - [ ] Revisar: La Roche-Posay Mela B3 está marcado con retinoide en el catálogo (se oculta en embarazo y en noches sin retinoide). Confirmar con Caty si es correcto.
 
+## Promoción GLOW20 (28/11, pedida por Caty)
+- [x] Cupón en Stripe: 20 % solo el primer mes, solo para Glow Esencial y Glow con Caty, caduca el 5/12/2026 a las 23:59. Código GLOW20 con la misma caducidad.
+- [x] «Permitir códigos promocionales» activado en los dos enlaces de pago. Probado sin pagar: 8 € y 12 € el primer mes.
+- [x] Aviso en la pantalla de planes y código ya puesto al pagar; desaparece solo el 6/12. Las testers no lo ven.
+- [ ] Después del 5/12: quitar `PROMO` de index.html (opcional, ya no se muestra).
+
 ## Fases siguientes (solo tras aprobar la anterior)
 - Fase 4: textos legales (borrador para revisar con abogada).
 

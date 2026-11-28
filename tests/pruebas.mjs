@@ -117,6 +117,7 @@ const res8=await pg.evaluate(()=>{
  out.push(['Contorno en embarazo: nunca el de retinal',!!c&&c.pk.length>0&&!c.pk.some(p=>p.ret)]);
  loadSample();S.a.fase=lab('fase','Lactancia');const P=plan();
  out.push(['Lactancia: ningún producto con retinoide en toda la rutina',[...P.am,...P.pm].every(s=>s.pk.every(p=>!p.ret))]);
+ {const n0=Date.now;Date.now=()=>Date.parse('2026-12-05T22:00:00Z');const antes=plansHtml().includes('GLOW20');Date.now=()=>Date.parse('2026-12-05T23:00:01Z');const despues=plansHtml().includes('GLOW20');Date.now=n0;out.push(['GLOW20: el aviso aparece hasta el 5/12 a las 23:59 y luego desaparece',antes&&!despues])}
  S=fresh();render();return out});
 for(const [n,o] of res8){console.log((o?'PASA ':'FALLA')+'  '+n);if(!o)fail++}
 
@@ -131,6 +132,7 @@ const r2=await pg.evaluate(()=>{loadSample();S.tab='rutina';save();render(true);
 const res2=[['Sin pagar: rutina bloqueada y sin productos',r2.lock&&!r2.comprar]];
 await pg.click('[data-act="buy"][data-arg="esencial"]');await pg.waitForTimeout(1500);
 res2.push(['Pagar abre Stripe con el id de la usuaria',!!pagoURL&&pagoURL.startsWith('https://buy.stripe.com/5kQaEY2Iu0OgcMf4oF53O03?client_reference_id='+UID)]);
+res2.push(['GLOW20: el pago lleva el código solo mientras dura la promoción',pagoURL.includes('prefilled_promo_code=GLOW20')===(Date.now()<=Date.parse('2026-12-05T23:59:59+01:00'))]);
 filas=[{plan:'esencial',estado:'active'}];
 await pg.goto(URL+'?pago=esencial');await pg.waitForFunction(()=>Q.length>0);
 const vuelto=await pg.waitForFunction(()=>S.plan==='esencial',null,{timeout:8000}).then(()=>true).catch(()=>false);

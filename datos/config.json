@@ -89,5 +89,18 @@
     "usuario": "caty0deoliveira-bit",
     "repo": "glow",
     "url_publica": "https://caty0deoliveira-bit.github.io/glow/"
-  }
+  },
+  "promociones": [
+    {
+      "codigo": "GLOW20",
+      "descuento": "20 % solo el primer mes",
+      "planes": [
+        "Glow Esencial",
+        "Glow con Caty"
+      ],
+      "valido_hasta": "2026-12-05 23:59 (Madrid)",
+      "creado": "2026-11-28, aprobado por Caty",
+      "stripe": "Cupón restringido a los dos productos Glow; «Permitir códigos promocionales» activado en los dos enlaces de pago (Managed Payments sin cambios)."
+    }
+  ]
 }

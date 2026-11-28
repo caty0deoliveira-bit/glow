@@ -222,6 +222,7 @@ textarea.field{min-height:140px;resize:vertical}
 .stat small{font-size:12px}
 .plan{position:relative}
 .plan.feat{border:1.5px solid var(--sel-bg)}
+.promo{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:16px;margin:0 0 14px;border:1px solid var(--sel-bg)}.promo b{font-size:15px}.promo span{font-size:13px;line-height:1.45;color:var(--muted)}
 .plan .badge{position:absolute;top:-11px;left:20px;padding:3px 11px;border-radius:99px;font-size:12px;font-weight:700;background:var(--sel-bg);color:var(--sel-fg)}
 .plan-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
 .plan-h h2{margin:0}
@@ -329,6 +330,9 @@ const TEST_MODE=false; /* true = todo desbloqueado para probar sin pagar */
 const SB_URL='https://pzucpyzggotcedvpghli.supabase.co';
 const SB_KEY='sb_publishable_VXSxe5-1cIxyEqzvcFJQvw_3azjWfRE'; /* clave pública: segura en el navegador con RLS */
 const PAY={esencial:'https://buy.stripe.com/5kQaEY2Iu0OgcMf4oF53O03',caty:'https://buy.stripe.com/28E00kcj40OgeUnf3j53O04'};
+/* Promoción aprobada por Caty (28/11/2026): cupón de Stripe GLOW20, 20 % solo el primer mes, en los dos planes, válido hasta el 5/12/2026 a las 23:59 (Madrid). Stripe lo caduca solo; aquí solo se muestra el aviso y se rellena el código. */
+const PROMO={codigo:'GLOW20',hasta:Date.parse('2026-12-05T23:59:59+01:00')};
+const promoActiva=()=>Date.now()<=PROMO.hasta;
 const PORTAL='https://billing.stripe.com/p/login/00weVe96SbsU6nR2gx53O00';
 const CUENTA='glow.cuenta'; /* separado de tus datos: «Borrar todo» no te quita el plan */
 let C=null;try{C=JSON.parse(localStorage.getItem(CUENTA))}catch(e){}
@@ -355,7 +359,7 @@ async function syncPlan(){
   const cambio=np!==S.plan||nv!==(S.vence||null);S.plan=np;S.vence=nv;save();return cambio;
  }catch(e){return false}}
 const tester=()=>!!S.inv&&!!S.vence&&paid(); /* amiga con invitación activa: nunca ve botones de pago */
-const VER='1.6';
+const VER='1.6.1';
 /* ---------- Contador anónimo de uso ----------
    Solo pasos de la app (nunca respuestas, fotos ni datos de piel). Id aleatorio del móvil, sin cookies. */
 const DISP=(()=>{try{let d=localStorage.getItem('glow.disp');if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2));localStorage.setItem('glow.disp',d)}return d}catch(e){return 'sin-id'}})();
@@ -660,7 +664,7 @@ const I={
 function brandBar(){return`<div class="brandbar"><div class="brand">${I.logo}Glow <span>by Caty</span></div>${TEST_MODE?'<span class="protobtn" style="cursor:default">Versión de prueba</span>':''}</div>`}
 const avatar='<span class="avatar" aria-hidden="true">CD</span>';
 const PLANS={esencial:{n:'Glow Esencial',p:10},caty:{n:'Glow con Caty',p:15}};
-function plansHtml(){return`
+function plansHtml(){return`${promoActiva()?`<div class="promo glass"><b>Código ${PROMO.codigo}: 20 % de descuento el primer mes</b><span>Hasta el sábado 5 de diciembre. Ya va puesto en la página de pago: 8 € en Glow Esencial o 12 € en Glow con Caty el primer mes y luego el precio normal.</span></div>`:''}
 <section class="card glass plan"><div class="plan-h"><h2>Glow Esencial</h2><div class="price"><b>10 €</b><span>/mes</span></div></div>
  <ul class="feats"><li>Tu rutina completa de mañana y noche</li><li>2 productos recomendados por paso, según tu presupuesto</li><li>Seguimiento del asistente de Caty</li><li>Nuevas fotos y simulación cuando quieras</li></ul>
  <button class="btn ghost" data-act="buy" data-arg="esencial">Elegir Glow Esencial</button></section>
@@ -957,7 +961,7 @@ const ACT={
   if(k==='caty'&&S.plan==='esencial'){sheet(`<h2>Pasarte a Glow con Caty</h2><p>Se abre el pago de Glow con Caty (15 € al mes). Después, cancela Glow Esencial en «Gestionar o cancelar mi suscripción» para no pagar los dos.</p><div class="stack"><button class="btn" data-act="gopay" data-arg="caty">Continuar al pago</button><button class="btn ghost" data-act="close">Volver</button></div>`);return}
   ACT.gopay(k)},
  async gopay(k){closeSheet();toast('Abriendo el pago seguro…');track('pago_inicio',k);await enviaUso();
-  try{const s=await sesion(true);location.href=`${PAY[k]}?client_reference_id=${s.uid}&locale=es`}
+  try{const s=await sesion(true);location.href=`${PAY[k]}?client_reference_id=${s.uid}&locale=es${promoActiva()?'&prefilled_promo_code='+PROMO.codigo:''}`}
   catch(e){toast('No pudimos abrir el pago. Inténtalo de nuevo en un momento.')}},
  portal(){window.open(PORTAL,'_blank','noopener');track('portal')},
  opinion(){opinionSheet();track('opinion_abierta')},
